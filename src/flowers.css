@@ -1,0 +1,18 @@
+.fname {
+    left: auto;
+}
+.label {
+    display: inline-block;
+    width: 147px;
+}
+.block {
+    display: inline-block;
+    width: 1000px;
+}
+.myDiv {
+    width: 925px;
+}
+.inputlabel {
+    width: 147px !important;
+    display: inline-block  !important;
+  }
