@@ -4,19 +4,21 @@ import React, { Component } from 'react';
 let dialogStyles = {
     width: '1000px',
     maxWidth: '100%',
-    height: '300px',
+    height: '500px',
     maxHeight: '100%',
     margin: '0 auto',
     position: 'fixed',
     left: '50%',
-    top: '20%',
+    top: '50%',
     transform: 'translate(-50%,-50%)',
     zIndex: '999',
     backgroundColor: '#eee',
     padding: '10px 20px 40px',
     borderRadius: '8px',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    resize: 'both',
+    overflow: 'auto'
 };
 
 let dialogCloseButtonStyles = {
