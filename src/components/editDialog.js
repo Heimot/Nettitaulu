@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { Button } from 'reactstrap';
 
 let dialogStyles = {
     width: '1000px',
@@ -37,8 +37,8 @@ class Dialog extends Component {
         let dialog = (
             <div style={dialogStyles}>
             <button style={dialogCloseButtonStyles} onClick={this.props.onClose}>x</button>
-            
             <div>{this.props.children}</div>
+            <Button onClick={this.props.onUpdate}>Päivitä</Button>
         </div>  
         );
         if (! this.props.isOpen) {
