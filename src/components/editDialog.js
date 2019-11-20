@@ -36,9 +36,8 @@ class Dialog extends Component {
     render() {
         let dialog = (
             <div style={dialogStyles}>
-            <button style={dialogCloseButtonStyles} onClick={this.props.onClose}>x</button>
+            <Button style={dialogCloseButtonStyles} onClick={this.props.onClose}>x</Button>
             <div>{this.props.children}</div>
-            <Button onClick={this.props.onUpdate}>Päivitä</Button>
         </div>  
         );
         if (! this.props.isOpen) {

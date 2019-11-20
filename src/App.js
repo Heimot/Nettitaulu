@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
 import './App.css';
 import TopNav from './Nav';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import MainArea from './MainArea';
-import ShowTable from './Table';
+import LogIn from './LogIn';
+import LoginNav from './LoginNav';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-
-        <TopNav />
-
-        <MainArea />
-
-        <ShowTable />
-
-      </div>
+      <Router>
+        <div className="App">
+          <Route path="/" exact component={LoginNav} />
+          <Route path="/" exact component={LogIn} />
+          <Route path="/main" component={TopNav} />
+          <Route path="/main" component={MainArea} />
+        </div>
+      </Router>
     );
   }
 }
