@@ -2,6 +2,7 @@ import React from 'react';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, InputGroupAddon, Button, Input, CardText, CardBlock, Card, CardTitle } from 'reactstrap';
 import Dialog from './components/editDialog';
 import {Redirect} from 'react-router-dom';
+import "./Styles/NavStyles.css";
 
 export default class TopNav extends React.Component {
   constructor(props) {
@@ -53,7 +54,7 @@ export default class TopNav extends React.Component {
               </Dialog>
               </Button>
               </InputGroupAddon>
-              <Button type='button' className='button' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
+              <Button className='buttonCSS' type='button' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
               <NavItem>
                 <NavLink href="/main">Components</NavLink>
               </NavItem>

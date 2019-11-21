@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Row, Col, Card, Input, Button } from 'reactstrap';
 import PeopleCard from './PeopleCard';
-import "./flowers.css";
+import './Styles/flowers.css';
 import Swal from 'sweetalert2';
 import { Redirect } from 'react-router-dom';
 
@@ -51,15 +51,12 @@ class MainArea extends Component {
   }
 
   removePerson(_id) {
-    fetch('http://localhost:3002/products', {
-      method: 'POST',
+    fetch('http://localhost:3002/products/' + _id, {
+      method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
       },
-      body: JSON.stringify({
-   
-        //add data
-      }),
     })
       .then(response => response.json())
       .then(json => console.log(json))
