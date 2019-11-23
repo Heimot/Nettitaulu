@@ -1,0 +1,8 @@
+.addBtn {
+    width: 100%;
+    height: 100%;
+    background: #CCCCCC;
+    background-image: url(../pictures/plus.png);
+    background-position: center;
+    background-repeat: no-repeat;
+}
