@@ -37,28 +37,30 @@ class PeopleCard extends Component {
   }
 
   muokkaa(_id, kauppa, kukka) {
-    this.setState({ isOpen: true })
-    this.state.kauppa = kauppa
+    this.setState({
+      isOpen: true,
+      kauppa: kauppa,
 
-    this.state.nimi1 = kukka.kukka1.name
-    this.state.maara1 = kukka.kukka1.toimi
-    this.state.kerays1 = kukka.kukka1.kerays
+      nimi1: kukka.kukka1.name,
+      maara1: kukka.kukka1.toimi,
+      kerays1: kukka.kukka1.kerays,
 
-    this.state.nimi2 = kukka.kukka2.name
-    this.state.maara2 = kukka.kukka2.toimi
-    this.state.kerays2 = kukka.kukka2.kerays
+      nimi2: kukka.kukka2.name,
+      maara2: kukka.kukka2.toimi,
+      kerays2: kukka.kukka2.kerays,
 
-    this.state.nimi3 = kukka.kukka3.name
-    this.state.maara3 = kukka.kukka3.toimi
-    this.state.kerays3 = kukka.kukka3.kerays
+      nimi3: kukka.kukka3.name,
+      maara3: kukka.kukka3.toimi,
+      kerays3: kukka.kukka3.kerays,
 
-    this.state.nimi4 = kukka.kukka4.name
-    this.state.maara4 = kukka.kukka4.toimi
-    this.state.kerays4 = kukka.kukka4.kerays
+      nimi4: kukka.kukka4.name,
+      maara4: kukka.kukka4.toimi,
+      kerays4: kukka.kukka4.kerays,
 
-    this.state.nimi5 = kukka.kukka5.name
-    this.state.maara5 = kukka.kukka5.toimi
-    this.state.kerays5 = kukka.kukka5.kerays
+      nimi5: kukka.kukka5.name,
+      maara5: kukka.kukka5.toimi,
+      kerays5: kukka.kukka5.kerays,
+    })
   }
 
   patchData(_id) {
