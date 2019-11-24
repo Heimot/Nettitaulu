@@ -9,6 +9,8 @@ class PeopleCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      kauppa: '',
+
       nimi1: '',
       maara1: '',
       kerays1: '',
@@ -34,15 +36,67 @@ class PeopleCard extends Component {
     }
   }
 
+  muokkaa(_id, kauppa, kukka) {
+    this.setState({ isOpen: true })
+    this.state.kauppa = kauppa
+
+    this.state.nimi1 = kukka.kukka1.name
+    this.state.maara1 = kukka.kukka1.toimi
+    this.state.kerays1 = kukka.kukka1.kerays
+
+    this.state.nimi2 = kukka.kukka2.name
+    this.state.maara2 = kukka.kukka2.toimi
+    this.state.kerays2 = kukka.kukka2.kerays
+
+    this.state.nimi3 = kukka.kukka3.name
+    this.state.maara3 = kukka.kukka3.toimi
+    this.state.kerays3 = kukka.kukka3.kerays
+
+    this.state.nimi4 = kukka.kukka4.name
+    this.state.maara4 = kukka.kukka4.toimi
+    this.state.kerays4 = kukka.kukka4.kerays
+
+    this.state.nimi5 = kukka.kukka5.name
+    this.state.maara5 = kukka.kukka5.toimi
+    this.state.kerays5 = kukka.kukka5.kerays
+  }
+
   patchData(_id) {
-    fetch('http://localhost:3002/products' + _id, {
-      method: 'PATCH',
+    fetch('http://localhost:3002/products/' + _id, {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
       },
       body: JSON.stringify({
-        
+        kauppa: this.state.kauppa,
+        kukka: {
+          kukka1: {
+            name: this.state.nimi1,
+            toimi: this.state.maara1,
+            kerays: this.state.kerays1
+          },
+          kukka2: {
+            name: this.state.nimi2,
+            toimi: this.state.maara2,
+            kerays: this.state.kerays2
+          },
+          kukka3: {
+            name: this.state.nimi3,
+            toimi: this.state.maara3,
+            kerays: this.state.kerays3
+          },
+          kukka4: {
+            name: this.state.nimi4,
+            toimi: this.state.maara4,
+            kerays: this.state.kerays4
+          },
+          kukka5: {
+            name: this.state.nimi5,
+            toimi: this.state.maara5,
+            kerays: this.state.kerays5
+          },
+        }
       }),
     })
       .then(response => response.json())
@@ -149,13 +203,18 @@ class PeopleCard extends Component {
               </CardText>
               : undefined}
 
-            <Button className="buttonC" color="warning" onClick={() => this.props.removePerson(_id)}>Poista</Button> <Button color="primary" onClick={(e) => this.setState({ isOpen: true })}>Muokkaa</Button>
+            <Button className="buttonC" color="warning" onClick={() => this.props.removePerson(_id)}>Poista</Button>
+            <Button color="primary" onClick={() => this.muokkaa(_id, kauppa, kukka)}>Muokkaa</Button>
 
             <Dialog isOpen={this.state.isOpen} onClose={(e) => this.setState({ isOpen: false })}>
               <Card>
                 <CardBlock>
 
-                  <CardTitle>{kauppa}</CardTitle>
+                  <CardTitle><Input type="text"
+                    name="kauppa"
+                    onChange={this.handleChange}
+                    className="inputlabel"
+                    placeholder={kauppa}></Input></CardTitle>
 
                   <CardText>{_id}</CardText>
 
