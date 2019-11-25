@@ -32,7 +32,9 @@ class PeopleCard extends Component {
       kerays5: '',
 
       isOpen: false,
-      isOpen2: true
+      isOpen2: true,
+
+      location: ''
     }
   }
 
@@ -115,6 +117,13 @@ class PeopleCard extends Component {
       [event.target.name]: event.target.value
     });
   }
+
+  componentDidMount() {
+    this.setState({
+      location: localStorage.getItem("userLocation")
+    });
+  }
+
   render() {
     let { _id, kukka, kauppa } = this.props.person;
     return (
@@ -135,7 +144,7 @@ class PeopleCard extends Component {
                   </CardText>
             </CardText>
 
-            {kukka.kukka1.toimi !== 0 ?
+            {kukka.kukka1.toimi !== 0 ? kukka.kukka1.kerays !== this.state.location ?
               <CardText>
                 <CardText className="label">
                   {kukka.kukka1.name}
@@ -147,9 +156,9 @@ class PeopleCard extends Component {
                   {kukka.kukka1.kerays}
                 </CardText>
               </CardText>
-              : undefined}
+              : undefined : undefined}
 
-            {kukka.kukka2.toimi !== 0 ?
+            {kukka.kukka2.toimi !== 0 ? kukka.kukka2.kerays !== this.state.location ?
               <CardText>
                 <CardText className="label">
                   {kukka.kukka2.name}
@@ -161,9 +170,9 @@ class PeopleCard extends Component {
                   {kukka.kukka2.kerays}
                 </CardText>
               </CardText>
-              : undefined}
+              : undefined : undefined}
 
-            {kukka.kukka3.toimi !== 0 ?
+            {kukka.kukka3.toimi !== 0 ? kukka.kukka3.kerays !== this.state.location ?
               <CardText>
                 <CardText className="label">
                   {kukka.kukka3.name}
@@ -175,9 +184,9 @@ class PeopleCard extends Component {
                   {kukka.kukka3.kerays}
                 </CardText>
               </CardText>
-              : undefined}
+              : undefined : undefined}
 
-            {kukka.kukka4.toimi !== 0 ?
+            {kukka.kukka4.toimi !== 0 ? kukka.kukka4.kerays !== this.state.location ?
               <CardText>
                 <CardText className="label">
                   {kukka.kukka4.name}
@@ -189,9 +198,9 @@ class PeopleCard extends Component {
                   {kukka.kukka4.kerays}
                 </CardText>
               </CardText>
-              : undefined}
+              : undefined : undefined}
 
-            {kukka.kukka5.toimi !== 0 ?
+            {kukka.kukka5.toimi !== 0 ? kukka.kukka5.kerays !== this.state.location ?
               <CardText>
                 <CardText className="label">
                   {kukka.kukka5.name}
@@ -203,7 +212,7 @@ class PeopleCard extends Component {
                   {kukka.kukka5.kerays}
                 </CardText>
               </CardText>
-              : undefined}
+              : undefined : undefined}
 
             <Button className="buttonC" color="warning" onClick={() => this.props.removePerson(_id)}>Poista</Button>
             <Button color="primary" onClick={() => this.muokkaa(_id, kauppa, kukka)}>Muokkaa</Button>
@@ -236,145 +245,130 @@ class PeopleCard extends Component {
 
                   </CardText>
 
-                  {kukka.kukka1.toimi !== 0 ?
-                    <CardText>
+                  <CardText>
 
-                      <Input type="text"
-                        name="nimi1"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka1.name}>
-                      </Input>
+                    <Input type="text"
+                      name="nimi1"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka1.name}>
+                    </Input>
 
-                      <Input type="number"
-                        name="maara1"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka1.toimi}>
-                      </Input>
+                    <Input type="number"
+                      name="maara1"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka1.toimi}>
+                    </Input>
 
-                      <Input className="inputlabel"
-                        name="kerays1"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka1.kerays}>
-                      </Input>
+                    <Input className="inputlabel"
+                      name="kerays1"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka1.kerays}>
+                    </Input>
 
-                    </CardText>
+                  </CardText>
 
-                    : undefined}
+                  <CardText>
 
-                  {kukka.kukka2.toimi !== 0 ?
-                    <CardText>
+                    <Input type="text"
+                      name="nimi2"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka2.name}>
+                    </Input>
 
-                      <Input type="text"
-                        name="nimi2"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka2.name}>
-                      </Input>
+                    <Input type="number"
+                      name="maara2"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka2.toimi}>
+                    </Input>
 
-                      <Input type="number"
-                        name="maara2"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka2.toimi}>
-                      </Input>
+                    <Input className="inputlabel"
+                      name="kerays2"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka2.kerays}>
+                    </Input>
 
-                      <Input className="inputlabel"
-                        name="kerays2"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka2.kerays}>
-                      </Input>
+                  </CardText>
 
-                    </CardText>
+                  <CardText>
 
-                    : undefined}
+                    <Input type="text"
+                      name="nimi3"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka3.name}>
+                    </Input>
 
-                  {kukka.kukka3.toimi !== 0 ?
-                    <CardText>
+                    <Input type="number"
+                      name="maara3"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka3.toimi}>
+                    </Input>
 
-                      <Input type="text"
-                        name="nimi3"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka3.name}>
-                      </Input>
+                    <Input className="inputlabel"
+                      name="kerays3"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka3.kerays}>
+                    </Input>
 
-                      <Input type="number"
-                        name="maara3"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka3.toimi}>
-                      </Input>
+                  </CardText>
 
-                      <Input className="inputlabel"
-                        name="kerays3"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka3.kerays}>
-                      </Input>
+                  <CardText>
 
-                    </CardText>
+                    <Input type="text"
+                      name="nimi4"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka4.name}>
+                    </Input>
 
-                    : undefined}
+                    <Input type="number"
+                      name="maara4"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka4.toimi}>
+                    </Input>
 
-                  {kukka.kukka4.toimi !== 0 ?
-                    <CardText>
+                    <Input className="inputlabel"
+                      name="kerays4"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka4.kerays}>
+                    </Input>
 
-                      <Input type="text"
-                        name="nimi4"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka4.name}>
-                      </Input>
+                  </CardText>
 
-                      <Input type="number"
-                        name="maara4"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka4.toimi}>
-                      </Input>
+                  <CardText>
 
-                      <Input className="inputlabel"
-                        name="kerays4"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka4.kerays}>
-                      </Input>
+                    <Input type="text"
+                      name="nimi5"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka5.name}>
+                    </Input>
 
-                    </CardText>
+                    <Input type="number"
+                      name="maara5"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka5.toimi}>
+                    </Input>
 
-                    : undefined}
+                    <Input className="inputlabel"
+                      name="kerays5"
+                      onChange={this.handleChange}
+                      className="inputlabel"
+                      placeholder={kukka.kukka5.kerays}>
+                    </Input>
 
-                  {kukka.kukka5.toimi !== 0 ?
-                    <CardText>
-
-                      <Input type="text"
-                        name="nimi5"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka5.name}>
-                      </Input>
-
-                      <Input type="number"
-                        name="maara5"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka5.toimi}>
-                      </Input>
-
-                      <Input className="inputlabel"
-                        name="kerays5"
-                        onChange={this.handleChange}
-                        className="inputlabel"
-                        placeholder={kukka.kukka5.kerays}>
-                      </Input>
-
-                    </CardText>
-
-                    : undefined}
+                  </CardText>
 
                   <Button onClick={() => this.patchData(_id)}>Päivitä</Button>
                 </CardBlock>

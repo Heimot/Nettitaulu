@@ -31,13 +31,31 @@ export default class TopNav extends React.Component {
       maara5: '',
       kerays5: '',
 
+      location: 'Tuusjärvi',
+      isLoading: true
     };
     this.toggle = this.toggle.bind(this);
     this.logOut = this.logOut.bind(this);
   }
 
+  changeLocation() {
+    if (this.state.isLoading) {
+      this.setState({
+        location: 'Ryönä',
+        isLoading: false
+      });
+      localStorage.setItem("userLocation", this.state.location);
+    } else {
+      this.setState({
+        location: 'Tuurjärvi',
+        isLoading: true
+      });
+      localStorage.setItem("userLocation", this.state.location);
+    }
+  }
+
   logOut() {
-    sessionStorage.setItem("userData", '')
+    sessionStorage.setItem("userData", '');
     sessionStorage.clear();
     this.setState({
       redirect: true
@@ -271,7 +289,7 @@ export default class TopNav extends React.Component {
               <button className='addBtn' type='button' onClick={(e) => this.setState({ isOpen: true })}></button>
               <button type='button' onClick={() => this.logOut()}></button>
               <NavItem>
-                <NavLink href="/main">Components</NavLink>
+                <Button onClick={() => this.changeLocation()}>{this.state.location}</Button>
               </NavItem>
             </Nav>
           </Collapse>
