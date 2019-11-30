@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Styles/App.css';
 import TopNav from './Nav';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import MainArea from './MainArea';
 import LogIn from './LogIn';
 import LoginNav from './LoginNav';

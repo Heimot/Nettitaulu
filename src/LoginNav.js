@@ -1,6 +1,5 @@
 import React from 'react';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, InputGroupAddon, Button, Input, CardText, CardBlock, Card, CardTitle } from 'reactstrap';
-import Dialog from './components/editDialog';
+import { Collapse, Navbar, NavbarBrand } from 'reactstrap';
 
 export default class TopNav extends React.Component {
   constructor(props) {

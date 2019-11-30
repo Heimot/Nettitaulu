@@ -1,14 +1,20 @@
 import React from 'react';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, InputGroupAddon, Button, Input, CardText, CardBlock, Card, CardTitle } from 'reactstrap';
+import DatePicker from "react-datepicker";
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, InputGroupAddon, Button, Input, CardText, CardBlock, Card, CardTitle } from 'reactstrap';
 import Dialog from './components/editDialog';
 import { Redirect } from 'react-router-dom';
+import format from "date-fns/format";
+
+
 import "./Styles/Buttons.css";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default class TopNav extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
+      isOpen2: false,
       redirect: false,
       kauppa: '',
       nimi1: '',
@@ -32,7 +38,10 @@ export default class TopNav extends React.Component {
       kerays5: '',
 
       location: 'Tuusjärvi',
-      isLoading: true
+      isLoading: true,
+      startDate: null,
+      dateValue: null,
+      startDate2: new Date()
     };
     this.toggle = this.toggle.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -45,12 +54,14 @@ export default class TopNav extends React.Component {
         isLoading: false
       });
       localStorage.setItem("userLocation", this.state.location);
+      window.location.reload()
     } else {
       this.setState({
-        location: 'Tuurjärvi',
+        location: 'Tuusjärvi',
         isLoading: true
       });
       localStorage.setItem("userLocation", this.state.location);
+      window.location.reload()
     }
   }
 
@@ -66,6 +77,7 @@ export default class TopNav extends React.Component {
     this.setState({
       [event.target.name]: event.target.value
     });
+    console.log(this.state);
   }
 
   postData() {
@@ -77,6 +89,7 @@ export default class TopNav extends React.Component {
       },
       body: JSON.stringify({
         kauppa: this.state.kauppa,
+        date: format(this.state.startDate2, "dd/MM/yyyy"),
         kukka: {
           kukka1: {
             name: this.state.nimi1,
@@ -120,6 +133,47 @@ export default class TopNav extends React.Component {
       isOpen: !this.state.isOpen
     });
   }
+
+  componentDidMount() {
+    console.log(this.state.startDate);
+    if (sessionStorage.getItem('userDate')) {
+      this.setState({
+        dateValue: sessionStorage.getItem('userDate'),
+        startDate: new Date()
+      });
+      console.log('???????')
+    } else
+      this.setState({
+        startDate: new Date()
+      });
+
+    if (localStorage.getItem('userLocation') !== "Tuusjärvi") {
+      this.setState({
+        location: 'Tuusjärvi',
+        isLoading: true
+      });
+    } else {
+      this.setState({
+        location: 'Ryönä',
+        isLoading: false
+      });
+
+    }
+  }
+
+  handleChange2 = date => {
+    this.setState({
+      startDate: date
+    });
+  };
+
+  handleChange3 = date => {
+    this.setState({
+      startDate2: date
+    });
+  };
+
+
   render() {
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
@@ -131,14 +185,30 @@ export default class TopNav extends React.Component {
           <NavbarBrand href="/">React</NavbarBrand>
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
+              <InputGroupAddon>
+                <DatePicker
+                  value={this.state.dateValue}
+                  selected={this.state.startDate}
+                  onChange={this.handleChange2}
+                  onCalendarClose={() =>  sessionStorage.setItem('userDate', format(this.state.startDate, "dd/MM/yyyy"), window.location.reload())}
+                  dateFormat="d/MM/yyyy"
+                  withPortal
+                />
+              </InputGroupAddon>
               <Input placeholder="Kukan nimi" id="number" type="string" onChange={(evt) => { global.nimi11 = evt.target.value; }} />
               <InputGroupAddon>
                 <Button>Search
-              <Dialog isOpen={this.state.isOpen} onClose={(e) => this.setState({ isOpen: false })}>
+              <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
                     <Card>
                       <CardBlock>
 
                         <CardTitle>
+
+                          <DatePicker
+                            selected={this.state.startDate2}
+                            onChange={this.handleChange3}
+                            dateFormat="d/MM/yyyy"
+                          />
 
                           <Input name="kauppa"
                             onChange={this.handleChange}
@@ -251,7 +321,6 @@ export default class TopNav extends React.Component {
                             placeholder={'Keräyspiste'}>
                           </Input>
 
-
                         </CardText>
 
                         <CardText>
@@ -286,11 +355,21 @@ export default class TopNav extends React.Component {
                   </Dialog>
                 </Button>
               </InputGroupAddon>
-              <button className='addBtn' type='button' onClick={(e) => this.setState({ isOpen: true })}></button>
-              <button type='button' onClick={() => this.logOut()}></button>
+
+              <InputGroupAddon>
+                <Button className='addBtn' color='primary' type='button' onClick={(e) => this.setState({ isOpen2: true })}></Button>
+              </InputGroupAddon>
+
+              <InputGroupAddon>
+                <Button className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Log Out</Button>
+              </InputGroupAddon>
+
               <NavItem>
-                <Button onClick={() => this.changeLocation()}>{this.state.location}</Button>
+                <InputGroupAddon>
+                  <Button className='logoutBtn' onClick={() => this.changeLocation()}>{this.state.location}</Button>
+                </InputGroupAddon>
               </NavItem>
+
             </Nav>
           </Collapse>
         </Navbar>

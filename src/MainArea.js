@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Card, Input, Button } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import PeopleCard from './PeopleCard';
 import './Styles/flowers.css';
-import Swal from 'sweetalert2';
 import { Redirect } from 'react-router-dom';
 
 let ColVal = 6;
@@ -18,16 +17,13 @@ class MainArea extends Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if(sessionStorage.getItem('userData')) {
     } else {
       this.setState({
         redirect: true
       });
     }
-  }
-
-  componentDidMount() {
     var GETwAuth = {
       method: 'GET',
       headers: {

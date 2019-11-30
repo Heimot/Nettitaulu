@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import { Card, CardText, CardBlock, CardTitle, CardSubtitle, Button, Input } from 'reactstrap';
+import { Card, CardText, CardBlock, CardTitle, Button, Input } from 'reactstrap';
 import Dialog from './components/editDialog';
+import DatePicker from "react-datepicker";
 import "./Styles/flowers.css";
+import moment from 'moment';
+import 'moment/locale/fi';
+
+import "react-datepicker/dist/react-datepicker.css";
 
 
 
@@ -32,15 +37,16 @@ class PeopleCard extends Component {
       kerays5: '',
 
       isOpen: false,
-      isOpen2: true,
+      isOpen2: false,
 
-      location: ''
+      location: '',
+      date: sessionStorage.getItem('userDate')
     }
   }
 
   muokkaa(_id, kauppa, kukka) {
     this.setState({
-      isOpen: true,
+      isOpen2: true,
       kauppa: kauppa,
 
       nimi1: kukka.kukka1.name,
@@ -125,11 +131,13 @@ class PeopleCard extends Component {
   }
 
   render() {
-    let { _id, kukka, kauppa } = this.props.person;
+    let { _id, kukka, kauppa, date } = this.props.person;
     return (
       <div className="myDiv">
         <Card>
+        {date === this.state.date ?
           <CardBlock>
+            <CardTitle>{date}</CardTitle>
             <CardTitle>{kauppa}</CardTitle>
             <CardText>{_id}</CardText>
             <CardText>
@@ -214,10 +222,10 @@ class PeopleCard extends Component {
               </CardText>
               : undefined : undefined}
 
-            <Button className="buttonC" color="warning" onClick={() => this.props.removePerson(_id)}>Poista</Button>
+            <Button className="buttonC" color="danger" onClick={() => this.props.removePerson(_id)}>Poista</Button>
             <Button color="primary" onClick={() => this.muokkaa(_id, kauppa, kukka)}>Muokkaa</Button>
 
-            <Dialog isOpen={this.state.isOpen} onClose={(e) => this.setState({ isOpen: false })}>
+            <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
               <Card>
                 <CardBlock>
 
@@ -261,7 +269,7 @@ class PeopleCard extends Component {
                       placeholder={kukka.kukka1.toimi}>
                     </Input>
 
-                    <Input className="inputlabel"
+                    <Input type="text"
                       name="kerays1"
                       onChange={this.handleChange}
                       className="inputlabel"
@@ -286,7 +294,7 @@ class PeopleCard extends Component {
                       placeholder={kukka.kukka2.toimi}>
                     </Input>
 
-                    <Input className="inputlabel"
+                    <Input type="text"
                       name="kerays2"
                       onChange={this.handleChange}
                       className="inputlabel"
@@ -311,7 +319,7 @@ class PeopleCard extends Component {
                       placeholder={kukka.kukka3.toimi}>
                     </Input>
 
-                    <Input className="inputlabel"
+                    <Input type="text"
                       name="kerays3"
                       onChange={this.handleChange}
                       className="inputlabel"
@@ -336,7 +344,7 @@ class PeopleCard extends Component {
                       placeholder={kukka.kukka4.toimi}>
                     </Input>
 
-                    <Input className="inputlabel"
+                    <Input type="text"
                       name="kerays4"
                       onChange={this.handleChange}
                       className="inputlabel"
@@ -361,7 +369,7 @@ class PeopleCard extends Component {
                       placeholder={kukka.kukka5.toimi}>
                     </Input>
 
-                    <Input className="inputlabel"
+                    <Input type="text"
                       name="kerays5"
                       onChange={this.handleChange}
                       className="inputlabel"
@@ -376,6 +384,7 @@ class PeopleCard extends Component {
             </Dialog>
 
           </CardBlock>
+          : undefined}
         </Card>
       </div>
     )

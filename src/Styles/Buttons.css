@@ -1,8 +1,14 @@
 .addBtn {
     width: 100%;
     height: 100%;
-    background: #CCCCCC;
+    color: indigo;
     background-image: url(../pictures/plus.png);
     background-position: center;
     background-repeat: no-repeat;
+}
+
+.logoutBtn {
+    width: 100%;
+    height: 100%;
+    color: indigo;
 }

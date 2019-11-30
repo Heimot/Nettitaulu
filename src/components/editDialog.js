@@ -40,7 +40,7 @@ class Dialog extends Component {
             <div>{this.props.children}</div>
         </div>  
         );
-        if (! this.props.isOpen) {
+        if (! this.props.isOpen2) {
             dialog = null;
         }
         return (

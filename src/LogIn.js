@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Card, Input, Button } from 'reactstrap';
+import { Container, Row, Card, Input, Button } from 'reactstrap';
 import Dialog from './components/editDialog';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 class TableArea extends Component {
   constructor() {
@@ -41,19 +41,12 @@ class TableArea extends Component {
         });
   }
 
-  loginTester() {
-    console.log(this.state.auth);
-  }
-
   handleChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value
     });
   }
-
-  componentDidMount() {
-
-  }
+  
   render() {
 
 
@@ -68,7 +61,7 @@ class TableArea extends Component {
     return (
       <Container fluid>
         <Row>
-          <Dialog isOpen={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
+          <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
             <Card>
               <Input
                 type="text"
