@@ -2,8 +2,8 @@
     left: auto;
 }
 .label {
-    display: inline-block;
-    width: 147px;
+    display: inline-block !important;
+    width: 147px !important;
 }
 .block {
     display: inline-block;
@@ -16,3 +16,7 @@
     width: 147px !important;
     display: inline-block  !important;
   }
+  .btnlabel {
+    display: inline-block;
+    width: 10px;
+}

@@ -135,13 +135,11 @@ export default class TopNav extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.state.startDate);
     if (sessionStorage.getItem('userDate')) {
       this.setState({
         dateValue: sessionStorage.getItem('userDate'),
         startDate: new Date()
       });
-      console.log('???????')
     } else
       this.setState({
         startDate: new Date()
