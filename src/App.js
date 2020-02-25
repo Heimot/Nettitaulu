@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import MainArea from './MainArea';
 import LogIn from './LogIn';
 import LoginNav from './LoginNav';
+import MainCheckArea from './MainCheckArea';
+import CheckerNav from './CheckerNav';
 
 class App extends Component {
   render() {
@@ -15,6 +17,8 @@ class App extends Component {
           <Route path="/" exact component={LogIn} />
           <Route path="/main" component={TopNav} />
           <Route path="/main" component={MainArea} />
+          <Route path="/checked" exact component={CheckerNav} />
+          <Route path="/checked" component={MainCheckArea} />
         </div>
       </Router>
     );

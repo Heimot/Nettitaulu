@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
-import PeopleCard from './PeopleCard';
+import CheckedCard from './CheckedCard';
 import './Styles/flowers.css';
 import { Redirect } from 'react-router-dom';
 
 let ColVal = 6;
 
-class MainArea extends Component {
+class MainCheckArea extends Component {
   constructor() {
     super();
     this.state = {
@@ -62,6 +62,10 @@ class MainArea extends Component {
     this.setState({ people: this.state.people.filter(person => person._id !== _id) });
   }
 
+  updatePerson(_id) {
+    alert(_id + "UPDATED");
+  }
+
   isMobile = navigator.userAgent.match(/Mobile/i) != null;
   if(isMobile) {
     ColVal = 4;
@@ -71,10 +75,10 @@ class MainArea extends Component {
     if(this.state.redirect) {
       return (<Redirect to={'/'}/>)
     }
-    let peopleCards = this.state.people.map(person => {
+    let checkedCards = this.state.people.map(person => {
       return (
         <Col sm={ColVal}>
-          <PeopleCard key={person._id} removePerson={this.removePerson.bind(this)} person={person} />
+          <CheckedCard key={person._id} updatePerson={this.updatePerson.bind(this)} removePerson={this.removePerson.bind(this)} person={person} />
           
         </Col>
       )
@@ -82,11 +86,11 @@ class MainArea extends Component {
     return (
       <Container fluid>
         <Row>
-          {PeopleCard !== null ? peopleCards : undefined}
+          {CheckedCard !== null ? checkedCards : undefined}
         </Row>
       </Container>
     )
   }
 }
 
-export default MainArea;
+export default MainCheckArea;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Collapse, Navbar, NavbarBrand } from 'reactstrap';
 
-export default class LoginNav extends React.Component {
+export default class CheckerNav extends React.Component {
   constructor(props) {
     super(props);
 
@@ -19,7 +19,7 @@ export default class LoginNav extends React.Component {
     return (
       <div>
         <Navbar light toggleable color="info">
-          <NavbarBrand href="/">Kirjautumis sivu</NavbarBrand>
+          <NavbarBrand href="/">Tarkastamis sivu</NavbarBrand>
           <Collapse isOpen={this.state.isOpen} navbar>
           </Collapse>
         </Navbar>

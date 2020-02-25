@@ -16,7 +16,10 @@ export default class TopNav extends React.Component {
       isOpen: false,
       isOpen2: false,
       redirect: false,
+      redirectToCheck: false,
+
       kauppa: '',
+
       nimi1: '',
       maara1: '',
       kerays1: '',
@@ -171,10 +174,18 @@ export default class TopNav extends React.Component {
     });
   };
 
+  Tarkastus() {
+    this.setState({
+      redirectToCheck: true
+    })
+  }
 
   render() {
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
+    }
+    if (this.state.redirectToCheck) {
+      return (<Redirect to={'/checked'} />)
     }
     return (
       <div>
@@ -183,6 +194,11 @@ export default class TopNav extends React.Component {
           <NavbarBrand href="/">React</NavbarBrand>
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
+              <InputGroupAddon>
+                <Button onClick={() => this.Tarkastus()}>
+                  Tarkastus
+                </Button>
+              </InputGroupAddon>
               <InputGroupAddon>
                 <DatePicker
                   value={this.state.dateValue}

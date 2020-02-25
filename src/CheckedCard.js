@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 
 
-class PeopleCard extends Component {
+class CheckedCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -449,6 +449,7 @@ class PeopleCard extends Component {
 
               <Button className="buttonC" color="danger" onClick={() => this.props.removePerson(_id)}>Poista</Button>
               <Button color="primary" onClick={() => this.muokkaa(_id, kauppa, kukka)}>Muokkaa</Button>
+              <Button onClick={() => this.patchData(_id)}>nimi1</Button>
 
               <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
                 <Card>
@@ -616,4 +617,4 @@ class PeopleCard extends Component {
   }
 }
 
-export default PeopleCard;
+export default CheckedCard;
