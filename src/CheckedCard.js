@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Card, CardText, CardBlock, CardTitle, Button, Input } from 'reactstrap';
 import Dialog from './components/editDialog';
-import "./Styles/flowers.css";
+import "./Styles/Table.css";
 
 import "react-datepicker/dist/react-datepicker.css";
 

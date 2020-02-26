@@ -4,9 +4,11 @@ import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, InputGroupA
 import Dialog from './components/editDialog';
 import { Redirect } from 'react-router-dom';
 import format from "date-fns/format";
+import { Table, Thead, Tr, Tbody, Td, Th } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 
 
-import "./Styles/Buttons.css";
+import "./Styles/Nav.css";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default class TopNav extends React.Component {
@@ -19,26 +21,32 @@ export default class TopNav extends React.Component {
       redirectToCheck: false,
 
       kauppa: '',
+      customerInfo: '',
 
       nimi1: '',
       maara1: '',
       kerays1: '',
+      lisatieto1: '',
 
       nimi2: '',
       maara2: '',
       kerays2: '',
+      lisatieto2: '',
 
       nimi3: '',
       maara3: '',
       kerays3: '',
+      lisatieto3: '',
 
       nimi4: '',
       maara4: '',
       kerays4: '',
+      lisatieto4: '',
 
       nimi5: '',
       maara5: '',
       kerays5: '',
+      lisatieto5: '',
 
       location: 'Tuusjärvi',
       isLoading: true,
@@ -80,7 +88,12 @@ export default class TopNav extends React.Component {
     this.setState({
       [event.target.name]: event.target.value
     });
-    console.log(this.state);
+  }
+
+  addData() {
+    this.setState({
+      isOpen2: true
+    });
   }
 
   postData() {
@@ -93,31 +106,38 @@ export default class TopNav extends React.Component {
       body: JSON.stringify({
         kauppa: this.state.kauppa,
         date: format(this.state.startDate2, "dd/MM/yyyy"),
+        toimituspvm: "26/02/2020",
+        alisatieto: this.state.customerInfo,
         kukka: {
           kukka1: {
             name: this.state.nimi1,
             toimi: this.state.maara1,
             kerays: this.state.kerays1,
+            lisatieto: this.state.lisatieto1,
           },
           kukka2: {
             name: this.state.nimi2,
             toimi: this.state.maara2,
             kerays: this.state.kerays2,
+            lisatieto: this.state.lisatieto2,
           },
           kukka3: {
             name: this.state.nimi3,
             toimi: this.state.maara3,
             kerays: this.state.kerays3,
+            lisatieto: this.state.lisatieto3,
           },
           kukka4: {
             name: this.state.nimi4,
             toimi: this.state.maara4,
             kerays: this.state.kerays4,
+            lisatieto: this.state.lisatieto4,
           },
           kukka5: {
             name: this.state.nimi5,
             toimi: this.state.maara5,
             kerays: this.state.kerays5,
+            lisatieto: this.state.lisatieto5,
           },
         }
       }),
@@ -189,200 +209,279 @@ export default class TopNav extends React.Component {
     }
     return (
       <div>
-        <Navbar light toggleable color="info">
+        <Navbar light color="info" fixed="top">
           <NavbarToggler right onClick={this.toggle} />
           <NavbarBrand href="/">React</NavbarBrand>
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
-              <InputGroupAddon>
-                <Button onClick={() => this.Tarkastus()}>
-                  Tarkastus
+
+              <Button className="TarkastusBTN" onClick={() => this.Tarkastus()}>
+                Tarkastus
                 </Button>
-              </InputGroupAddon>
-              <InputGroupAddon>
-                <DatePicker
-                  value={this.state.dateValue}
-                  selected={this.state.startDate}
-                  onChange={this.handleChange2}
-                  onCalendarClose={() =>  sessionStorage.setItem('userDate', format(this.state.startDate, "dd/MM/yyyy"), window.location.reload())}
-                  dateFormat="d/MM/yyyy"
-                  withPortal
-                />
-              </InputGroupAddon>
-              <Input placeholder="Kukan nimi" id="number" type="string" onChange={(evt) => { global.nimi11 = evt.target.value; }} />
-              <InputGroupAddon>
-                <Button>Search
+
+              <DatePicker className="Datepicker"
+                value={this.state.dateValue}
+                selected={this.state.startDate}
+                onChange={this.handleChange2}
+                onCalendarClose={() => sessionStorage.setItem('userDate', format(this.state.startDate, "dd/MM/yyyy"), window.location.reload())}
+                dateFormat="d/MM/yyyy"
+                withPortal
+              />
+
+              <Input className="SearchInput" placeholder="Kukan nimi" id="number" type="string" onChange={(evt) => { global.nimi11 = evt.target.value; }} />
+              <Button className="SearchBTN">Search</Button>
+
               <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
-                    <Card>
-                      <CardBlock>
+                <Card className="AddCard">
 
-                        <CardTitle>
+                  <div className="DataCard">
+                    <CardTitle>
+                      <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
+                      <DatePicker className="AddDate"
+                        selected={this.state.startDate2}
+                        onChange={this.handleChange3}
+                        dateFormat="d/MM/yyyy"
+                      />
 
-                          <DatePicker
-                            selected={this.state.startDate2}
-                            onChange={this.handleChange3}
-                            dateFormat="d/MM/yyyy"
-                          />
+                      <Input 
+                      className="CustomerInfo" 
+                      type="textarea" 
+                      name="customerInfo"
+                      placeholder="Asiakkaan lisätiedot"
+                      onChange={this.handleChange}>
+                      </Input>
 
-                          <Input name="kauppa"
-                            onChange={this.handleChange}
-                            placeholder={'Kaupan nimi'}>
-                          </Input>
+                      <Input name="kauppa"
+                        onChange={this.handleChange}
+                        placeholder={'Kaupan nimi'}>
+                      </Input>
+                    </CardTitle>
 
-                        </CardTitle>
+                    <Table>
 
-                        <CardText>
+                      <Thead>
+                        <Tr>
+                          <Th>Tuote</Th>
+                          <Th>Kerätään</Th>
+                          <Th>Keräyspiste</Th>
+                          <Th>Lisätietoa</Th>
+                        </Tr>
+                      </Thead>
 
-                          <CardText className="label">
-                            Tuote
-                      </CardText>
+                      {/*1 taulukkomuokkaus*/}
+                      <Tbody>
+                        <Tr>
 
-                          <CardText className="label">
-                            Kerätään
-                        </CardText>
+                          <Td >
+                            <Input type="text"
+                              name="nimi1"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Nimi"}>
+                            </Input>
+                          </Td>
 
-                          <CardText className="label">
-                            Keräyspiste
-                          </CardText>
+                          <Td>
+                            <Input type="number"
+                              name="maara1"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Määrä"}>
+                            </Input>
+                          </Td>
 
-                        </CardText>
+                          <Td>
+                            <Input type="text"
+                              name="kerays1"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Keräyspiste"}>
+                            </Input>
+                          </Td>
 
-                        <CardText>
+                          <Td>
+                            <Input type="text"
+                              name="lisatieto1"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Lisätietoa"}>
+                            </Input>
+                          </Td>
+                        </Tr>
 
-                          <Input className="inputlabel"
-                            name="nimi1"
-                            onChange={this.handleChange}
-                            placeholder={'Nimi'}>
-                          </Input>
+                        {/*2 taulukkomuokkaus*/}
 
-                          <Input className="inputlabel"
-                            name="maara1"
-                            onChange={this.handleChange}
-                            placeholder={'Määrä'}>
-                          </Input>
+                        <Tr>
 
-                          <Input className="inputlabel"
-                            name="kerays1"
-                            onChange={this.handleChange}
-                            placeholder={'Keräyspiste'}>
-                          </Input>
+                          <Td >
+                            <Input type="text"
+                              name="nimi2"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Nimi"}>
+                            </Input>
+                          </Td>
 
-                        </CardText>
+                          <Td>
+                            <Input type="number"
+                              name="maara2"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Määrä"}>
+                            </Input>
+                          </Td>
 
-                        <CardText>
+                          <Td>
+                            <Input type="text"
+                              name="kerays2"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Keräyspiste"}>
+                            </Input>
+                          </Td>
 
-                          <Input className="inputlabel"
-                            name="nimi2"
-                            onChange={this.handleChange}
-                            placeholder={'Nimi'}>
-                          </Input>
+                          <Td>
+                            <Input type="text"
+                              name="lisatieto2"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Lisätietoa"}>
+                            </Input>
+                          </Td>
+                        </Tr>
 
-                          <Input className="inputlabel"
-                            name="maara2"
-                            onChange={this.handleChange}
-                            placeholder={'Määrä'}>
-                          </Input>
+                        {/*3 taulukkomuokkaus*/}
 
-                          <Input className="inputlabel"
-                            name="kerays2"
-                            onChange={this.handleChange}
-                            placeholder={'Keräyspiste'}>
-                          </Input>
+                        <Tr>
 
+                          <Td >
+                            <Input type="text"
+                              name="nimi3"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Nimi"}>
+                            </Input>
+                          </Td>
 
-                        </CardText>
+                          <Td>
+                            <Input type="number"
+                              name="maara3"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Määrä"}>
+                            </Input>
+                          </Td>
 
-                        <CardText>
+                          <Td>
+                            <Input type="text"
+                              name="kerays3"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Keräyspiste"}>
+                            </Input>
+                          </Td>
 
-                          <Input className="inputlabel"
-                            name="nimi3"
-                            onChange={this.handleChange}
-                            placeholder={'Nimi'}>
-                          </Input>
+                          <Td>
+                            <Input type="text"
+                              name="lisatieto3"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Lisätietoa"}>
+                            </Input>
+                          </Td>
+                        </Tr>
 
-                          <Input className="inputlabel"
-                            name="maara3"
-                            onChange={this.handleChange}
-                            placeholder={'Määrä'}>
-                          </Input>
+                        {/*4 taulukkomuokkaus*/}
 
-                          <Input className="inputlabel"
-                            name="kerays3"
-                            onChange={this.handleChange}
-                            placeholder={'Keräyspiste'}>
-                          </Input>
+                        <Tr>
 
+                          <Td >
+                            <Input type="text"
+                              name="nimi4"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Nimi"}>
+                            </Input>
+                          </Td>
 
-                        </CardText>
+                          <Td>
+                            <Input type="number"
+                              name="maara4"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Määrä"}>
+                            </Input>
+                          </Td>
 
-                        <CardText>
+                          <Td>
+                            <Input type="text"
+                              name="kerays4"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Keräyspiste"}>
+                            </Input>
+                          </Td>
 
-                          <Input className="inputlabel"
-                            name="nimi4"
-                            onChange={this.handleChange}
-                            placeholder={'Nimi'}>
-                          </Input>
+                          <Td>
+                            <Input type="text"
+                              name="lisatieto4"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Lisätietoa"}>
+                            </Input>
+                          </Td>
+                        </Tr>
 
-                          <Input className="inputlabel"
-                            name="maara4"
-                            onChange={this.handleChange}
-                            placeholder={'Määrä'}>
-                          </Input>
+                        {/*5 taulukkomuokkaus*/}
 
-                          <Input className="inputlabel"
-                            name="kerays4"
-                            onChange={this.handleChange}
-                            placeholder={'Keräyspiste'}>
-                          </Input>
+                        <Tr>
 
-                        </CardText>
+                          <Td >
+                            <Input type="text"
+                              name="nimi5"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Nimi"}>
+                            </Input>
+                          </Td>
 
-                        <CardText>
+                          <Td>
+                            <Input type="number"
+                              name="maara5"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Määrä"}>
+                            </Input>
+                          </Td>
 
-                          <Input className="inputlabel"
-                            name="nimi5"
-                            onChange={this.handleChange}
-                            placeholder={'Nimi'}>
-                          </Input>
+                          <Td>
+                            <Input type="text"
+                              name="kerays5"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Keräyspiste"}>
+                            </Input>
+                          </Td>
 
-                          <Input className="inputlabel"
-                            name="maara5"
-                            onChange={this.handleChange}
-                            placeholder={'Määrä'}>
-                          </Input>
+                          <Td>
+                            <Input type="text"
+                              name="lisatieto5"
+                              onChange={this.handleChange}
+                              className="inputlabel"
+                              placeholder={"Lisätietoa"}>
+                            </Input>
+                          </Td>
+                        </Tr>
+                      </Tbody>
+                    </Table>
+                    <Button onClick={() => this.postData()}>Luo uusi</Button>
+                  </div>
+                </Card>
+              </Dialog>
 
-                          <Input className="inputlabel"
-                            name="kerays5"
-                            onChange={this.handleChange}
-                            placeholder={'Keräyspiste'}>
-                          </Input>
-
-
-                        </CardText>
-
-                        <Button onClick={() => this.postData()}>
-                          Luo uusi
-                          </Button>
-
-                      </CardBlock>
-                    </Card>
-                  </Dialog>
-                </Button>
-              </InputGroupAddon>
-
-              <InputGroupAddon>
-                <Button className='addBtn' color='primary' type='button' onClick={(e) => this.setState({ isOpen2: true })}></Button>
-              </InputGroupAddon>
-
-              <InputGroupAddon>
-                <Button className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Log Out</Button>
-              </InputGroupAddon>
-
-              <NavItem>
-                <InputGroupAddon>
-                  <Button className='logoutBtn' onClick={() => this.changeLocation()}>{this.state.location}</Button>
-                </InputGroupAddon>
-              </NavItem>
+              <Button className='addBtn' color='primary' type='button' onClick={(e) => this.addData()}></Button>
+              <Button className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
+              <Button className='locationBtn' onClick={() => this.changeLocation()}>{this.state.location}</Button>
 
             </Nav>
           </Collapse>

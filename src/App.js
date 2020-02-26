@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import MainArea from './MainArea';
 import LogIn from './LogIn';
 import LoginNav from './LoginNav';
+import './Styles/App.css';
 import MainCheckArea from './MainCheckArea';
 import CheckerNav from './CheckerNav';
 

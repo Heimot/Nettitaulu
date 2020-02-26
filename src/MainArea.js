@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import PeopleCard from './PeopleCard';
-import './Styles/flowers.css';
 import { Redirect } from 'react-router-dom';
 
 let ColVal = 6;
@@ -18,7 +17,7 @@ class MainArea extends Component {
   }
 
   componentDidMount() {
-    if(sessionStorage.getItem('userData')) {
+    if (sessionStorage.getItem('userData')) {
     } else {
       this.setState({
         redirect: true
@@ -68,15 +67,18 @@ class MainArea extends Component {
   }
   render() {
 
-    if(this.state.redirect) {
-      return (<Redirect to={'/'}/>)
+    if (this.state.redirect) {
+      return (<Redirect to={'/'} />)
     }
     let peopleCards = this.state.people.map(person => {
       return (
-        <Col sm={ColVal}>
-          <PeopleCard key={person._id} removePerson={this.removePerson.bind(this)} person={person} />
-          
-        </Col>
+        <Container fluid>
+          <Row>
+            <PeopleCard key={person._id} removePerson={this.removePerson.bind(this)} person={person} />
+          </Row>
+        </Container>
+
+
       )
     })
     return (

@@ -1,7 +1,8 @@
+"use strict";
+
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import CheckedCard from './CheckedCard';
-import './Styles/flowers.css';
 import { Redirect } from 'react-router-dom';
 
 let ColVal = 6;
