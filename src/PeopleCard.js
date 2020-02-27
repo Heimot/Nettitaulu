@@ -57,6 +57,8 @@ class PeopleCard extends Component {
       location: '',
       date: sessionStorage.getItem('userDate'),
       startDate: new Date(),
+      startDate2: new Date(),
+      f: '',
 
       openWarning: false,
     }
@@ -67,30 +69,28 @@ class PeopleCard extends Component {
       this.setState({
         [event.target.name.split(' ERASE ')[0]]: 'Keräämässä',
       });
-      console.log(this.state)
       this.patchData(event)
 
     } else if (event.target.value === 'Keräämässä' || (event.target.placeholder === 'Keräämässä' && event.target.value === '')) {
       this.setState({
         [event.target.name.split(' ERASE ')[0]]: 'Kerätty',
       });
-      console.log(this.state)
       this.patchData(event)
 
     } else if (event.target.value === 'Kerätty' || (event.target.placeholder === 'Kerätty' && event.target.value === '')) {
       this.setState({
         [event.target.name.split(' ERASE ')[0]]: 'Ei',
       });
-      console.log(this.state)
       this.patchData(event)
     }
   }
 
-  muokkaa(_id, kauppa, kukka, alisatieto) {
+  muokkaa(_id, kauppa, kukka, alisatieto, toimituspvm) {
     this.setState({
       isOpen2: true,
       kauppa: kauppa,
       customerInfo: alisatieto,
+      f: toimituspvm,
 
       nimi1: kukka.kukka1.name,
       maara1: kukka.kukka1.toimi,
@@ -117,6 +117,7 @@ class PeopleCard extends Component {
       kerays5: kukka.kukka5.kerays,
       lisatieto5: kukka.kukka5.lisatieto,
     })
+    console.log(this.state);
   }
 
   warning() {
@@ -219,6 +220,7 @@ class PeopleCard extends Component {
       body: JSON.stringify({
         kauppa: this.state.kauppa,
         date: sessionStorage.getItem('userDate'),
+        toimituspvm: this.state.f,
         alisatieto: this.state.customerInfo,
         kukka: {
           kukka1: {
@@ -261,6 +263,7 @@ class PeopleCard extends Component {
       .catch((error) => {
         console.log(error);
       });
+      sessionStorage.removeItem('userDate2');
   }
 
   closed(event) {
@@ -279,14 +282,36 @@ class PeopleCard extends Component {
     });
   }
 
-  componentDidMount() {
+  toimituspvmMuutos = (date, event) => {
     this.setState({
-      location: localStorage.getItem("userLocation"),
+      startDate2: date,
+      f: format(date, 'dd/MM/yyyy')
     });
   }
 
+  componentDidMount() {
+    var result = this.state.startDate2;
+    console.log(result);
+    result.setDate(result.getDate() + 1);
+    this.setState({
+      startDate2: result
+    });
+
+    this.setState({
+      location: localStorage.getItem("userLocation"),
+    });
+    if (this.state.date) {
+    } else {
+      this.setState({
+        date: this.state.startDate
+      })
+      sessionStorage.setItem("userDate", format(new Date(), 'dd/MM/yyyy'));
+      window.location.reload();
+    }
+  }
+
   render() {
-    let { _id, kukka, kauppa, date, alisatieto } = this.props.person;
+    let { _id, kukka, kauppa, date, alisatieto, toimituspvm } = this.props.person;
 
     return (
       <div className="myDiv">
@@ -294,7 +319,6 @@ class PeopleCard extends Component {
         {date === this.state.date ?
           <div>
             <Card className="Cards">
-
               <CardTitle>{date}</CardTitle>
               <CardTitle>{kauppa}</CardTitle>
               <CardText>{_id}</CardText>
@@ -452,7 +476,7 @@ class PeopleCard extends Component {
                 </Tbody>
               </Table>
 
-              <Button color="primary" onClick={() => this.muokkaa(_id, kauppa, kukka, alisatieto)}>Muokkaa</Button>
+              <Button color="primary" onClick={() => this.muokkaa(_id, kauppa, kukka, alisatieto, toimituspvm)}>Muokkaa</Button>
               <Button className="buttonC" color="danger" onClick={() => this.warning(_id, kauppa, date)}>Poista</Button>
             </Card>
 
@@ -475,14 +499,23 @@ class PeopleCard extends Component {
             <Dialog className="Muokkaus" isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
               <Card className="UpdateCards">
 
-                <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
-                <CardTitle>
+
+                <div>
+                  <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
                   <DatePicker className="DateUpdate"
                     selected={this.state.startDate}
                     onChange={this.pvmMuutos}
                     dateFormat="d/MM/yyyy"
                     onCalendarClose={() => sessionStorage.setItem('userDate', format(this.state.startDate, "dd/MM/yyyy"))}
                   />
+
+                  <CardTitle className="ToimitusPVMText">Toimituspäivämäärä</CardTitle>
+                  <DatePicker className="ToimitusPVM"
+                    selected={this.state.startDate2}
+                    onChange={this.toimituspvmMuutos}
+                    dateFormat="dd/MM/yyyy"
+                  />
+
                   <Input
                     className="CustomerInfo"
                     type="textarea"
@@ -490,7 +523,7 @@ class PeopleCard extends Component {
                     placeholder={alisatieto}
                     onChange={this.handleChange}>
                   </Input>
-                </CardTitle>
+                </div>
 
                 <CardTitle>
                   <Input type="text"
@@ -725,7 +758,7 @@ class PeopleCard extends Component {
 
                 </Table>
 
-                <Button onClick={() => this.putData(_id) + window.location.reload()}>Päivitä</Button>
+                <Button onClick={() => this.putData(_id, toimituspvm) + window.location.reload()}>Päivitä</Button>
               </Card>
             </Dialog>
 

@@ -22,6 +22,7 @@ export default class TopNav extends React.Component {
 
       kauppa: '',
       customerInfo: '',
+      toimituspvm: '',
 
       nimi1: '',
       maara1: '',
@@ -52,7 +53,8 @@ export default class TopNav extends React.Component {
       isLoading: true,
       startDate: null,
       dateValue: null,
-      startDate2: new Date()
+      startDate2: new Date(),
+      startDate3: new Date()
     };
     this.toggle = this.toggle.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -106,7 +108,7 @@ export default class TopNav extends React.Component {
       body: JSON.stringify({
         kauppa: this.state.kauppa,
         date: format(this.state.startDate2, "dd/MM/yyyy"),
-        toimituspvm: "26/02/2020",
+        toimituspvm: format(this.state.startDate3, "dd/MM/yyyy"),
         alisatieto: this.state.customerInfo,
         kukka: {
           kukka1: {
@@ -158,6 +160,12 @@ export default class TopNav extends React.Component {
   }
 
   componentDidMount() {
+    var result = this.state.startDate3;
+    result.setDate(result.getDate() + 1);
+    this.setState({
+      startDate3: result
+    });
+
     if (sessionStorage.getItem('userDate')) {
       this.setState({
         dateValue: sessionStorage.getItem('userDate'),
@@ -191,6 +199,12 @@ export default class TopNav extends React.Component {
   handleChange3 = date => {
     this.setState({
       startDate2: date
+    });
+  };
+
+  handleChange4 = date => {
+    this.setState({
+      startDate3: date
     });
   };
 
@@ -235,27 +249,34 @@ export default class TopNav extends React.Component {
                 <Card className="AddCard">
 
                   <div className="DataCard">
-                    <CardTitle>
+                    <div>
                       <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
                       <DatePicker className="AddDate"
                         selected={this.state.startDate2}
                         onChange={this.handleChange3}
-                        dateFormat="d/MM/yyyy"
+                        dateFormat="dd/MM/yyyy"
                       />
 
-                      <Input 
-                      className="CustomerInfo" 
-                      type="textarea" 
-                      name="customerInfo"
-                      placeholder="Asiakkaan lisätiedot"
-                      onChange={this.handleChange}>
+                      <CardTitle className="ToimitusPVMText">Toimituspäivämäärä</CardTitle>
+                      <DatePicker className="ToimitusPVM"
+                        selected={this.state.startDate3}
+                        onChange={this.handleChange4}
+                        dateFormat="dd/MM/yyyy"
+                      />
+
+                      <Input
+                        className="CustomerInfo"
+                        type="textarea"
+                        name="customerInfo"
+                        placeholder="Asiakkaan lisätiedot"
+                        onChange={this.handleChange}>
                       </Input>
 
                       <Input name="kauppa"
                         onChange={this.handleChange}
                         placeholder={'Kaupan nimi'}>
                       </Input>
-                    </CardTitle>
+                    </div>
 
                     <Table>
 
