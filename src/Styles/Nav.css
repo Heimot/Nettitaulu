@@ -1,4 +1,7 @@
 @media screen and (min-width: 1000px) {
+    .ml-auto {
+        height: 140px !important;
+    }
 
     .addBtn {
         position: absolute;
@@ -41,7 +44,7 @@
     .Datepicker {
         position: absolute;
         right: 150px;
-        bottom: 10px;
+        bottom: -75px;
         height: 40px;
         width: 150px;
         text-align: center;
@@ -49,7 +52,13 @@
     }
 
     .TarkastusBTN {
-        visibility: hidden;
+        position: absolute;
+        right: 165px;
+        bottom: 100px;
+        width: 150px;
+        height: 40px;
+        font-size: 20px !important;
+        font-weight: bold !important;
     }
 
     .SearchBTN {
@@ -76,10 +85,6 @@
         padding-top: 70px;
         padding-bottom: 10px;
     }
-
-    .DataCard {
-        
-    }    
 
     .AddDate {
         position: relative;
@@ -109,7 +114,7 @@
         font-size: 20px;
     }
 
-    .ToimitusPVM {
+    .ToimitusPVM2 {
         position: relative;
         top: -30px;
         left: 50px;

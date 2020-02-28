@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row } from 'reactstrap';
 import PeopleCard from './PeopleCard';
 import { Redirect } from 'react-router-dom';
+import { css } from "@emotion/core";
+import Loader from "react-spinners/ScaleLoader";
+import { getData, removeData } from './components/fetch/apiFetch';
+import './Styles/MainAreas.css';
 
-let ColVal = 6;
+const valmis = 0;
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+`;
 
 class MainArea extends Component {
   constructor() {
@@ -12,60 +22,52 @@ class MainArea extends Component {
       people: [],
       people2: [],
       isLoaded: false,
-      redirect: false
+      redirect: false,
+      loading: true
     }
   }
 
   componentDidMount() {
+    this.getTables();
     if (sessionStorage.getItem('userData')) {
     } else {
       this.setState({
         redirect: true
       });
     }
-    var GETwAuth = {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-      }
-    }
+  }
 
-    fetch('http://localhost:3002/products', GETwAuth)
-      .then(res => res.json())
-      .then(json => {
-        console.log(json);
-        this.setState({
-          isLoaded: true,
-          people: json,
-        })
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  getTables = async () => {
+    const data = await getData(valmis);
+    this.setState({
+      people: data,
+      isLoaded: true,
+      loading: false
+    })
   }
 
   removePerson(_id) {
-    fetch('http://localhost:3002/products/' + _id, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-      },
-    })
-      .then(response => response.json())
-      .then(json => console.log(json))
-      .catch((error) => {
-        console.log(error);
-      });
+    removeData(_id)
     this.setState({ people: this.state.people.filter(person => person._id !== _id) });
   }
 
-  isMobile = navigator.userAgent.match(/Mobile/i) != null;
-  if(isMobile) {
-    ColVal = 4;
-  }
   render() {
+
+    if (this.state.isLoaded === false) {
+      return <div className="Spinner">
+        <Loader
+          css={override}
+          height={140}
+          width={16}
+          color={"#123abc"}
+          loading={this.state.loading}
+        />
+      </div>
+    }
+
+    if (this.state.people.length <= 0 && this.state.isLoaded === true) {
+      return <h1 className="TEST">Ei kerättävää päivällä {sessionStorage.getItem("userDate")}</h1>
+    }
 
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)

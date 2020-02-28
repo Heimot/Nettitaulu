@@ -1,6 +1,6 @@
 import React from 'react';
 import DatePicker from "react-datepicker";
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, InputGroupAddon, Button, Input, CardText, CardBlock, Card, CardTitle } from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, Button, Input, Card, CardTitle } from 'reactstrap';
 import Dialog from './components/editDialog';
 import { Redirect } from 'react-router-dom';
 import format from "date-fns/format";
@@ -19,6 +19,8 @@ export default class TopNav extends React.Component {
       isOpen2: false,
       redirect: false,
       redirectToCheck: false,
+      siteName: 'Keräykseen',
+      btnName: 'Valmiit',
 
       kauppa: '',
       customerInfo: '',
@@ -50,6 +52,7 @@ export default class TopNav extends React.Component {
       lisatieto5: '',
 
       location: 'Tuusjärvi',
+      locationName: '',
       isLoading: true,
       startDate: null,
       dateValue: null,
@@ -61,21 +64,35 @@ export default class TopNav extends React.Component {
   }
 
   changeLocation() {
-    if (this.state.isLoading) {
+    if (localStorage.getItem('userLocation') !== "Tuusjärvi" && localStorage.getItem('userLocation') !== "Ryönä") {
       this.setState({
-        location: 'Ryönä',
+        location: 'Tuusjärvi',
+        locationName: "Molemmat",
         isLoading: false
       });
       localStorage.setItem("userLocation", this.state.location);
       window.location.reload()
-    } else {
+
+    } else if (localStorage.getItem('userLocation') !== "Ryönä") {
       this.setState({
-        location: 'Tuusjärvi',
-        isLoading: true
+        location: 'Ryönä',
+        locationName: "Ryönä",
+        isLoading: false
       });
       localStorage.setItem("userLocation", this.state.location);
       window.location.reload()
+
+    } else if (localStorage.getItem('userLocation') !== "Molemmat") {
+      this.setState({
+        location: 'Molemmat',
+        locationName: "Tuusjärvi",
+        isLoading: false
+      });
+      localStorage.setItem("userLocation", this.state.location);
+      window.location.reload()
+
     }
+
   }
 
   logOut() {
@@ -176,17 +193,24 @@ export default class TopNav extends React.Component {
         startDate: new Date()
       });
 
-    if (localStorage.getItem('userLocation') !== "Tuusjärvi") {
+    if (localStorage.getItem('userLocation') !== "Tuusjärvi" && localStorage.getItem('userLocation') !== "Ryönä") {
       this.setState({
         location: 'Tuusjärvi',
-        isLoading: true
-      });
-    } else {
-      this.setState({
-        location: 'Ryönä',
+        locationName: "Molemmat",
         isLoading: false
       });
-
+    } else if (localStorage.getItem('userLocation') !== "Ryönä") {
+      this.setState({
+        location: 'Ryönä',
+        locationName: "Ryönä",
+        isLoading: false
+      });
+    } else if (localStorage.getItem('userLocation') !== "Molemmat") {
+      this.setState({
+        location: 'Molemmat',
+        locationName: "Tuusjärvi",
+        isLoading: false
+      });
     }
   }
 
@@ -224,13 +248,13 @@ export default class TopNav extends React.Component {
     return (
       <div>
         <Navbar light color="info" fixed="top">
-          <NavbarToggler right onClick={this.toggle} />
-          <NavbarBrand href="/">React</NavbarBrand>
+          <NavbarToggler right className="Toggler" onClick={this.toggle} />
+    <NavbarBrand href="/">{this.state.siteName}</NavbarBrand>
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
 
               <Button className="TarkastusBTN" onClick={() => this.Tarkastus()}>
-                Tarkastus
+                {this.state.btnName}
                 </Button>
 
               <DatePicker className="Datepicker"
@@ -258,7 +282,7 @@ export default class TopNav extends React.Component {
                       />
 
                       <CardTitle className="ToimitusPVMText">Toimituspäivämäärä</CardTitle>
-                      <DatePicker className="ToimitusPVM"
+                      <DatePicker className="ToimitusPVM2"
                         selected={this.state.startDate3}
                         onChange={this.handleChange4}
                         dateFormat="dd/MM/yyyy"
@@ -502,7 +526,7 @@ export default class TopNav extends React.Component {
 
               <Button className='addBtn' color='primary' type='button' onClick={(e) => this.addData()}></Button>
               <Button className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
-              <Button className='locationBtn' onClick={() => this.changeLocation()}>{this.state.location}</Button>
+              <Button className='locationBtn' onClick={() => this.changeLocation()}>{this.state.locationName}</Button>
 
             </Nav>
           </Collapse>

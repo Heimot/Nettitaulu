@@ -7,7 +7,6 @@ import LogIn from './LogIn';
 import LoginNav from './LoginNav';
 import './Styles/App.css';
 import MainCheckArea from './MainCheckArea';
-import CheckerNav from './CheckerNav';
 
 class App extends Component {
   render() {
@@ -18,7 +17,7 @@ class App extends Component {
           <Route path="/" exact component={LogIn} />
           <Route path="/main" component={TopNav} />
           <Route path="/main" component={MainArea} />
-          <Route path="/checked" exact component={CheckerNav} />
+          <Route path="/checked" component={TopNav} />
           <Route path="/checked" component={MainCheckArea} />
         </div>
       </Router>

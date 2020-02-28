@@ -1,11 +1,19 @@
-"use strict";
-
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row } from 'reactstrap';
 import CheckedCard from './CheckedCard';
 import { Redirect } from 'react-router-dom';
+import { css } from "@emotion/core";
+import Loader from "react-spinners/ScaleLoader";
+import { getData, removeData } from './components/fetch/apiFetch';
+import './Styles/MainAreas.css';
 
-let ColVal = 6;
+const valmis = 1;
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+`;
 
 class MainCheckArea extends Component {
   constructor() {
@@ -14,80 +22,72 @@ class MainCheckArea extends Component {
       people: [],
       people2: [],
       isLoaded: false,
-      redirect: false
+      redirect: false,
+      loading: true
     }
   }
 
   componentDidMount() {
-    if(sessionStorage.getItem('userData')) {
+    this.getTables();
+    if (sessionStorage.getItem('userData')) {
     } else {
       this.setState({
         redirect: true
       });
     }
-    var GETwAuth = {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-      }
-    }
+  }
 
-    fetch('http://localhost:3002/products', GETwAuth)
-      .then(res => res.json())
-      .then(json => {
-        console.log(json);
-        this.setState({
-          isLoaded: true,
-          people: json,
-        })
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  getTables = async () => {
+    const data = await getData(valmis);
+    this.setState({
+      people: data,
+      isLoaded: true,
+      loading: false
+    })
+    console.log(data);
   }
 
   removePerson(_id) {
-    fetch('http://localhost:3002/products/' + _id, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-      },
-    })
-      .then(response => response.json())
-      .then(json => console.log(json))
-      .catch((error) => {
-        console.log(error);
-      });
+    removeData(_id)
     this.setState({ people: this.state.people.filter(person => person._id !== _id) });
   }
 
-  updatePerson(_id) {
-    alert(_id + "UPDATED");
-  }
-
-  isMobile = navigator.userAgent.match(/Mobile/i) != null;
-  if(isMobile) {
-    ColVal = 4;
-  }
   render() {
 
-    if(this.state.redirect) {
-      return (<Redirect to={'/'}/>)
+    if (this.state.isLoaded === false) {
+      return <div className="Spinner">
+        <Loader
+          css={override}
+          height={140}
+          width={16}
+          color={"#123abc"}
+          loading={this.state.loading}
+        />
+      </div>
     }
-    let checkedCards = this.state.people.map(person => {
+
+    if((this.state.people).length <= 0 && this.state.isLoaded === true) {
+    return <h1 className="TEST">Ei valmiita päivältä {sessionStorage.getItem("userDate")}</h1>
+    }
+
+    if (this.state.redirect) {
+      return (<Redirect to={'/'} />)
+    }
+    let peopleCards = this.state.people.map(person => {
       return (
-        <Col sm={ColVal}>
-          <CheckedCard key={person._id} updatePerson={this.updatePerson.bind(this)} removePerson={this.removePerson.bind(this)} person={person} />
-          
-        </Col>
+        <Container fluid>
+          <Row>
+            <CheckedCard key={person._id} removePerson={this.removePerson.bind(this)} person={person} />
+          </Row>
+        </Container>
+
+
       )
     })
     return (
       <Container fluid>
         <Row>
-          {CheckedCard !== null ? checkedCards : undefined}
+          {CheckedCard !== null ? peopleCards : undefined}
         </Row>
       </Container>
     )

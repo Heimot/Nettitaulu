@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DatePicker from "react-datepicker";
-import { Card, CardText, CardBlock, CardTitle, Button, Input } from 'reactstrap';
+import { Card, CardText, CardTitle, Button, Input } from 'reactstrap';
 import Dialog from './components/editDialog';
 import "./Styles/Table.css";
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
@@ -61,17 +61,18 @@ class PeopleCard extends Component {
       f: '',
 
       openWarning: false,
+      valmisWarning: false,
     }
   }
 
   btnHandleChange = (event) => {
-    if (event.target.value === 'Ei' || (event.target.placeholder === 'Ei' && event.target.value === '')) {
+    if (event.target.value === 'Odottaa keräystä' || (event.target.placeholder === 'Odottaa keräystä' && event.target.value === '')) {
       this.setState({
-        [event.target.name.split(' ERASE ')[0]]: 'Keräämässä',
+        [event.target.name.split(' ERASE ')[0]]: 'Keräyksessä',
       });
       this.patchData(event)
 
-    } else if (event.target.value === 'Keräämässä' || (event.target.placeholder === 'Keräämässä' && event.target.value === '')) {
+    } else if (event.target.value === 'Keräyksessä' || (event.target.placeholder === 'Keräyksessä' && event.target.value === '')) {
       this.setState({
         [event.target.name.split(' ERASE ')[0]]: 'Kerätty',
       });
@@ -79,7 +80,12 @@ class PeopleCard extends Component {
 
     } else if (event.target.value === 'Kerätty' || (event.target.placeholder === 'Kerätty' && event.target.value === '')) {
       this.setState({
-        [event.target.name.split(' ERASE ')[0]]: 'Ei',
+        [event.target.name.split(' ERASE ')[0]]: 'Ei ole',
+      });
+      this.patchData(event)
+    } else if (event.target.value === 'Ei ole' || (event.target.placeholder === 'Ei ole' && event.target.value === '')) {
+      this.setState({
+        [event.target.name.split(' ERASE ')[0]]: 'Odottaa keräystä',
       });
       this.patchData(event)
     }
@@ -117,7 +123,6 @@ class PeopleCard extends Component {
       kerays5: kukka.kukka5.kerays,
       lisatieto5: kukka.kukka5.lisatieto,
     })
-    console.log(this.state);
   }
 
   warning() {
@@ -126,8 +131,14 @@ class PeopleCard extends Component {
     })
   }
 
+  valmis() {
+    this.setState({
+      valmisWarning: true,
+    })
+  }
+
   patchData(event) {
-    if (event.target.value === 'Ei' || (event.target.placeholder === 'Ei' && event.target.value === '')) {
+    if (event.target.value === 'Odottaa keräystä' || (event.target.placeholder === 'Odottaa keräystä' && event.target.value === '')) {
       fetch('http://localhost:3002/products/' + event.target.name.split(' ERASE ')[1], {
         method: 'PATCH',
         headers: {
@@ -137,7 +148,7 @@ class PeopleCard extends Component {
         body: JSON.stringify([
           {
             propName: "kukka.kukka" + event.target.name.split('keratty').pop()[0] + ".keratty",
-            value: "Keräämässä",
+            value: "Keräyksessä",
           },
           {
             propName: "kukka.kukka" + event.target.name.split('keratty').pop()[0] + ".kerattymaara",
@@ -154,7 +165,7 @@ class PeopleCard extends Component {
         });
     }
 
-    if (event.target.value === "Keräämässä" || (event.target.placeholder === 'Keräämässä' && event.target.value === '')) {
+    if (event.target.value === "Keräyksessä" || (event.target.placeholder === 'Keräyksessä' && event.target.value === '')) {
       fetch('http://localhost:3002/products/' + event.target.name.split(' ERASE ')[1], {
         method: 'PATCH',
         headers: {
@@ -191,7 +202,34 @@ class PeopleCard extends Component {
         body: JSON.stringify([
           {
             propName: "kukka.kukka" + event.target.name.split('keratty').pop()[0] + ".keratty",
-            value: "Ei",
+            value: "Ei ole",
+          },
+          {
+            propName: "kukka.kukka" + event.target.name.split('keratty').pop()[0] + ".kerattymaara",
+            value: event.target.name.split(' ERASE ')[2]
+          }
+        ])
+      })
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    if (event.target.value === "Ei ole" || (event.target.placeholder === 'Ei ole' && event.target.value === '')) {
+      fetch('http://localhost:3002/products/' + event.target.name.split(' ERASE ')[1], {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+        body: JSON.stringify([
+          {
+            propName: "kukka.kukka" + event.target.name.split('keratty').pop()[0] + ".keratty",
+            value: "Odottaa keräystä",
           },
           {
             propName: "kukka.kukka" + event.target.name.split('keratty').pop()[0] + ".kerattymaara",
@@ -266,10 +304,6 @@ class PeopleCard extends Component {
       sessionStorage.removeItem('userDate2');
   }
 
-  closed(event) {
-    console.log([event.target.value])
-  }
-
   handleChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value
@@ -291,7 +325,6 @@ class PeopleCard extends Component {
 
   componentDidMount() {
     var result = this.state.startDate2;
-    console.log(result);
     result.setDate(result.getDate() + 1);
     this.setState({
       startDate2: result
@@ -340,10 +373,10 @@ class PeopleCard extends Component {
                 <Tbody>
                   {kukka.kukka1.toimi !== 0 ? kukka.kukka1.kerays !== this.state.location ?
                     <Tr>
-                      <Td className="reTest">{kukka.kukka1.name}</Td>
+                      <Td>{kukka.kukka1.name}</Td>
                       <Td>{kukka.kukka1.toimi}</Td>
                       <Td>{kukka.kukka1.kerays}</Td>
-                      <Td>{kukka.kukka1.lisatieto}</Td>
+                      <Td className="Lisatieto">{kukka.kukka1.lisatieto}</Td>
                       <Td>
                         <Input className="label"
                           name={"keratty1 ERASE " + _id + " ERASE " + this.state.kerattymaara1}
@@ -370,7 +403,7 @@ class PeopleCard extends Component {
                       <Td >{kukka.kukka2.name}</Td>
                       <Td>{kukka.kukka2.toimi}</Td>
                       <Td>{kukka.kukka2.kerays}</Td>
-                      <Td>{kukka.kukka2.lisatieto}</Td>
+                      <Td className="Lisatieto">{kukka.kukka2.lisatieto}</Td>
                       <Td>
                         <Input className="label"
                           name={"keratty2 ERASE " + _id + " ERASE " + this.state.kerattymaara2}
@@ -400,7 +433,7 @@ class PeopleCard extends Component {
                       <Td>{kukka.kukka3.name}</Td>
                       <Td>{kukka.kukka3.toimi}</Td>
                       <Td>{kukka.kukka3.kerays}</Td>
-                      <Td>{kukka.kukka3.lisatieto}</Td>
+                      <Td className="Lisatieto">{kukka.kukka3.lisatieto}</Td>
                       <Td>
                         <Input className="label"
                           name={"keratty3 ERASE " + _id + " ERASE " + this.state.kerattymaara3}
@@ -427,7 +460,7 @@ class PeopleCard extends Component {
                       <Td >{kukka.kukka4.name}</Td>
                       <Td>{kukka.kukka4.toimi}</Td>
                       <Td>{kukka.kukka4.kerays}</Td>
-                      <Td>{kukka.kukka4.lisatieto}</Td>
+                      <Td className="Lisatieto">{kukka.kukka4.lisatieto}</Td>
                       <Td>
                         <Input className="label"
                           name={"keratty4 ERASE " + _id + " ERASE " + this.state.kerattymaara4}
@@ -454,7 +487,7 @@ class PeopleCard extends Component {
                       <Td >{kukka.kukka5.name}</Td>
                       <Td>{kukka.kukka5.toimi}</Td>
                       <Td>{kukka.kukka5.kerays}</Td>
-                      <Td>{kukka.kukka5.lisatieto}</Td>
+                      <Td className="Lisatieto">{kukka.kukka5.lisatieto}</Td>
                       <Td>
                         <Input className="label"
                           name={"keratty5 ERASE " + _id + " ERASE " + this.state.kerattymaara5}
@@ -475,12 +508,12 @@ class PeopleCard extends Component {
                     : undefined : undefined}
                 </Tbody>
               </Table>
-
+              <Button color="success" onClick={() => this.valmis()}>Valmis</Button>
               <Button color="primary" onClick={() => this.muokkaa(_id, kauppa, kukka, alisatieto, toimituspvm)}>Muokkaa</Button>
-              <Button className="buttonC" color="danger" onClick={() => this.warning(_id, kauppa, date)}>Poista</Button>
+              <Button className="buttonC" color="danger" onClick={() => this.warning()}>Poista</Button>
             </Card>
 
-            {/*Warning dialog table when pressing delete*/}
+            {/*Warning dialog table when DELETING*/}
             <Dialog className="DelWarn" isOpen2={this.state.openWarning} onClose={(e) => this.setState({ openWarning: false })}>
 
               <Card className="Cards">
@@ -489,9 +522,28 @@ class PeopleCard extends Component {
                 <CardText className="warningBox">ID: {_id}</CardText>
                 <CardText className="warningBox">KAUPPA: {kauppa}</CardText>
                 <CardText className="warningBox">KERÄYSPÄIVÄMÄÄRÄ: {date}</CardText>
+                <CardText className="warningBox">TOIMITUSPÄIVÄMÄÄRÄ: {toimituspvm}</CardText>
 
                 <Button className="btn" onClick={() => this.props.removePerson(_id)}>Kyllä</Button>
-                <Button className="btn" onClick={() => this.setState({ openWarning: false })}>En</Button>
+                <Button className="btn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
+
+              </Card>
+            </Dialog>
+
+            {/*Warning when pushing data to be ready*/}
+            <Dialog className="DelWarn" isOpen2={this.state.valmisWarning} onClose={(e) => this.setState({ valmisWarning: false })}>
+
+              <Card className="Cards">
+
+                <CardTitle className="warningBox">Haluatko viedä tämän taulu valmiina oleviin?</CardTitle>
+                <CardTitle className="warningBox">Onko kaikki jo kerätty?</CardTitle>
+                <CardText className="warningBox">ID: {_id}</CardText>
+                <CardText className="warningBox">KAUPPA: {kauppa}</CardText>
+                <CardText className="warningBox">KERÄYSPÄIVÄMÄÄRÄ: {date}</CardText>
+                <CardText className="warningBox">TOIMITUSPÄIVÄMÄÄRÄ: {toimituspvm}</CardText>
+
+                <Button className="btn" onClick={() => this.props.removePerson(_id)}>Kyllä</Button>
+                <Button className="btn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
 
               </Card>
             </Dialog>
