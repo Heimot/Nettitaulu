@@ -39,6 +39,7 @@ class MainArea extends Component {
 
   getTables = async () => {
     const data = await getData(valmis);
+    console.log(data);
     this.setState({
       people: data,
       isLoaded: true,
@@ -76,7 +77,7 @@ class MainArea extends Component {
       return (
         <Container fluid>
           <Row>
-            <PeopleCard key={person._id} removePerson={this.removePerson.bind(this)} person={person} />
+            <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} />
           </Row>
         </Container>
 

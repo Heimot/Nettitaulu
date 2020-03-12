@@ -1,5 +1,6 @@
 import React from 'react';
 import { Collapse, Navbar, NavbarBrand } from 'reactstrap';
+import './Styles/loginNav.css';
 
 export default class LoginNav extends React.Component {
   constructor(props) {
@@ -18,10 +19,8 @@ export default class LoginNav extends React.Component {
   render() {
     return (
       <div>
-        <Navbar light toggleable color="info">
+        <Navbar className="loginNav" light toggleable color="info" fixed="top">
           <NavbarBrand href="/">Kirjautumis sivu</NavbarBrand>
-          <Collapse isOpen={this.state.isOpen} navbar>
-          </Collapse>
         </Navbar>
       </div>
     );

@@ -16,7 +16,7 @@ export const getData = (valmis) => {
         date = format(new Date(), 'dd/MM/yyyy');
     };
 
-    return fetch('http://localhost:3002/products/tables?date=' + date + '&valmis=' + valmis, GETwAuth)
+    return fetch('http://localhost:3002/orders/tables?date=' + date + '&valmis=' + valmis, GETwAuth)
         .then(res => res.json())
         .catch((error) => {
             console.log(error);
@@ -25,7 +25,7 @@ export const getData = (valmis) => {
 }
 
 export const removeData = (_id) => {
-    fetch('http://localhost:3002/products/' + _id, {
+    fetch('http://localhost:3002/orders/delete/id/' + _id, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -37,4 +37,219 @@ export const removeData = (_id) => {
         .catch((error) => {
           console.log(error);
         });
+}
+
+export const deleteFlowerData = (product) => {
+    fetch('http://localhost:3002/products/delete/id/' + product._id, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+      })
+        .then(response => response.json())
+        .then(json => console.log(json))
+        .catch((error) => {
+          console.log(error);
+        });
+}
+
+export const updateFlower = (product, kukka, toimi, kerays, lisatieto) => {
+    if(kukka.length < 1) {
+        kukka = product.kukka;
+      }
+  
+      if(toimi.length < 1) {
+        toimi = product.toimi;
+      }
+  
+      if(kerays.length < 1) {
+        kerays = product.kerays;
+      }
+  
+      if(lisatieto.length < 1) {
+        lisatieto = product.lisatieto;
+      }
+  
+      fetch('http://localhost:3002/products/put/id/' + product._id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+        body: JSON.stringify({
+          kukka: kukka,
+          toimi: toimi,
+          kerays: kerays,
+          lisatieto: lisatieto
+        }),
+      })
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      sessionStorage.removeItem('userDate2');
+}
+
+export const patchKeraysData = (product, idvalues, maara) => {
+    if (maara > 0) {
+      maara = document.getElementById(product._id).value;
+    } else {
+      maara = 0;
+    }
+
+    if (idvalues === 'Odottaa keräystä') {
+      document.getElementById(`keratty/${product._id}`).value = "Keräyksessä";
+      fetch('http://localhost:3002/products/patch/id/' + product._id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+        body: JSON.stringify([
+          {
+            propName: "keratty",
+            value: "Keräyksessä",
+          },
+          {
+            propName: "kerattymaara",
+            value: maara
+          }
+        ])
+      })
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    if (idvalues === "Keräyksessä") {
+      document.getElementById(`keratty/${product._id}`).value = "Kerätty";
+      fetch('http://localhost:3002/products/patch/id/' + product._id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+        body: JSON.stringify([
+          {
+            propName: "keratty",
+            value: "Kerätty"
+          },
+          {
+            propName: "kerattymaara",
+            value: maara
+          }
+        ])
+      })
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    if (idvalues === "Kerätty") {
+      document.getElementById(`keratty/${product._id}`).value = "Ei ole";
+      fetch('http://localhost:3002/products/patch/id/' + product._id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+        body: JSON.stringify([
+          {
+            propName: "keratty",
+            value: "Ei ole",
+          },
+          {
+            propName: "kerattymaara",
+            value: maara
+          }
+        ])
+      })
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    if (idvalues === "Ei ole") {
+      document.getElementById(`keratty/${product._id}`).value = "Odottaa keräystä";
+      fetch('http://localhost:3002/products/patch/id/' + product._id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+        body: JSON.stringify([
+          {
+            propName: "keratty",
+            value: "Odottaa keräystä",
+          },
+          {
+            propName: "kerattymaara",
+            value: maara
+          }
+        ])
+      })
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+}
+
+export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id) => {
+  if(sessionStorage.getItem('userDate2') === null || "" || undefined) {
+    console.log("peeppeep");
+    sessionStorage.setItem('userDate2', sessionStorage.getItem('userDate'))
+  }
+    if(asiakas.length < 1) {
+        asiakas = kauppa;
+      }
+  
+      if(asiakaslisatieto.length < 1) {
+        asiakaslisatieto = alisatieto;
+      }
+  
+      if(toimitusaika.length < 1) {
+        toimitusaika = toimituspvm;
+      }
+  
+      fetch('http://localhost:3002/orders/put/id/' + _id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+          },
+          body: JSON.stringify({
+            kauppa: asiakas,
+            alisatieto: asiakaslisatieto,
+            date: sessionStorage.getItem('userDate2'),
+            toimituspvm: toimitusaika,
+          }),
+        })
+          .then(response => response.json())
+          .then(json => {
+            console.log(json);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        sessionStorage.removeItem('userDate2');
 }
