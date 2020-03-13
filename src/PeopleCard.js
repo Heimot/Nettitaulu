@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import DatePicker from "react-datepicker";
 import { Card, CardText, CardTitle, Button, Input, CardBlock, CardSubtitle } from 'reactstrap';
-import Dialog from './components/editDialog';
+import Dialog from './components/fetch/dialog/editDialog';
+import loaderDialog from './components/fetch/dialog/loaderDialog';
 import "./Styles/Table.css";
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
@@ -145,7 +146,6 @@ class PeopleCard extends Component {
   }
 
   deleteData(product) {
-    //product.filter(products => products._id !== product._id);
     deleteFlowerData(product);
     this.props.getTables();
   }
@@ -198,7 +198,16 @@ class PeopleCard extends Component {
       sessionStorage.setItem("userDate", format(new Date(), 'dd/MM/yyyy'));
       window.location.reload();
     }
+    //this.interval = setInterval(() => this.newFunc(), 5003330);
   }
+
+  /* newFunc() {
+     console.log(Math.random())
+   }
+ 
+   componentWillUnmount() {
+     clearInterval(this.interval);
+   }*/
 
   render() {
     let { _id, products, kauppa, date, alisatieto, toimituspvm } = this.props.person;
@@ -268,8 +277,9 @@ class PeopleCard extends Component {
               <CardText className="warningBox">KAUPPA: {kauppa}</CardText>
               <CardText className="warningBox">KERÄYSPÄIVÄMÄÄRÄ: {date}</CardText>
               <CardText className="warningBox">TOIMITUSPÄIVÄMÄÄRÄ: {toimituspvm}</CardText>
+              <CardText className="warningBox">KUKKA MÄÄRÄ: {products.length}</CardText>
 
-              <Button className="btn" onClick={() => this.props.removePerson(_id)}>Kyllä</Button>
+              <Button className="btn" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>Kyllä</Button>
               <Button className="btn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
 
             </Card>

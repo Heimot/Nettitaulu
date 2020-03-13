@@ -54,6 +54,21 @@ export const deleteFlowerData = (product) => {
         });
 }
 
+export const deleteFlowersData = (id) => {
+  fetch('http://localhost:3002/products/delete/id/' + id, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+      },
+    })
+      .then(response => response.json())
+      .then(json => console.log(json))
+      .catch((error) => {
+        console.log(error);
+      });
+}
+
 export const updateFlower = (product, kukka, toimi, kerays, lisatieto) => {
     if(kukka.length < 1) {
         kukka = product.kukka;
@@ -92,6 +107,46 @@ export const updateFlower = (product, kukka, toimi, kerays, lisatieto) => {
           console.log(error);
         });
       sessionStorage.removeItem('userDate2');
+}
+
+export const updateFlowers = (userDatas, id, kukka, toimi, kerays, lisatieto) => {
+  if(kukka.length < 1) {
+      kukka = userDatas.products.kukka;
+    }
+
+    if(toimi.length < 1) {
+      toimi = userDatas.products.toimi;
+    }
+
+    if(kerays.length < 1) {
+      kerays = userDatas.products.kerays;
+    }
+
+    if(lisatieto.length < 1) {
+      lisatieto = userDatas.products.lisatieto;
+    }
+
+    fetch('http://localhost:3002/products/put/id/' + id, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+      },
+      body: JSON.stringify({
+        kukka: kukka,
+        toimi: toimi,
+        kerays: kerays,
+        lisatieto: lisatieto
+      }),
+    })
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    sessionStorage.removeItem('userDate2');
 }
 
 export const patchKeraysData = (product, idvalues, maara) => {

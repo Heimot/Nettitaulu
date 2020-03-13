@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Row, Card, Input, Button } from 'reactstrap';
-import Dialog from './components/editDialog';
+import Dialog from './components/fetch/dialog/editDialog';
 import { Redirect } from 'react-router-dom';
 
 class TableArea extends Component {

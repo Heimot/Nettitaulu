@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DatePicker from "react-datepicker";
 import { Card, CardText, CardTitle, Button, Input } from 'reactstrap';
-import Dialog from './components/editDialog';
+import Dialog from './components/fetch/dialog/editDialog';
 import "./Styles/Table.css";
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'

@@ -1,28 +1,37 @@
 import React from 'react';
 import DatePicker from "react-datepicker";
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, Button, Input, Card, CardTitle, CardText } from 'reactstrap';
-import Dialog from './components/editDialog';
+import Dialog from './components/fetch/dialog/editDialog';
+import Dialogs from './components/fetch/dialog/loaderDialog';
 import { Redirect } from 'react-router-dom';
 import format from "date-fns/format";
 import { Table, Thead, Tr, Tbody, Td, Th } from 'react-super-responsive-table';
-import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
-
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import { updateFlowers, putFlowersOrderData } from './components/fetch/apiFetch';
+import { css } from "@emotion/core";
+import Loader from "react-spinners/ScaleLoader";
 
 import "./Styles/Nav.css";
 import "react-datepicker/dist/react-datepicker.css";
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+`;
 
 let idSafe = "";
 let userDatas = {
   valmis: 0,
   products: [
-      {
-          kukka: "anti crash technology 100000000 ;(",
-          toimi: 58,
-          kerays: "no crash",
-          lisatieto: "Im bad at making these not crash",
-          _id: "no id",
+    {
+      kukka: "anti crash technology 100000000 ;(",
+      toimi: 58,
+      kerays: "no crash",
+      lisatieto: "Im bad at making these not crash",
+      _id: "no id",
 
-      }
+    }
   ],
   _id: "no id",
   kauppa: "anti crash technology v10000 by joonas",
@@ -65,7 +74,8 @@ export default class TopNav extends React.Component {
       toimituspvm: new Date(),
       date: new Date(),
       _id: '',
-      updtData: []
+      updtData: [],
+      dLoader: false
     };
     this.toggle = this.toggle.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -103,6 +113,38 @@ export default class TopNav extends React.Component {
 
   }
 
+  putOrderData(_id, kauppa, alisatieto, toimituspvm) {
+    var asiakas = this.state.kauppa;
+    var asiakaslisatieto = this.state.customerInfo;
+    var toimitusaika = this.state.ToimitusPVM;
+
+    putFlowersOrderData(asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id);
+    this.props.getTables();
+  }
+
+  async putData(userDatas) {
+
+      let ids =  await userDatas.products.map(product => {
+          return product._id
+        })
+
+    let i = 0;
+    while (i < ids.length) {
+      let id = ids.shift();
+      var kukka = document.getElementById(`kukka/${id}`).value;
+      var toimi = document.getElementById(`toimi/${id}`).value;
+      var kerays = document.getElementById(`kerays/${id}`).value;
+      var lisatieto = document.getElementById(`lisatieto/${id}`).value;
+
+      await updateFlowers(userDatas, id, kukka, toimi, kerays, lisatieto);
+    }
+    this.props.getTables();
+    this.setState({
+      isOpen2: false,
+      isOpen: false
+    })
+  }
+
   logOut() {
     sessionStorage.setItem("userData", '');
     sessionStorage.clear();
@@ -111,31 +153,35 @@ export default class TopNav extends React.Component {
     });
   }
 
-   async runAdders() {
-    await this.addFlowers() 
+  runAdders() {
+    this.setState({
+      dLoader: true
+    })
+    this.addFlowers()
   }
 
   async getFetchData() {
     await fetch('http://localhost:3002/orders/get/id/' + idSafe, {
       method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-        },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+      },
     })
-        .then(res => res.json())
-        .then(json => {
-          this.setState({
-            updtData: json
-          })
-          userDatas = json;
-          console.log(this.state.updtData)
-          
+      .then(res => res.json())
+      .then(json => {
+        this.setState({
+          updtData: json
         })
-        .catch((error) => {
-            console.log(error);
-        });
-        this.addData();
+        userDatas = json;
+        console.log(this.state.updtData)
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    this.addData();
+    this.props.getTables();
   }
 
   async addFlowers() {
@@ -191,7 +237,7 @@ export default class TopNav extends React.Component {
       .then(json => {
         console.log(json);
 
-          idSafe = json.createdOrder.id_
+        idSafe = json.createdOrder.id_
 
       })
       .catch((error) => {
@@ -202,7 +248,6 @@ export default class TopNav extends React.Component {
       idArray: []
     });
     filteredProducts = [];
-    console.log("addtoids ready")
     this.getFetchData()
   }
 
@@ -215,9 +260,9 @@ export default class TopNav extends React.Component {
 
   addData() {
     this.setState({
-      isOpen2: true
+      isOpen2: true,
+      dLoader: false
     });
-    console.log("opening dialog")
   }
 
   postData() {
@@ -269,6 +314,9 @@ export default class TopNav extends React.Component {
       .then(response => response.json())
       .then(json => {
         console.log(json);
+        this.setState({
+          isOpen: false
+        })
       })
       .catch((error) => {
         console.log(error);
@@ -343,7 +391,74 @@ export default class TopNav extends React.Component {
     })
   }
 
+  async addNewFlowers(_id, products) {
+    if (!this.state.alreadyLoaded) {
+      this.state.idArray.push(
+        products.map(product => {
+          return product._id
+        })
+      )
+    }
+
+    let i = 0;
+    while (i < this.state.addFlowersValue) {
+
+      await fetch('http://localhost:3002/products/post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+      })
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+
+          let jsonID = json.createdProduct._id;
+          this.state.idArray.push(jsonID)
+          console.log(this.state.idArray);
+
+          this.setState({
+            idArray: this.state.idArray.toString().split(",")
+          })
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      i++;
+    }
+    this.setState({
+      alreadyLoaded: true
+    })
+    this.addToNewIDS(_id);
+  }
+
+  addToNewIDS(_id) {
+    var filteredProducts = this.state.idArray.filter(Boolean);
+    fetch('http://localhost:3002/orders/put/id/' + _id, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+      },
+      body: JSON.stringify({
+        products: filteredProducts
+      }),
+    })
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    sessionStorage.removeItem('userDate2');
+    this.getFetchData();
+    this.props.getTables();
+  }
+
   render() {
+
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
     }
@@ -352,6 +467,17 @@ export default class TopNav extends React.Component {
     }
     return (
       <div>
+        <Dialogs isOpen2={this.state.dLoader}>
+            <div className="Spinner">
+              <Loader
+                css={override}
+                height={140}
+                width={16}
+                color={"#123abc"}
+                loading={this.state.dLoader}
+              />
+              </div>
+            </Dialogs>
         <Navbar light color="info" fixed="top">
           <NavbarToggler right className="Toggler" onClick={this.toggle} />
           <NavbarBrand href="/">{this.state.siteName}</NavbarBrand>
@@ -374,7 +500,7 @@ export default class TopNav extends React.Component {
               <Input className="SearchInput" placeholder="Kukan nimi" id="number" type="string" onChange={(evt) => { global.nimi11 = evt.target.value; }} />
               <Button className="SearchBTN">Search</Button>
 
-              <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
+              <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false, isOpen: false })}>
                 <Card className="AddCard">
 
                   <div className="DataCard">
@@ -418,60 +544,64 @@ export default class TopNav extends React.Component {
                         </Tr>
                       </Thead>
 
-                 {userDatas.products.map(newData =>
-                      <Tbody>
-                        <Tr>
+                      {userDatas.products.map(newData =>
+                        <Tbody>
+                          <Tr>
 
-                          <Td >
-                            <Input type="text"
-                              name="kukka"
-                              id={`kukka/${newData._id}`}
-                              onChange={this.handleChange}
-                              className="inputlabel"
-                              placeholder={newData.kukka}>
-                            </Input>
-                          </Td>
+                            <Td >
+                              <Input type="text"
+                                name="kukka"
+                                id={`kukka/${newData._id}`}
+                                onChange={this.handleChange}
+                                className="inputlabel"
+                                placeholder={newData.kukka}>
+                              </Input>
+                            </Td>
 
-                          <Td>
-                            <Input type="number"
-                              name="toimi"
-                              id={`toimi/${newData._id}`}
-                              onChange={this.handleChange}
-                              className="inputlabel"
-                              placeholder={newData.toimi}>
-                            </Input>
-                          </Td>
+                            <Td>
+                              <Input type="number"
+                                name="toimi"
+                                id={`toimi/${newData._id}`}
+                                onChange={this.handleChange}
+                                className="inputlabel"
+                                placeholder={newData.toimi}>
+                              </Input>
+                            </Td>
 
-                          <Td>
-                            <Input type="text"
-                              name="kerays"
-                              id={`kerays/${newData._id}`}
-                              onChange={this.handleChange}
-                              className="inputlabel"
-                              placeholder={newData.kerays}>
-                            </Input>
-                          </Td>
+                            <Td>
+                              <Input type="text"
+                                name="kerays"
+                                id={`kerays/${newData._id}`}
+                                onChange={this.handleChange}
+                                className="inputlabel"
+                                placeholder={newData.kerays}>
+                              </Input>
+                            </Td>
 
-                          <Td>
-                            <Input type="text"
-                              name="lisatieto"
-                              id={`lisatieto/${newData._id}`}
-                              onChange={this.handleChange}
-                              className="inputlabel"
-                              placeholder={newData.lisatieto}>
-                            </Input>
-                          </Td>
-                        </Tr>
-                 <Button>{   /* MUISTA TEHDÄ HUOMENNA var kukka = document.getElementById(`kukka/${product._id}`).value;
-    var toimi = document.getElementById(`toimi/${product._id}`).value;
-    var kerays = document.getElementById(`kerays/${product._id}`).value;
-                 var lisatieto = document.getElementById(`lisatieto/${product._id}`).value;*/}</Button>
-
-                      </Tbody>
+                            <Td>
+                              <Input type="text"
+                                name="lisatieto"
+                                id={`lisatieto/${newData._id}`}
+                                onChange={this.handleChange}
+                                className="inputlabel"
+                                placeholder={newData.lisatieto}>
+                              </Input>
+                            </Td>
+                          </Tr>
+                        </Tbody>
                       )}
-                     
+
                     </Table>
-                    <Button onClick={() => this.postData()}>Luo uusi</Button>
+                    <Button className="addFlower" onClick={() => this.addNewFlowers(userDatas._id, userDatas.products)}>Lisää kukka</Button>
+                    <Input type="number"
+                      name="addFlowersValue"
+                      className="addFlowerInput"
+                      max={10}
+                      min={1}
+                      value={this.state.addFlowersValue}
+                      onChange={this.handleChange}>
+                    </Input>
+                    <Button onClick={() => this.putData(userDatas)}>Luo taulukko</Button>
                   </div>
                 </Card>
               </Dialog>
