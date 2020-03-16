@@ -48,7 +48,7 @@ class Dialogs extends Component {
                 </div>
             </div>
         );
-        if (!this.props.isOpen2) {
+        if (!this.props.isOpen) {
             dialog = null;
         }
         return (

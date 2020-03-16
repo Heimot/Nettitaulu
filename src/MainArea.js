@@ -42,12 +42,13 @@ class MainArea extends Component {
 
   getTables = async () => {
     const data = await getData(valmis);
-    console.log(data);
+    console.log(data.product);
     this.setState({
-      people: data,
+      people: data.product,
       isLoaded: true,
       loading: false
     })
+
   }
 
   async removePerson(_id, products) {
@@ -91,7 +92,7 @@ class MainArea extends Component {
       return (
         <Container fluid>
           <Row>
-            <Dialogs isOpen2={this.state.dLoader}>
+            <Dialogs isOpen={this.state.dLoader}>
             <div className="Spinner">
               <Loader
                 css={override}
@@ -103,7 +104,7 @@ class MainArea extends Component {
               </div>
             </Dialogs>
             <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} />
-            <Nav style={{ visibility: "hidden;" }} getTables={this.getTables.bind(this)} />
+            <Nav style={{ visibility: "hidden;" }} getTables={this.getTables} />
           </Row>
         </Container>
 

@@ -7,7 +7,7 @@ import { Redirect } from 'react-router-dom';
 import format from "date-fns/format";
 import { Table, Thead, Tr, Tbody, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
-import { updateFlowers, putFlowersOrderData } from './components/fetch/apiFetch';
+import { updateFlowers, putFlowersCreatedOrderData } from './components/fetch/apiFetch';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
 
@@ -74,7 +74,6 @@ export default class TopNav extends React.Component {
       toimituspvm: new Date(),
       date: new Date(),
       _id: '',
-      updtData: [],
       dLoader: false
     };
     this.toggle = this.toggle.bind(this);
@@ -82,67 +81,86 @@ export default class TopNav extends React.Component {
   }
 
   changeLocation() {
-    if (localStorage.getItem('userLocation') !== "Tuusjärvi" && localStorage.getItem('userLocation') !== "Ryönä") {
-      this.setState({
-        location: 'Tuusjärvi',
-        locationName: "Molemmat",
-        isLoading: false
-      });
-      localStorage.setItem("userLocation", this.state.location);
-      window.location.reload()
+    try {
+      switch (localStorage.getItem('userLocation')) {
+        case "Ryönä":
+          localStorage.setItem('userLocation', "Tuusjärvi")
+          break;
+          case "Tuusjärvi":
+          localStorage.setItem('userLocation', "Molemmat")
+          break;
+          case "Molemmat":
+          localStorage.setItem('userLocation', "Ryönä")
+          break;
+      }
 
-    } else if (localStorage.getItem('userLocation') !== "Ryönä") {
-      this.setState({
-        location: 'Ryönä',
-        locationName: "Ryönä",
-        isLoading: false
-      });
-      localStorage.setItem("userLocation", this.state.location);
-      window.location.reload()
+      /*if (localStorage.getItem('userLocation') !== "Tuusjärvi" && localStorage.getItem('userLocation') !== "Ryönä") {
+        this.setState({
+          location: 'Tuusjärvi',
+          locationName: "Molemmat",
+          isLoading: false
+        });
+        localStorage.setItem("userLocation", this.state.location);
 
-    } else if (localStorage.getItem('userLocation') !== "Molemmat") {
-      this.setState({
-        location: 'Molemmat',
-        locationName: "Tuusjärvi",
-        isLoading: false
-      });
-      localStorage.setItem("userLocation", this.state.location);
-      window.location.reload()
+      } else if (localStorage.getItem('userLocation') !== "Ryönä") {
+        this.setState({
+          location: 'Ryönä',
+          locationName: "Ryönä",
+          isLoading: false
+        });
+        localStorage.setItem("userLocation", this.state.location);
 
+      } else if (localStorage.getItem('userLocation') !== "Molemmat") {
+        this.setState({
+          location: 'Molemmat',
+          locationName: "Tuusjärvi",
+          isLoading: false
+        });
+        localStorage.setItem("userLocation", this.state.location);
+
+      }*/
+      this.props.getTables();
+    } catch (err) {
     }
 
   }
 
-  putOrderData(_id, kauppa, alisatieto, toimituspvm) {
-    var asiakas = this.state.kauppa;
-    var asiakaslisatieto = this.state.customerInfo;
-    var toimitusaika = this.state.ToimitusPVM;
+  async putOrderData(userDatas) {
+    try {
+      var asiakas = this.state.kauppa;
+      var asiakaslisatieto = this.state.customerInfo;
+      var keraysPVM = format(this.state.startDate2, "dd/MM/yyyy");
+      var toimitusaika = format(this.state.startDate3, "dd/MM/yyyy");
 
-    putFlowersOrderData(asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id);
-    this.props.getTables();
+      await putFlowersCreatedOrderData(asiakas, asiakaslisatieto, toimitusaika, keraysPVM, userDatas);
+      await this.props.getTables();
+    } catch (err) {
+    }
   }
 
   async putData(userDatas) {
+    try {
+      let ids = await userDatas.products.map(product => {
+        return product._id
+      })
 
-      let ids =  await userDatas.products.map(product => {
-          return product._id
-        })
+      let i = 0;
+      while (i < ids.length) {
+        let id = ids.shift();
+        var kukka = document.getElementById(`kukka/${id}`).value;
+        var toimi = document.getElementById(`toimi/${id}`).value;
+        var kerays = document.getElementById(`kerays/${id}`).value;
+        var lisatieto = document.getElementById(`lisatieto/${id}`).value;
 
-    let i = 0;
-    while (i < ids.length) {
-      let id = ids.shift();
-      var kukka = document.getElementById(`kukka/${id}`).value;
-      var toimi = document.getElementById(`toimi/${id}`).value;
-      var kerays = document.getElementById(`kerays/${id}`).value;
-      var lisatieto = document.getElementById(`lisatieto/${id}`).value;
-
-      await updateFlowers(userDatas, id, kukka, toimi, kerays, lisatieto);
+        await updateFlowers(userDatas, id, kukka, toimi, kerays, lisatieto);
+      }
+      this.props.getTables();
+      this.setState({
+        isOpen2: false,
+        isOpen: false
+      })
+    } catch (err) {
     }
-    this.props.getTables();
-    this.setState({
-      isOpen2: false,
-      isOpen: false
-    })
   }
 
   logOut() {
@@ -161,27 +179,26 @@ export default class TopNav extends React.Component {
   }
 
   async getFetchData() {
-    await fetch('http://localhost:3002/orders/get/id/' + idSafe, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-      },
-    })
-      .then(res => res.json())
-      .then(json => {
-        this.setState({
-          updtData: json
-        })
-        userDatas = json;
-        console.log(this.state.updtData)
-
+    try {
+      await fetch('http://localhost:3002/orders/get/id/' + idSafe, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
-    this.addData();
-    this.props.getTables();
+        .then(res => res.json())
+        .then(json => {
+          userDatas = json;
+
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      await this.addData();
+    } catch (err) {
+      console.log("error skipped" + err)
+    }
   }
 
   async addFlowers() {
@@ -228,7 +245,7 @@ export default class TopNav extends React.Component {
       body: JSON.stringify({
         kauppa: "Vakio",
         alisatieto: "",
-        date: format(this.state.date, 'dd/MM/yyyy'),
+        date: sessionStorage.getItem("userDate"),
         toimituspvm: format(this.state.toimituspvm, 'dd/MM/yyyy'),
         products: filteredProducts
       }),
@@ -243,12 +260,11 @@ export default class TopNav extends React.Component {
       .catch((error) => {
         console.log(error);
       });
-    sessionStorage.removeItem('userDate2');
     this.setState({
       idArray: []
     });
     filteredProducts = [];
-    this.getFetchData()
+    this.getFetchData();
   }
 
 
@@ -263,65 +279,10 @@ export default class TopNav extends React.Component {
       isOpen2: true,
       dLoader: false
     });
+    console.log("f")
+    this.props.getTables();
   }
 
-  postData() {
-    fetch('http://localhost:3002/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-      },
-      body: JSON.stringify({
-        kauppa: this.state.kauppa,
-        date: format(this.state.startDate2, "dd/MM/yyyy"),
-        toimituspvm: format(this.state.startDate3, "dd/MM/yyyy"),
-        alisatieto: this.state.customerInfo,
-        kukka: {
-          kukka1: {
-            name: this.state.nimi1,
-            toimi: this.state.maara1,
-            kerays: this.state.kerays1,
-            lisatieto: this.state.lisatieto1,
-          },
-          kukka2: {
-            name: this.state.nimi2,
-            toimi: this.state.maara2,
-            kerays: this.state.kerays2,
-            lisatieto: this.state.lisatieto2,
-          },
-          kukka3: {
-            name: this.state.nimi3,
-            toimi: this.state.maara3,
-            kerays: this.state.kerays3,
-            lisatieto: this.state.lisatieto3,
-          },
-          kukka4: {
-            name: this.state.nimi4,
-            toimi: this.state.maara4,
-            kerays: this.state.kerays4,
-            lisatieto: this.state.lisatieto4,
-          },
-          kukka5: {
-            name: this.state.nimi5,
-            toimi: this.state.maara5,
-            kerays: this.state.kerays5,
-            lisatieto: this.state.lisatieto5,
-          },
-        }
-      }),
-    })
-      .then(response => response.json())
-      .then(json => {
-        console.log(json);
-        this.setState({
-          isOpen: false
-        })
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
 
   toggle() {
     this.setState({
@@ -346,24 +307,8 @@ export default class TopNav extends React.Component {
         startDate: new Date()
       });
 
-    if (localStorage.getItem('userLocation') !== "Tuusjärvi" && localStorage.getItem('userLocation') !== "Ryönä") {
-      this.setState({
-        location: 'Tuusjärvi',
-        locationName: "Molemmat",
-        isLoading: false
-      });
-    } else if (localStorage.getItem('userLocation') !== "Ryönä") {
-      this.setState({
-        location: 'Ryönä',
-        locationName: "Ryönä",
-        isLoading: false
-      });
-    } else if (localStorage.getItem('userLocation') !== "Molemmat") {
-      this.setState({
-        location: 'Molemmat',
-        locationName: "Tuusjärvi",
-        isLoading: false
-      });
+    if (localStorage.getItem('userLocation') == null) {
+      localStorage.setItem('userLocation', "Ryönä")
     }
   }
 
@@ -428,33 +373,36 @@ export default class TopNav extends React.Component {
       i++;
     }
     this.setState({
-      alreadyLoaded: true
+      alreadyLoaded: true,
+      addFlowersValue: 1,
     })
     this.addToNewIDS(_id);
   }
-
   addToNewIDS(_id) {
-    var filteredProducts = this.state.idArray.filter(Boolean);
-    fetch('http://localhost:3002/orders/put/id/' + _id, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-      },
-      body: JSON.stringify({
-        products: filteredProducts
-      }),
-    })
-      .then(response => response.json())
-      .then(json => {
-        console.log(json);
+    try {
+      var filteredProducts = this.state.idArray.filter(Boolean);
+      fetch('http://localhost:3002/orders/put/id/' + _id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+        body: JSON.stringify({
+          products: filteredProducts
+        }),
       })
-      .catch((error) => {
-        console.log(error);
-      });
-    sessionStorage.removeItem('userDate2');
-    this.getFetchData();
-    this.props.getTables();
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.getFetchData();
+      this.props.getTables();
+    } catch (err) {
+      console.log("error skipped")
+    }
   }
 
   render() {
@@ -467,17 +415,17 @@ export default class TopNav extends React.Component {
     }
     return (
       <div>
-        <Dialogs isOpen2={this.state.dLoader}>
-            <div className="Spinner">
-              <Loader
-                css={override}
-                height={140}
-                width={16}
-                color={"#123abc"}
-                loading={this.state.dLoader}
-              />
-              </div>
-            </Dialogs>
+        <Dialogs isOpen={this.state.dLoader}>
+          <div className="Spinner">
+            <Loader
+              css={override}
+              height={140}
+              width={16}
+              color={"#123abc"}
+              loading={this.state.dLoader}
+            />
+          </div>
+        </Dialogs>
         <Navbar light color="info" fixed="top">
           <NavbarToggler right className="Toggler" onClick={this.toggle} />
           <NavbarBrand href="/">{this.state.siteName}</NavbarBrand>
@@ -507,7 +455,7 @@ export default class TopNav extends React.Component {
                     <div>
                       <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
                       <DatePicker className="AddDate"
-                        selected={this.state.date}
+                        selected={this.state.startDate2}
                         onChange={this.handleChange3}
                         dateFormat="dd/MM/yyyy"
                       />
@@ -601,14 +549,14 @@ export default class TopNav extends React.Component {
                       value={this.state.addFlowersValue}
                       onChange={this.handleChange}>
                     </Input>
-                    <Button onClick={() => this.putData(userDatas)}>Luo taulukko</Button>
+                    <Button onClick={() => this.putData(userDatas) + this.putOrderData(userDatas)}>Luo taulukko</Button>
                   </div>
                 </Card>
               </Dialog>
 
               <Button className='addBtn' color='primary' type='button' onClick={(e) => this.runAdders()}></Button>
               <Button className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
-              <Button className='locationBtn' onClick={() => this.changeLocation()}>{this.state.locationName}</Button>
+              <Button className='locationBtn' onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
 
             </Nav>
           </Collapse>

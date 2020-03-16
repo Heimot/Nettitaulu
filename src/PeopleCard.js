@@ -72,6 +72,9 @@ class PeopleCard extends Component {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
         },
+        body: JSON.stringify({
+          kerays: localStorage.getItem("userLocation")
+        }),
       })
         .then(response => response.json())
         .then(json => {
@@ -114,7 +117,6 @@ class PeopleCard extends Component {
       .catch((error) => {
         console.log(error);
       });
-    sessionStorage.removeItem('userDate2');
     this.props.getTables();
   }
 
@@ -127,6 +129,7 @@ class PeopleCard extends Component {
   }
 
   putData(product) {
+    console.log(product._id)
     var kukka = document.getElementById(`kukka/${product._id}`).value;
     var toimi = document.getElementById(`toimi/${product._id}`).value;
     var kerays = document.getElementById(`kerays/${product._id}`).value;
@@ -136,13 +139,17 @@ class PeopleCard extends Component {
     this.props.getTables();
   }
 
-  putOrderData(_id, kauppa, alisatieto, toimituspvm) {
+  async putOrderData(_id, kauppa, alisatieto, toimituspvm, date) {
     var asiakas = this.state.kauppa;
     var asiakaslisatieto = this.state.customerInfo;
     var toimitusaika = this.state.ToimitusPVM;
+    var keraysPVM = format(this.state.startDate, "dd/MM/yyyy");
 
-    putFlowersOrderData(asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id);
-    this.props.getTables();
+    await putFlowersOrderData(asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id, keraysPVM, date);
+    await this.props.getTables();
+    this.setState({
+      isOpen2: false
+    })
   }
 
   deleteData(product) {
@@ -211,6 +218,19 @@ class PeopleCard extends Component {
 
   render() {
     let { _id, products, kauppa, date, alisatieto, toimituspvm } = this.props.person;
+    let array = [];
+    let result = {};
+    let counts = {};
+    array.push(
+      products.map(doc => {
+        return doc.keratty;
+      })
+    )
+    Object.keys(result).map(key => ({ [key]: result[key] }))
+    for (let i = 0; i < array.length; i++) {
+      result[array[i]] = (result[array[i]] || 0) + 1
+    }
+    Object.keys(result).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
 
     return (
       <div className="myDiv">
@@ -222,6 +242,12 @@ class PeopleCard extends Component {
             <CardTitle>{kauppa}</CardTitle>
             <CardText>{_id}</CardText>
             <CardText className="lisatieto">{alisatieto}</CardText>
+
+            <CardText>Ei ole: {100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length) + "%"}</CardText>
+            <CardText>Odottaa keräystä: {100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length) + "%"}</CardText>
+            <CardText>Keräyksessä: {100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length) + "%"}</CardText>
+            <CardText>Kerätty: {100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length) + "%"}</CardText>
+
             <Table className="Tables">
 
               <Thead>
@@ -411,7 +437,7 @@ class PeopleCard extends Component {
                 </Input>
               </div>
               <div className="taulukkoDivider"></div>
-              <Button color="success" onClick={() => this.putOrderData(_id, kauppa, alisatieto, toimituspvm)}>Päivitä taulukon tiedot</Button>
+              <Button color="success" onClick={() => this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)}>Päivitä taulukon tiedot</Button>
             </Card>
           </Dialog>
         </div>
