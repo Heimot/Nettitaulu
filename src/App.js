@@ -7,6 +7,7 @@ import LogIn from './LogIn';
 import LoginNav from './LoginNav';
 import './Styles/App.css';
 import MainCheckArea from './MainCheckArea';
+import frontPage from './components/Etusivu/frontPage';
 
 class App extends Component {
   render() {
@@ -15,8 +16,9 @@ class App extends Component {
         <div className="App">
           <Route path="/" exact component={LoginNav} />
           <Route path="/" exact component={LogIn} />
-          <Route path="/main" component={TopNav} />
-          <Route path="/main" component={MainArea} />
+          <Route path="/main" exact component={frontPage} />
+          <Route path="/main/tables" exact component={TopNav} />
+          <Route path="/main/tables" component={MainArea} />
           <Route path="/checked" component={TopNav} />
           <Route path="/checked" component={MainCheckArea} />
         </div>

@@ -8,6 +8,7 @@ import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
 import { getData, removeData, deleteFlowersData } from './components/fetch/apiFetch';
 import './Styles/MainAreas.css';
+import Datas from './components/autoComplete/dataComplete';
 
 const valmis = 0;
 
@@ -18,8 +19,8 @@ const override = css`
 `;
 
 class MainArea extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       people: [],
       people2: [],
@@ -103,7 +104,7 @@ class MainArea extends Component {
               />
               </div>
             </Dialogs>
-            <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} />
+            <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={Datas}/>
             <Nav style={{ visibility: "hidden;" }} getTables={this.getTables} />
           </Row>
         </Container>

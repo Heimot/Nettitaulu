@@ -8,12 +8,12 @@ import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
 import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData } from './components/fetch/apiFetch';
-import Autosuggest from 'react-autosuggest';
+
 
 //CSS files
 import "./Styles/Table.css";
 import "./Styles/progressBar.css";
-
+import "./Styles/Autocomplete.css";
 
 let change = false;
 
@@ -26,6 +26,10 @@ function changeNormal() {
 }
 
 const Progress = ({ done, count, counter }) => {
+  let data = change === false ? done = done ? done + "%" : "" : count === undefined ? "" : count + "/" + counter;
+  if (data.includes('.')) {
+    data = data.substring(0, data.indexOf(".")) + "%";
+  }
   const [style, setStyle] = React.useState({});
 
 
@@ -35,12 +39,12 @@ const Progress = ({ done, count, counter }) => {
       width: `${done}`
     }
     setStyle(newStyle);
-  }, 200);
+  }, 100);
 
   return (
     <div class="progress" onMouseEnter={() => changeData(done)} onMouseLeave={() => changeNormal()}>
       <div class="progress-done" style={style}>
-        {change === false ? done = done ? done + "%" : "" : count === undefined ? "" : count + "/" + counter}
+        {data}
       </div>
     </div>
   )
@@ -52,6 +56,9 @@ class PeopleCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      search: "",
+      suggestions: [],
+
       kauppa: '',
       customerInfo: '',
       ToimitusPVM: '',
@@ -245,7 +252,41 @@ class PeopleCard extends Component {
     }
   }
 
+  onTextChange = (e) => {
+    const { items } = this.props;
+    const value = e.target.value;
+    let suggestions = [];
+    if (value.length > 0) {
+      const regex = new RegExp(`^${value}`, 'i');
+      suggestions = items.sort().filter(v => regex.test(v));
+    }
+    this.setState(() => ({ suggestions }));
+    document.getElementById(e.target.id).value = value;
+  }
+
+  suggestionSelected(value, product) {
+    console.log(value)
+    document.getElementById(`kukka/${product._id}`).value = value;
+    console.log(document.getElementById(`${product._id}`).value)
+    this.setState(() => ({
+      suggestions: [],
+    }))
+
+  }
+
+  renderSuggestions(product) {
+    const { suggestions } = this.state;
+    if (suggestions.length === 0) {
+      return null;
+    }
+    return (
+      <ul className="AutoCompleteUl">
+        {suggestions.map((item) => <li className="AutoCompleteLi" onClick={() => this.suggestionSelected(item, product)}>{item}</li>)}
+      </ul>)
+  }
+
   render() {
+    const { search } = this.state;
     let { _id, products, kauppa, date, alisatieto, toimituspvm } = this.props.person;
     let array = [];
     let result = {};
@@ -277,22 +318,22 @@ class PeopleCard extends Component {
             <div className="loaders" >
               <div className="loaderMargins">
                 <CardText className="hover">Ei ole</CardText>
-                <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length}/>
+                <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} />
               </div>
 
               <div className="loaderMargins">
                 <CardText>Odottaa keräystä</CardText>
-                <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length}/>
+                <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} />
               </div>
 
               <div className="loaderMargins">
                 <CardText>Keräyksessä</CardText>
-                <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length}/>
+                <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length} />
               </div>
 
               <div className="loaderMargins">
                 <CardText>Kerätty</CardText>
-                <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length}/>
+                <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} />
               </div>
             </div>
 
@@ -351,7 +392,7 @@ class PeopleCard extends Component {
               <CardText className="warningBox">KAUPPA: {kauppa}</CardText>
               <CardText className="warningBox">KERÄYSPÄIVÄMÄÄRÄ: {date}</CardText>
               <CardText className="warningBox">TOIMITUSPÄIVÄMÄÄRÄ: {toimituspvm}</CardText>
-              <CardText className="warningBox">KUKKA MÄÄRÄ: {products.length}</CardText>
+              <CardText className="warningBox">KUKKIEN MÄÄRÄ: {products.length}</CardText>
 
               <Button className="btn" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>Kyllä</Button>
               <Button className="btn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
@@ -367,9 +408,12 @@ class PeopleCard extends Component {
               <CardTitle className="warningBox">Haluatko viedä tämän taulu valmiina oleviin?</CardTitle>
               <CardTitle className="warningBox">Onko kaikki jo kerätty?</CardTitle>
               <CardText className="warningBox">ID: {_id}</CardText>
-              <CardText className="warningBox">KAUPPA: {kauppa}</CardText>
-              <CardText className="warningBox">KERÄYSPÄIVÄMÄÄRÄ: {date}</CardText>
-              <CardText className="warningBox">TOIMITUSPÄIVÄMÄÄRÄ: {toimituspvm}</CardText>
+              <CardText className="warningBox">Kauppa: {kauppa}</CardText>
+              <CardText className="warningBox">Keräyspäivämäärä: {date}</CardText>
+              <CardText className="warningBox">Toimitus päivämäärä: {toimituspvm}</CardText>
+              <CardText className="warningBox">Kerättävien kohteiden määrä: {products.length}</CardText>
+                <CardText className="warningBox">Kerätty: {counts.Kerätty == undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
+              <CardText className="warningBox">Ei ole: {counts.Eiole == undefined ? 0 : counts.Eiole}/{products.length}</CardText>
 
               <Button className="btn" onClick={() => this.props.removePerson(_id)}>Kyllä</Button>
               <Button className="btn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
@@ -429,13 +473,18 @@ class PeopleCard extends Component {
                   <Tbody>
                     <Tr>
                       <Td >
-                        <Input type="text"
-                          name="kukka"
-                          id={`kukka/${product._id}`}
-                          onChange={this.handleChange}
-                          className="inputlabel"
-                          placeholder={product.kukka}>
-                        </Input>
+                        <div className="AutoCompleteText">
+                          <Input type="text"
+                            name="kukka"
+                            id={`kukka/${product._id}`}
+                            className="AutoCompleteInput"
+                            onChange={this.onTextChange}
+                            placeholder={product.kukka}>
+                          </Input>
+                          {this.renderSuggestions(product)}
+                        </div>
+
+
                       </Td>
 
                       <Td>

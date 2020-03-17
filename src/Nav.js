@@ -428,7 +428,7 @@ export default class TopNav extends React.Component {
         </Dialogs>
         <Navbar light color="info" fixed="top">
           <NavbarToggler right className="Toggler" onClick={this.toggle} />
-          <NavbarBrand href="/">{this.state.siteName}</NavbarBrand>
+          <NavbarBrand href="/main">{this.state.siteName}</NavbarBrand>
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
 

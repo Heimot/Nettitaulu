@@ -19,6 +19,7 @@
     width: 0;
     opacity: 0;
     transition: 1s ease 0.3s;
+    text-overflow: clip;
 }
 .loaders {
     margin-top: 10px;
