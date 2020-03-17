@@ -3,12 +3,50 @@ import DatePicker from "react-datepicker";
 import { Card, CardText, CardTitle, Button, Input, CardBlock, CardSubtitle } from 'reactstrap';
 import Dialog from './components/fetch/dialog/editDialog';
 import loaderDialog from './components/fetch/dialog/loaderDialog';
-import "./Styles/Table.css";
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
 import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData } from './components/fetch/apiFetch';
+import Autosuggest from 'react-autosuggest';
+
+//CSS files
+import "./Styles/Table.css";
+import "./Styles/progressBar.css";
+
+
+let change = false;
+
+function changeData() {
+  change = true;
+}
+
+function changeNormal() {
+  change = false;
+}
+
+const Progress = ({ done, count, counter }) => {
+  const [style, setStyle] = React.useState({});
+
+
+  setTimeout(() => {
+    const newStyle = {
+      opacity: 1,
+      width: `${done}`
+    }
+    setStyle(newStyle);
+  }, 200);
+
+  return (
+    <div class="progress" onMouseEnter={() => changeData(done)} onMouseLeave={() => changeNormal()}>
+      <div class="progress-done" style={style}>
+        {change === false ? done = done ? done + "%" : "" : count === undefined ? "" : count + "/" + counter}
+      </div>
+    </div>
+  )
+}
+
+
 
 class PeopleCard extends Component {
   constructor(props) {
@@ -205,16 +243,7 @@ class PeopleCard extends Component {
       sessionStorage.setItem("userDate", format(new Date(), 'dd/MM/yyyy'));
       window.location.reload();
     }
-    //this.interval = setInterval(() => this.newFunc(), 5003330);
   }
-
-  /* newFunc() {
-     console.log(Math.random())
-   }
- 
-   componentWillUnmount() {
-     clearInterval(this.interval);
-   }*/
 
   render() {
     let { _id, products, kauppa, date, alisatieto, toimituspvm } = this.props.person;
@@ -232,6 +261,8 @@ class PeopleCard extends Component {
     }
     Object.keys(result).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
 
+
+
     return (
       <div className="myDiv">
         <div className="NavBlock"></div>
@@ -243,10 +274,27 @@ class PeopleCard extends Component {
             <CardText>{_id}</CardText>
             <CardText className="lisatieto">{alisatieto}</CardText>
 
-            <CardText>Ei ole: {100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length) + "%"}</CardText>
-            <CardText>Odottaa keräystä: {100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length) + "%"}</CardText>
-            <CardText>Keräyksessä: {100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length) + "%"}</CardText>
-            <CardText>Kerätty: {100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length) + "%"}</CardText>
+            <div className="loaders" >
+              <div className="loaderMargins">
+                <CardText className="hover">Ei ole</CardText>
+                <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length}/>
+              </div>
+
+              <div className="loaderMargins">
+                <CardText>Odottaa keräystä</CardText>
+                <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length}/>
+              </div>
+
+              <div className="loaderMargins">
+                <CardText>Keräyksessä</CardText>
+                <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length}/>
+              </div>
+
+              <div className="loaderMargins">
+                <CardText>Kerätty</CardText>
+                <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length}/>
+              </div>
+            </div>
 
             <Table className="Tables">
 
