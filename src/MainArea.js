@@ -6,11 +6,12 @@ import { Redirect } from 'react-router-dom';
 import Dialogs from './components/fetch/dialog/loaderDialog';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
-import { getData, removeData, deleteFlowersData } from './components/fetch/apiFetch';
+import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete } from './components/fetch/apiFetch';
 import './Styles/MainAreas.css';
 import Datas from './components/autoComplete/dataComplete';
 
 const valmis = 0;
+let DataF = ["Ahkeraliisa", "Amppelibegonia", "Amppeliharso", "Arabiansulkahirssi Rubrum", "Aurinkoliisa (Sunpatiens)", "Begonia Baby wing", "Begonia Tophat", "Begonia Big", "Begonia Dragon", "Begonia Tarhabegonia braveheart", "Diana"];
 
 const override = css`
   display: block;
@@ -41,9 +42,15 @@ class MainArea extends Component {
     }
   }
 
+
   getTables = async () => {
     const data = await getData(valmis);
-    console.log(data.product);
+    const Datas = await getFlowersToAutocomplete();
+    var arr = await Datas.map(function(obj){
+      var key = Object.keys(obj).sort()[2], rtn = {};    
+      return rtn[key] = obj[key], rtn;
+  });
+    DataF = arr[0].flowers;
     this.setState({
       people: data.product,
       isLoaded: true,
@@ -104,7 +111,7 @@ class MainArea extends Component {
               />
               </div>
             </Dialogs>
-            <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={Datas}/>
+            <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={DataF}/>
             <Nav style={{ visibility: "hidden;" }} getTables={this.getTables} />
           </Row>
         </Container>

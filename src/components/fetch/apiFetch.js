@@ -22,13 +22,29 @@ export const getData = (valmis) => {
   if (localStorage.getItem('userLocation') === "Molemmat") {
     keraysQ = ""
   }
-console.log(dateQ  + valmisQ + keraysQ)
+  
   return fetch('http://localhost:3002/orders/tables' + dateQ + valmisQ + keraysQ, GETwAuth)
     .then(res => res.json())
     .catch((error) => {
       console.log(error);
     });
 
+}
+
+export const getFlowersToAutocomplete = () => {
+  var GETwAuth = {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    }
+  }
+
+  return fetch('http://localhost:3002/items/flowers', GETwAuth)
+  .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 export const removeData = (_id) => {

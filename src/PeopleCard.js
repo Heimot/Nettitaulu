@@ -25,7 +25,7 @@ function changeNormal() {
   change = false;
 }
 
-const Progress = ({ done, count, counter }) => {
+const Progress = ({ done, count, counter, id }) => {
   let data = change === false ? done = done ? done + "%" : "" : count === undefined ? "" : count + "/" + counter;
   if (data.includes('.')) {
     data = data.substring(0, data.indexOf(".")) + "%";
@@ -42,8 +42,8 @@ const Progress = ({ done, count, counter }) => {
   }, 100);
 
   return (
-    <div class="progress" onMouseEnter={() => changeData(done)} onMouseLeave={() => changeNormal()}>
-      <div class="progress-done" style={style}>
+    <div className="progress" onMouseEnter={() => changeData()} onMouseLeave={() => changeNormal()}>
+      <div className={done === "100%" && id === "Kerätty" || count === counter && id === "Kerätty" ? "progress-ready" : "progress-done" || id === "Odottaa keräystä" ? "progress-needed" : "progress-done"} style={style}>
         {data}
       </div>
     </div>
@@ -56,6 +56,7 @@ class PeopleCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      sent: false,
       search: "",
       suggestions: [],
 
@@ -167,10 +168,16 @@ class PeopleCard extends Component {
 
   patchData(product) {
     const idvalues = document.getElementById(`keratty/${product._id}`).value;
+    clearTimeout(timeout);
     var maara = document.getElementById(product._id).value;
-
     patchKeraysData(product, idvalues, maara);
-    this.props.getTables();
+
+
+    var timeout = setTimeout(() => {
+      this.props.getTables()
+      clearTimeout(timeout);
+    }, 5000)
+
   }
 
   putData(product) {
@@ -253,6 +260,7 @@ class PeopleCard extends Component {
   }
 
   onTextChange = (e) => {
+    console.log(items);
     const { items } = this.props;
     const value = e.target.value;
     let suggestions = [];
@@ -318,22 +326,22 @@ class PeopleCard extends Component {
             <div className="loaders" >
               <div className="loaderMargins">
                 <CardText className="hover">Ei ole</CardText>
-                <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} />
+                <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} id={"Ei ole"} />
               </div>
 
               <div className="loaderMargins">
                 <CardText>Odottaa keräystä</CardText>
-                <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} />
+                <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} id={"Odottaa keräystä"} />
               </div>
 
               <div className="loaderMargins">
                 <CardText>Keräyksessä</CardText>
-                <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length} />
+                <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length} id={"Keräyksessä"} />
               </div>
 
               <div className="loaderMargins">
                 <CardText>Kerätty</CardText>
-                <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} />
+                <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} id={"Kerätty"} />
               </div>
             </div>
 
@@ -360,10 +368,11 @@ class PeopleCard extends Component {
                     <Td className="Lisatieto">{product.lisatieto}</Td>
                     <Td>
                       <Input className="label"
+                        type="button"
                         id={`keratty/${product._id}`}
                         value={product.keratty}
                         placeholder={product.keratty}
-                        onDoubleClick={() => { this.patchData(product) }}>
+                        onClick={() => { this.patchData(product) }}>
                       </Input>
                     </Td>
                     <Td>
@@ -412,7 +421,7 @@ class PeopleCard extends Component {
               <CardText className="warningBox">Keräyspäivämäärä: {date}</CardText>
               <CardText className="warningBox">Toimitus päivämäärä: {toimituspvm}</CardText>
               <CardText className="warningBox">Kerättävien kohteiden määrä: {products.length}</CardText>
-                <CardText className="warningBox">Kerätty: {counts.Kerätty == undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
+              <CardText className="warningBox">Kerätty: {counts.Kerätty == undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
               <CardText className="warningBox">Ei ole: {counts.Eiole == undefined ? 0 : counts.Eiole}/{products.length}</CardText>
 
               <Button className="btn" onClick={() => this.props.removePerson(_id)}>Kyllä</Button>

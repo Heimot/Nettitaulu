@@ -35,3 +35,35 @@
     flex: 1 1 auto;
 }
 
+.progress-ready {
+    background: linear-gradient(to right, #56ab2f, #a8e063);
+    box-shadow: 0 3px 3px -5px #78ffd6, 0 2px 5px #78ffd6;
+    border-radius: 20px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    height: 100%;
+    width: 0;
+    opacity: 0;
+    transition: 1s ease 0.3s;
+    text-overflow: clip;
+}
+
+.progress-needed {
+    background: linear-gradient(to right, #e52d27, #b31217);
+    box-shadow: 0 3px 3px -5px #78ffd6, 0 2px 5px #78ffd6;
+    border-radius: 20px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    height: 100%;
+    width: 0;
+    opacity: 0;
+    transition: 1s ease 0.3s;
+    text-overflow: clip;
+}
+

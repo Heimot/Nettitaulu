@@ -24,7 +24,8 @@
     "react-super-responsive-table": "^5.1.1",
     "reactstrap": "^4.8.0",
     "styled-components": "^5.0.1",
-    "sweetalert2": "^8.19.0"
+    "sweetalert2": "^8.19.0",
+    "xlsx": "^0.15.6"
   },
   "scripts": {
     "start": "react-scripts start",
