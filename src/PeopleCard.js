@@ -7,13 +7,13 @@ import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
-import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData } from './components/fetch/apiFetch';
+import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData, patchValmiusData } from './components/fetch/apiFetch';
+import MyAutosuggest from "./components/autoComplete/autoComplete";
 
 
 //CSS files
 import "./Styles/Table.css";
 import "./Styles/progressBar.css";
-import "./Styles/Autocomplete.css";
 
 let change = false;
 
@@ -43,7 +43,7 @@ const Progress = ({ done, count, counter, id }) => {
 
   return (
     <div className="progress" onMouseEnter={() => changeData()} onMouseLeave={() => changeNormal()}>
-      <div className={done === "100%" && id === "Kerätty" || count === counter && id === "Kerätty" ? "progress-ready" : "progress-done" || id === "Odottaa keräystä" ? "progress-needed" : "progress-done"} style={style}>
+      <div className={done === "100%" && id === "Kerätty" || count === counter && id === "Kerätty" ? "progress-ready" : "progress-needed" && id === "Ei ole" ? "progress-cantbedone" : "progress-needed"} style={style}>
         {data}
       </div>
     </div>
@@ -53,6 +53,7 @@ const Progress = ({ done, count, counter, id }) => {
 
 
 class PeopleCard extends Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
     this.state = {
@@ -98,6 +99,35 @@ class PeopleCard extends Component {
     this.setState({
       valmisWarning: true,
     })
+  }
+
+  async valmisData(_id, valmis) {
+    try {
+      let valmius;
+      switch (valmis) {
+        case 0:
+          console.log("1.0")
+          valmius = 1;
+          await patchValmiusData(valmius, _id);
+          this.setState({
+            valmisWarning: false
+          });
+          this.props.getTables();
+          break;
+
+        case 1:
+          console.log("0.1")
+          valmius = 0;
+          await patchValmiusData(valmius, _id);
+          this.setState({
+            valmisWarning: false
+          });
+          this.props.getTables();
+          break;
+      }
+    } catch (err) {
+      return null;
+    }
   }
 
   async addFlowers(_id, products) {
@@ -181,7 +211,6 @@ class PeopleCard extends Component {
   }
 
   putData(product) {
-    console.log(product._id)
     var kukka = document.getElementById(`kukka/${product._id}`).value;
     var toimi = document.getElementById(`toimi/${product._id}`).value;
     var kerays = document.getElementById(`kerays/${product._id}`).value;
@@ -239,6 +268,7 @@ class PeopleCard extends Component {
   };
 
   componentDidMount() {
+    this._isMounted = true;
     this.parseJwt();
     var result = this.state.startDate2;
     result.setDate(result.getDate() + 1);
@@ -259,43 +289,9 @@ class PeopleCard extends Component {
     }
   }
 
-  onTextChange = (e) => {
-    console.log(items);
-    const { items } = this.props;
-    const value = e.target.value;
-    let suggestions = [];
-    if (value.length > 0) {
-      const regex = new RegExp(`^${value}`, 'i');
-      suggestions = items.sort().filter(v => regex.test(v));
-    }
-    this.setState(() => ({ suggestions }));
-    document.getElementById(e.target.id).value = value;
-  }
-
-  suggestionSelected(value, product) {
-    console.log(value)
-    document.getElementById(`kukka/${product._id}`).value = value;
-    console.log(document.getElementById(`${product._id}`).value)
-    this.setState(() => ({
-      suggestions: [],
-    }))
-
-  }
-
-  renderSuggestions(product) {
-    const { suggestions } = this.state;
-    if (suggestions.length === 0) {
-      return null;
-    }
-    return (
-      <ul className="AutoCompleteUl">
-        {suggestions.map((item) => <li className="AutoCompleteLi" onClick={() => this.suggestionSelected(item, product)}>{item}</li>)}
-      </ul>)
-  }
-
   render() {
     const { search } = this.state;
-    let { _id, products, kauppa, date, alisatieto, toimituspvm } = this.props.person;
+    let { _id, products, kauppa, date, alisatieto, toimituspvm, valmis } = this.props.person;
     let array = [];
     let result = {};
     let counts = {};
@@ -310,7 +306,7 @@ class PeopleCard extends Component {
     }
     Object.keys(result).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
 
-
+    console.log(products.length)
 
     return (
       <div className="myDiv">
@@ -325,11 +321,6 @@ class PeopleCard extends Component {
 
             <div className="loaders" >
               <div className="loaderMargins">
-                <CardText className="hover">Ei ole</CardText>
-                <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} id={"Ei ole"} />
-              </div>
-
-              <div className="loaderMargins">
                 <CardText>Odottaa keräystä</CardText>
                 <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} id={"Odottaa keräystä"} />
               </div>
@@ -342,6 +333,11 @@ class PeopleCard extends Component {
               <div className="loaderMargins">
                 <CardText>Kerätty</CardText>
                 <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} id={"Kerätty"} />
+              </div>
+
+              <div className="loaderMargins">
+                <CardText className="hover">Ei ole</CardText>
+                <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} id={"Ei ole"} />
               </div>
             </div>
 
@@ -362,12 +358,12 @@ class PeopleCard extends Component {
               <Tbody>
                 {products.map(product =>
                   <Tr>
-                    <Td>{product.kukka}</Td>
+                    <Td className="kukkaTable">{product.kukka}</Td>
                     <Td>{product.toimi}</Td>
                     <Td>{product.kerays}</Td>
                     <Td className="Lisatieto">{product.lisatieto}</Td>
                     <Td>
-                      <Input className="label"
+                      <Input className="keraamassaBtn"
                         type="button"
                         id={`keratty/${product._id}`}
                         value={product.keratty}
@@ -376,7 +372,7 @@ class PeopleCard extends Component {
                       </Input>
                     </Td>
                     <Td>
-                      <Input className="label"
+                      <Input className="kerattyMaara"
                         type="number"
                         id={product._id}
                         placeholder={product.kerattymaara}
@@ -421,10 +417,10 @@ class PeopleCard extends Component {
               <CardText className="warningBox">Keräyspäivämäärä: {date}</CardText>
               <CardText className="warningBox">Toimitus päivämäärä: {toimituspvm}</CardText>
               <CardText className="warningBox">Kerättävien kohteiden määrä: {products.length}</CardText>
-              <CardText className="warningBox">Kerätty: {counts.Kerätty == undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
-              <CardText className="warningBox">Ei ole: {counts.Eiole == undefined ? 0 : counts.Eiole}/{products.length}</CardText>
+              <CardText className="warningBox">Kerätty: {counts.Kerätty === undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
+              <CardText className="warningBox">Ei ole: {counts.Eiole === undefined ? 0 : counts.Eiole}/{products.length}</CardText>
 
-              <Button className="btn" onClick={() => this.props.removePerson(_id)}>Kyllä</Button>
+              <Button className="btn" onClick={() => this.valmisData(_id, valmis)}>Kyllä</Button>
               <Button className="btn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
 
             </Card>
@@ -482,18 +478,7 @@ class PeopleCard extends Component {
                   <Tbody>
                     <Tr>
                       <Td >
-                        <div className="AutoCompleteText">
-                          <Input type="text"
-                            name="kukka"
-                            id={`kukka/${product._id}`}
-                            className="AutoCompleteInput"
-                            onChange={this.onTextChange}
-                            placeholder={product.kukka}>
-                          </Input>
-                          {this.renderSuggestions(product)}
-                        </div>
-
-
+                        <MyAutosuggest items={this.props.items} id={`kukka/${product._id}`} placeholder={product.kukka} />
                       </Td>
 
                       <Td>
@@ -507,12 +492,14 @@ class PeopleCard extends Component {
                       </Td>
 
                       <Td>
-                        <Input type="text"
+                        <Input type="select"
                           name="kerays"
                           id={`kerays/${product._id}`}
                           onChange={this.handleChange}
                           className="inputlabel"
                           placeholder={product.kerays}>
+                          <option>Ryönä</option>
+                          <option>Tuusjärvi</option>
                         </Input>
                       </Td>
 
