@@ -1,6 +1,6 @@
 import format from "date-fns/format";
 
-export const getData = (valmis) => {
+export const getData = () => {
   var GETwAuth = {
     method: 'GET',
     headers: {
@@ -17,12 +17,12 @@ export const getData = (valmis) => {
   };
 
   let dateQ = `?date=${date}`;
-  let valmisQ = `&valmis=${valmis}`;
+  let valmisQ = `&valmis=${sessionStorage.getItem("userValmis")}`;
   let keraysQ = `&kerays=${localStorage.getItem('userLocation')}`;
   if (localStorage.getItem('userLocation') === "Molemmat") {
-    keraysQ = ""
+    keraysQ = "&kerays="
   }
-  
+
   return fetch('http://localhost:3002/orders/tables' + dateQ + valmisQ + keraysQ, GETwAuth)
     .then(res => res.json())
     .catch((error) => {
@@ -41,7 +41,7 @@ export const getFlowersToAutocomplete = () => {
   }
 
   return fetch('http://localhost:3002/items/flowers', GETwAuth)
-  .then(res => res.json())
+    .then(res => res.json())
     .catch((error) => {
       console.log(error);
     });
@@ -357,6 +357,7 @@ export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusai
       alisatieto: asiakaslisatieto,
       date: keraysPVM,
       toimituspvm: toimitusaika,
+      valmis: userDatas.products.valmis,
     }),
   })
     .then(response => response.json())
@@ -366,4 +367,67 @@ export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusai
     .catch((error) => {
       console.log(error);
     });
+}
+
+export const patchValmiusData = (valmius, _id) => {
+  fetch('http://localhost:3002/orders/patch/id/' + _id, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify([
+      {
+        propName: "valmis",
+        value: valmius,
+      },
+    ])
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const updateValmiusData = (_id, product) => {
+
+/*  if (asiakas.length < 1) {
+    asiakas = product.kauppa;
+  }
+
+  if (asiakaslisatieto.length < 1) {
+    asiakaslisatieto = product.alisatieto;
+  }
+
+  if (keraysPVM.length < 1) {
+    keraysPVM = product.date;
+  }
+
+  if (toimitusaika.length < 1) {
+    toimitusaika = product.toimituspvm;
+  }
+
+  fetch('http://localhost:3002/products/put/id/' + product._id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      kukka: kukka,
+      toimi: toimi,
+      kerays: kerays,
+      lisatieto: lisatieto
+    }),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });*/
 }
