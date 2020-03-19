@@ -9,6 +9,25 @@
         width: 147px !important;
         text-align: center;
     }
+
+    .keraamassaBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+    }
+    .keraamassaBtn:hover {
+        border-color: blue;
+    }
+
+    .kerattyMaara {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+    }
+    .kerattyMaara:hover {
+        border-color: blue;
+    }
+
     .block {
         display: inline-block;
         width: 100%;
@@ -49,6 +68,10 @@
         right: 10px;
         display: inline-block;
         text-align: right;
+    }
+    .kukkaTable {
+        width: auto;
+        max-width: 200px;
     }
     .Cards {
         padding-left: 10px;
