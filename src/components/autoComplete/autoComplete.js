@@ -1,170 +1,66 @@
 import React from "react";
-import Autosuggest from "react-autosuggest";
-import "./Autosuggest.css";
+import "../../Styles/Autocomplete.css"
+import { Input } from "reactstrap";
 
-const languages = [
-    {
-      name: 'C',
-      year: 1972
-    },
-    {
-      name: 'C#',
-      year: 2000
-    },
-    {
-      name: 'C++',
-      year: 1983
-    },
-    {
-      name: 'Clojure',
-      year: 2007
-    },
-    {
-      name: 'Elm',
-      year: 2012
-    },
-    {
-      name: 'Go',
-      year: 2009
-    },
-    {
-      name: 'Haskell',
-      year: 1990
-    },
-    {
-      name: 'Java',
-      year: 1995
-    },
-    {
-      name: 'Javascript',
-      year: 1995
-    },
-    {
-      name: 'Perl',
-      year: 1987
-    },
-    {
-      name: 'PHP',
-      year: 1995
-    },
-    {
-      name: 'Python',
-      year: 1991
-    },
-    {
-      name: 'Ruby',
-      year: 1995
-    },
-    {
-      name: 'Scala',
-      year: 2003
+
+class MyAutosuggest extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      suggestions: [],
+      items: ["FFF", "OOO", "KKK"]
+    };
+  }
+
+  onTextChange = (e) => {
+    console.log(e.target.id)
+    const { items } = this.props;
+    const value = e.target.value;
+    let suggestions = [];
+    if (value.length > 0) {
+      const regex = new RegExp(`^${value}`, 'i');
+      suggestions = items.sort().filter(v => regex.test(v));
     }
-  ];
-  
-  // https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions#Using_Special_Characters
-  function escapeRegexCharacters(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    this.setState(() => ({ suggestions }));
+    document.getElementById(e.target.id).value = value;
   }
-  
-  function getSuggestions(value) {
-    const escapedValue = escapeRegexCharacters(value.trim());
-    
-    if (escapedValue === '') {
-      return [];
+
+  suggestionSelected(value, id) {
+    console.log(value)
+    document.getElementById(`${id}`).value = value;
+    console.log(document.getElementById(`${id}`).value)
+    this.setState(() => ({
+      suggestions: [],
+    }))
+
+  }
+
+  renderSuggestions(id) {
+    const { suggestions } = this.state;
+    if (suggestions.length === 0) {
+      return null;
     }
-  
-    const regex = new RegExp('^' + escapedValue, 'i');
-  
-    return languages.filter(language => regex.test(language.name));
-  }
-  
-  function getSuggestionValue(suggestion) {
-    return suggestion.name;
-  }
-  
-  function renderSuggestion(suggestion) {
     return (
-      <span>{suggestion.name}</span>
+      <ul className="AutoCompleteUl">
+        {suggestions.map((item) => <li className="AutoCompleteLi" onClick={() => this.suggestionSelected(item, id)}>{item}</li>)}
+      </ul>)
+  }
+
+  render() {
+    let { id, placeholder } = this.props;
+    return (
+      <div className="AutoCompleteText">
+        <Input type="text"
+          name="kukka"
+          id={`${id}`}
+          placeholder={placeholder}
+          className="AutoCompleteInput"
+          onChange={this.onTextChange} 
+          />
+        {this.renderSuggestions(id)}
+      </div>
     );
   }
-  
-  class MyAutosuggest extends React.Component {
-    constructor() {
-      super();
-  
-      this.state = {
-        value: '',
-        suggestions: []
-      };    
-    }
-  
-    onChange = (_, { newValue }) => {
-      const { id, onChange } = this.props;
-      
-      this.setState({
-        value: newValue
-      });
-      
-      onChange(id, newValue);
-    };
-    
-    onSuggestionsFetchRequested = ({ value }) => {
-      this.setState({
-        suggestions: getSuggestions(value)
-      });
-    };
-  
-    onSuggestionsClearRequested = () => {
-      this.setState({
-        suggestions: []
-      });
-    };
-  
-    render() {
-      const { id, placeholder } = this.props;
-      const { value, suggestions } = this.state;
-      const inputProps = {
-        placeholder,
-        value,
-        onChange: this.onChange
-      };
-      
-      return (
-        <Autosuggest 
-          id={id}
-          suggestions={suggestions}
-          onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-          onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-          getSuggestionValue={getSuggestionValue}
-          renderSuggestion={renderSuggestion}
-          inputProps={inputProps} 
-        />
-      );
-    }
-  }
-  
-  class App extends React.Component {
-    onChange(id, newValue) {
-      console.log(`${id} changed to ${newValue}`);
-    }
-    
-    render() {
-      return (
-        <div>
-          <MyAutosuggest
-            id="type-c"
-            placeholder="Type 'c'"
-            onChange={this.onChange}
-          />
-          <MyAutosuggest
-            id="type-p"
-            placeholder="Type 'p'"
-            onChange={this.onChange}
-          />
-        </div>
-      );
-    }
-  }
-  
-  export default MyAutosuggest;
-  
+}
+
+export default MyAutosuggest;
