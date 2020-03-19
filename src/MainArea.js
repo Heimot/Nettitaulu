@@ -8,10 +8,8 @@ import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
 import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete } from './components/fetch/apiFetch';
 import './Styles/MainAreas.css';
-import Datas from './components/autoComplete/dataComplete';
 
-const valmis = 0;
-let DataF = ["Ahkeraliisa", "Amppelibegonia", "Amppeliharso", "Arabiansulkahirssi Rubrum", "Aurinkoliisa (Sunpatiens)", "Begonia Baby wing", "Begonia Tophat", "Begonia Big", "Begonia Dragon", "Begonia Tarhabegonia braveheart", "Diana"];
+let DataF = ["Ahkeraliisa", "Amppelibegonia"];
 
 const override = css`
   display: block;
@@ -44,12 +42,13 @@ class MainArea extends Component {
 
 
   getTables = async () => {
-    const data = await getData(valmis);
+    const data = await getData();
+
     const Datas = await getFlowersToAutocomplete();
-    var arr = await Datas.map(function(obj){
-      var key = Object.keys(obj).sort()[2], rtn = {};    
+    var arr = await Datas.map(function (obj) {
+      var key = Object.keys(obj).sort()[2], rtn = {};
       return rtn[key] = obj[key], rtn;
-  });
+    });
     DataF = arr[0].flowers;
     this.setState({
       people: data.product,
@@ -97,27 +96,29 @@ class MainArea extends Component {
       return (<Redirect to={'/'} />)
     }
     let peopleCards = this.state.people.map(person => {
-      return (
-        <Container fluid>
-          <Row>
-            <Dialogs isOpen={this.state.dLoader}>
-            <div className="Spinner">
-              <Loader
-                css={override}
-                height={140}
-                width={16}
-                color={"#123abc"}
-                loading={this.state.dLoader}
-              />
-              </div>
-            </Dialogs>
-            <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={DataF}/>
-            <Nav style={{ visibility: "hidden;" }} getTables={this.getTables} />
-          </Row>
-        </Container>
+      if (person.products.length > 0) {
+        return (
+          <Container fluid>
+            <Row>
+              <Dialogs isOpen={this.state.dLoader}>
+                <div className="Spinner">
+                  <Loader
+                    css={override}
+                    height={140}
+                    width={16}
+                    color={"#123abc"}
+                    loading={this.state.dLoader}
+                  />
+                </div>
+              </Dialogs>
+              <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={DataF} />
+              <Nav style={{ visibility: "hidden;" }} getTables={this.getTables.bind(this)} />
+            </Row>
+          </Container>
 
 
-      )
+        )
+      }
     })
     return (
       <Container fluid>
