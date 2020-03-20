@@ -16,7 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const override = css`
   display: block;
-  margin: 0 auto;
+  margin: 0 auto; 
   border-color: red;
 `;
 
@@ -41,6 +41,7 @@ let userDatas = {
 };
 
 export default class TopNav extends React.Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
     this.state = {
@@ -48,8 +49,8 @@ export default class TopNav extends React.Component {
       isOpen2: false,
       redirect: false,
       redirectToCheck: false,
-      siteName: 'Keräykseen',
-      btnName: 'Valmiit',
+      siteName: sessionStorage.getItem("siteName"),
+      btnName: sessionStorage.getItem("btnName"),
 
       kauppa: '',
       customerInfo: '',
@@ -74,7 +75,8 @@ export default class TopNav extends React.Component {
       toimituspvm: new Date(),
       date: new Date(),
       _id: '',
-      dLoader: false
+      dLoader: false,
+      testLoader: true,
     };
     this.toggle = this.toggle.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -86,39 +88,13 @@ export default class TopNav extends React.Component {
         case "Ryönä":
           localStorage.setItem('userLocation', "Tuusjärvi")
           break;
-          case "Tuusjärvi":
+        case "Tuusjärvi":
           localStorage.setItem('userLocation', "Molemmat")
           break;
-          case "Molemmat":
+        case "Molemmat":
           localStorage.setItem('userLocation', "Ryönä")
           break;
       }
-
-      /*if (localStorage.getItem('userLocation') !== "Tuusjärvi" && localStorage.getItem('userLocation') !== "Ryönä") {
-        this.setState({
-          location: 'Tuusjärvi',
-          locationName: "Molemmat",
-          isLoading: false
-        });
-        localStorage.setItem("userLocation", this.state.location);
-
-      } else if (localStorage.getItem('userLocation') !== "Ryönä") {
-        this.setState({
-          location: 'Ryönä',
-          locationName: "Ryönä",
-          isLoading: false
-        });
-        localStorage.setItem("userLocation", this.state.location);
-
-      } else if (localStorage.getItem('userLocation') !== "Molemmat") {
-        this.setState({
-          location: 'Molemmat',
-          locationName: "Tuusjärvi",
-          isLoading: false
-        });
-        localStorage.setItem("userLocation", this.state.location);
-
-      }*/
       this.props.getTables();
     } catch (err) {
     }
@@ -143,6 +119,7 @@ export default class TopNav extends React.Component {
       let ids = await userDatas.products.map(product => {
         return product._id
       })
+      console.log(ids)
 
       let i = 0;
       while (i < ids.length) {
@@ -179,26 +156,23 @@ export default class TopNav extends React.Component {
   }
 
   async getFetchData() {
-    try {
-      await fetch('http://localhost:3002/orders/get/id/' + idSafe, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-        },
-      })
-        .then(res => res.json())
-        .then(json => {
-          userDatas = json;
+    await fetch('http://localhost:3002/orders/get/id/' + idSafe, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+      },
+    })
+      .then(res => res.json())
+      .then(json => {
+        userDatas = json;
 
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      await this.addData();
-    } catch (err) {
-      console.log("error skipped" + err)
-    }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    await this.addData();
+
   }
 
   async addFlowers() {
@@ -274,13 +248,13 @@ export default class TopNav extends React.Component {
     });
   }
 
-  addData() {
+  async addData() {
     this.setState({
       isOpen2: true,
       dLoader: false
     });
     console.log("f")
-    this.props.getTables();
+    await this.props.getTables();
   }
 
 
@@ -291,6 +265,20 @@ export default class TopNav extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
+    if (sessionStorage.getItem("btnName") === null) {
+      sessionStorage.setItem("btnName", "Kerättävät")
+    }
+
+    if (sessionStorage.getItem("siteName") === null) {
+      sessionStorage.setItem("siteName", "Kerättävät");
+    }
+
+    if (sessionStorage.getItem("userValmis") === null) {
+      sessionStorage.setItem("userValmis", "Ei");
+    }
+
     var result = this.state.startDate3;
     result.setDate(result.getDate() + 1);
     this.setState({
@@ -330,10 +318,24 @@ export default class TopNav extends React.Component {
     });
   };
 
-  Tarkastus() {
-    this.setState({
-      redirectToCheck: true
-    })
+  async Tarkastus() {
+try{
+    switch (sessionStorage.getItem("userValmis")) {
+      case "Ei":
+        sessionStorage.setItem("userValmis", "Kerätty");
+        sessionStorage.setItem("siteName", "Valmiit");
+        sessionStorage.setItem("btnName", "Valmiit");
+        break;
+      case "Kerätty":
+        sessionStorage.setItem("userValmis", "Ei");
+        sessionStorage.setItem("siteName", "Kerättävät");
+        sessionStorage.setItem("btnName", "Kerättävät");
+        break;
+    }
+    window.location.reload()
+  } catch(err) {
+    console.log(err)
+  }
   }
 
   async addNewFlowers(_id, products) {
@@ -410,9 +412,6 @@ export default class TopNav extends React.Component {
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
     }
-    if (this.state.redirectToCheck) {
-      return (<Redirect to={'/checked'} />)
-    }
     return (
       <div>
         <Dialogs isOpen={this.state.dLoader}>
@@ -428,12 +427,12 @@ export default class TopNav extends React.Component {
         </Dialogs>
         <Navbar light color="info" fixed="top">
           <NavbarToggler right className="Toggler" onClick={this.toggle} />
-          <NavbarBrand href="/main">{this.state.siteName}</NavbarBrand>
+          <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("siteName")}</NavbarBrand>
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
 
               <Button className="TarkastusBTN" onClick={() => this.Tarkastus()}>
-                {this.state.btnName}
+                {sessionStorage.getItem("btnName")}
               </Button>
 
               <DatePicker className="Datepicker"
