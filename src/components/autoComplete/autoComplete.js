@@ -8,12 +8,13 @@ class MyAutosuggest extends React.Component {
     super();
     this.state = {
       suggestions: [],
-      items: ["FFF", "OOO", "KKK"]
+      items: ["FFF", "OOO", "KKK"],
+      count: 1,
+      id: "",
     };
   }
 
   onTextChange = (e) => {
-    console.log(e.target.id)
     const { items } = this.props;
     const value = e.target.value;
     let suggestions = [];
@@ -26,13 +27,38 @@ class MyAutosuggest extends React.Component {
   }
 
   suggestionSelected(value, id) {
-    console.log(value)
     document.getElementById(`${id}`).value = value;
-    console.log(document.getElementById(`${id}`).value)
     this.setState(() => ({
       suggestions: [],
     }))
 
+  }
+
+  onKeyDown = (e) => {
+    switch (e.keyCode) {
+      case 13:
+        document.getElementById(`${this.props.id}`).value = this.state.suggestions[this.state.count - 1];
+        this.setState(() => ({
+          suggestions: [],
+        }))
+        break;
+
+      case 40:
+        if (this.state.count < this.state.suggestions.length) {
+          this.setState(prevState => {
+            return { count: prevState.count + 1 }
+          })
+        }
+        break;
+
+      case 38:
+        if (this.state.count > 1) {
+          this.setState(prevState => {
+            return { count: prevState.count - 1 }
+          })
+        }
+        break;
+    }
   }
 
   renderSuggestions(id) {
@@ -49,14 +75,15 @@ class MyAutosuggest extends React.Component {
   render() {
     let { id, placeholder } = this.props;
     return (
-      <div className="AutoCompleteText">
+      <div className={this.props.getDivClass}>
         <Input type="text"
           name="kukka"
           id={`${id}`}
           placeholder={placeholder}
-          className="AutoCompleteInput"
-          onChange={this.onTextChange} 
-          />
+          className={this.props.sendClass}
+          onKeyDown={this.onKeyDown}
+          onChange={this.onTextChange}
+        />
         {this.renderSuggestions(id)}
       </div>
     );
