@@ -7,7 +7,7 @@ import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
-import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData, patchValmiusData } from './components/fetch/apiFetch';
+import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData, patchValmiusData, patchValmiusProductsData } from './components/fetch/apiFetch';
 import MyAutosuggest from "./components/autoComplete/autoComplete";
 
 
@@ -101,32 +101,56 @@ class PeopleCard extends Component {
     })
   }
 
-  async valmisData(_id, valmis) {
-    try {
+  async valmisData(_id, products) {
+    try { 
+      let ids = [];
       let valmius;
-      switch (valmis) {
-        case 0:
-          console.log("1.0")
-          valmius = 1;
-          await patchValmiusData(valmius, _id);
-          this.setState({
-            valmisWarning: false
-          });
-          this.props.getTables();
-          break;
+      let i = 0;
+      let id;
 
-        case 1:
-          console.log("0.1")
-          valmius = 0;
-          await patchValmiusData(valmius, _id);
-          this.setState({
-            valmisWarning: false
-          });
-          this.props.getTables();
-          break;
+      let valmiukset = await products.map(product => {
+        return product.valmis
+      })
+      let eivalmiit = valmiukset.filter(valmiit => {
+        return valmiit === "Ei"
+      })
+      let valmiit = valmiukset.filter(valmiit => {
+        return valmiit === "Kerätty"
+      })
+
+      if (eivalmiit.length > valmiit.length) {
+
+        valmius = "Kerätty"
+        ids = await products.map(product => {
+          return product._id
+        })
+
+        i = 0;
+        while (i < ids.length) {
+          id = ids.shift();
+          await patchValmiusProductsData(id, valmius)
+        }
+        i++;
+      } else {
+
+        valmius = "Ei"
+        ids = await products.map(product => {
+          return product._id
+        })
+        i = 0;
+        while (i < ids.length) {
+          id = ids.shift();
+          await patchValmiusProductsData(id, valmius)
+        }
+        i++;
+
+        this.setState({
+          valmisWarning: false
+        })
       }
+      this.props.getTables()
     } catch (err) {
-      return null;
+      console.log(err)
     }
   }
 
@@ -221,7 +245,7 @@ class PeopleCard extends Component {
   }
 
   async putOrderData(_id, kauppa, alisatieto, toimituspvm, date) {
-    var asiakas = this.state.kauppa;
+    var asiakas = document.getElementById(`kauppa/${_id}`).value;
     var asiakaslisatieto = this.state.customerInfo;
     var toimitusaika = this.state.ToimitusPVM;
     var keraysPVM = format(this.state.startDate, "dd/MM/yyyy");
@@ -305,8 +329,6 @@ class PeopleCard extends Component {
       result[array[i]] = (result[array[i]] || 0) + 1
     }
     Object.keys(result).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
-
-    console.log(products.length)
 
     return (
       <div className="myDiv">
@@ -420,8 +442,8 @@ class PeopleCard extends Component {
               <CardText className="warningBox">Kerätty: {counts.Kerätty === undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
               <CardText className="warningBox">Ei ole: {counts.Eiole === undefined ? 0 : counts.Eiole}/{products.length}</CardText>
 
-              <Button className="btn" onClick={() => this.valmisData(_id, valmis)}>Kyllä</Button>
-              <Button className="btn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
+              <Button className="btn" onClick={() => this.valmisData(_id, products)}>Kyllä</Button>
+              <Button className="btn" onClick={() => this.setState({ valmisWarning: false })}>Ei</Button>
 
             </Card>
           </Dialog>
@@ -454,12 +476,7 @@ class PeopleCard extends Component {
               </div>
 
               <CardTitle>
-                <Input type="text"
-                  name="kauppa"
-                  onChange={this.handleChange}
-                  className="inputlabel"
-                  placeholder={kauppa}>
-                </Input>
+                <MyAutosuggest items={this.props.items2} id={`kauppa/${_id}`} placeholder={kauppa} sendClass={"AutoCompletePropsInput"} getDivClass={"AutoCompletePropsText"}/>
               </CardTitle>
 
               <CardText>{_id}</CardText>
@@ -478,7 +495,7 @@ class PeopleCard extends Component {
                   <Tbody>
                     <Tr>
                       <Td >
-                        <MyAutosuggest items={this.props.items} id={`kukka/${product._id}`} placeholder={product.kukka} />
+                        <MyAutosuggest items={this.props.items} id={`kukka/${product._id}`} placeholder={product.kukka} sendClass={"AutoCompleteInput"} getDivClass={"AutoCompleteText"}/>
                       </Td>
 
                       <Td>
