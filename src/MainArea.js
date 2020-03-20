@@ -9,7 +9,8 @@ import Loader from "react-spinners/ScaleLoader";
 import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete } from './components/fetch/apiFetch';
 import './Styles/MainAreas.css';
 
-let DataF = ["Ahkeraliisa", "Amppelibegonia"];
+let DataF = ["error", "abcderror"];
+let DataK = ["error", "abcderror"];
 
 const override = css`
   display: block;
@@ -43,13 +44,10 @@ class MainArea extends Component {
 
   getTables = async () => {
     const data = await getData();
-
     const Datas = await getFlowersToAutocomplete();
-    var arr = await Datas.map(function (obj) {
-      var key = Object.keys(obj).sort()[2], rtn = {};
-      return rtn[key] = obj[key], rtn;
-    });
-    DataF = arr[0].flowers;
+    DataK = Datas[1].kaupat
+    DataF = Datas[0].flowers;
+
     this.setState({
       people: data.product,
       isLoaded: true,
@@ -111,7 +109,7 @@ class MainArea extends Component {
                   />
                 </div>
               </Dialogs>
-              <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={DataF} />
+              <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={DataF} items2={DataK}/>
               <Nav style={{ visibility: "hidden;" }} getTables={this.getTables.bind(this)} />
             </Row>
           </Container>
