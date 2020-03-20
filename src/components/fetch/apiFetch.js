@@ -369,8 +369,8 @@ export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusai
     });
 }
 
-export const patchValmiusData = (valmius, _id) => {
-  fetch('http://localhost:3002/orders/patch/id/' + _id, {
+export const patchValmiusData = (valmius, id) => {
+  fetch('http://localhost:3002/orders/patch/id/' + id, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -392,36 +392,19 @@ export const patchValmiusData = (valmius, _id) => {
     });
 }
 
-export const updateValmiusData = (_id, product) => {
-
-/*  if (asiakas.length < 1) {
-    asiakas = product.kauppa;
-  }
-
-  if (asiakaslisatieto.length < 1) {
-    asiakaslisatieto = product.alisatieto;
-  }
-
-  if (keraysPVM.length < 1) {
-    keraysPVM = product.date;
-  }
-
-  if (toimitusaika.length < 1) {
-    toimitusaika = product.toimituspvm;
-  }
-
-  fetch('http://localhost:3002/products/put/id/' + product._id, {
-    method: 'PUT',
+export const patchValmiusProductsData = (id, valmius) => {
+  fetch('http://localhost:3002/products/patch/id/' + id, {
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
     },
-    body: JSON.stringify({
-      kukka: kukka,
-      toimi: toimi,
-      kerays: kerays,
-      lisatieto: lisatieto
-    }),
+    body: JSON.stringify([
+      {
+        propName: "valmis",
+        value: valmius,
+      },
+    ])
   })
     .then(response => response.json())
     .then(json => {
@@ -429,5 +412,6 @@ export const updateValmiusData = (_id, product) => {
     })
     .catch((error) => {
       console.log(error);
-    });*/
+    });
 }
+
