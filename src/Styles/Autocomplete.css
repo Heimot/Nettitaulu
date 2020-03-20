@@ -1,13 +1,36 @@
 .AutoCompleteText {
+    position: relative;
     width: 100%;
     border: 1px solid black;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
-    color: rgba(0, 0, 0, 0.73)
+    color: rgba(0, 0, 0, 0.73);
+    float: left;
+}
+
+.AutoCompletePropsText {
+    position: relative;
+    width: 250px;
+    border: 1px solid black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.73);
+    float: left;
 }
 
 .AutoCompleteInput {
     width: 100% !important;
+    border: none !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 14px !important;
+    color: rgba(0, 0, 0, 0.73) !important;
+    padding: 10px 5px !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+}
+
+.AutoCompletePropsInput {
+    width: 248.5px !important;
     border: none !important;
     font-family: Arial, Helvetica, sans-serif !important;
     font-size: 14px !important;
@@ -22,7 +45,11 @@
     text-align: left;
     margin: 0;
     padding: 0;
-    border-top: 1px solid black;
+    border: 1px solid black;
+    background-color: white;
+    position: absolute;
+    width: 100%;
+    z-index: 10000;
 }
 
 .AutoCompleteUl::before {
@@ -34,7 +61,7 @@
     cursor: pointer;
 }
 
-.AutoCompleteLi:hover {
+.AutoCompletePress .AutoCompleteLi:hover {
     text-decoration: underline;
     background-color: rgba(128, 128, 128, 0.20);
 }
