@@ -58,6 +58,9 @@ class MyAutosuggest extends React.Component {
           })
         }
         break;
+      default:
+          
+        break;
     }
   }
 
