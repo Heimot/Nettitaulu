@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import DatePicker from "react-datepicker";
-import { Card, CardText, CardTitle, Button, Input, CardBlock, CardSubtitle } from 'reactstrap';
+import { Card, CardText, CardTitle, Button, Input } from 'reactstrap';
 import Dialog from './components/fetch/dialog/editDialog';
-import loaderDialog from './components/fetch/dialog/loaderDialog';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
-import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData, patchValmiusData, patchValmiusProductsData } from './components/fetch/apiFetch';
+import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData, patchValmiusProductsData } from './components/fetch/apiFetch';
 import MyAutosuggest from "./components/autoComplete/autoComplete";
-
 
 //CSS files
 import "./Styles/Table.css";
 import "./Styles/progressBar.css";
+
 
 let change = false;
 
@@ -43,7 +42,7 @@ const Progress = ({ done, count, counter, id }) => {
 
   return (
     <div className="progress" onMouseEnter={() => changeData()} onMouseLeave={() => changeNormal()}>
-      <div className={done === "100%" && id === "Kerätty" || count === counter && id === "Kerätty" ? "progress-ready" : "progress-needed" && id === "Ei ole" ? "progress-cantbedone" : "progress-needed"} style={style}>
+      <div className={(((done === "100%" || count === counter) && id === "Kerätty") || (count === counter && id === "Kerätty") ? "progress-ready" : "progress-needed" && id === "Ei ole" ? "progress-cantbedone" : "progress-needed")} style={style}>
         {data}
       </div>
     </div>
@@ -57,6 +56,7 @@ class PeopleCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      changedProp: "",
       sent: false,
       search: "",
       suggestions: [],
@@ -102,7 +102,7 @@ class PeopleCard extends Component {
   }
 
   async valmisData(_id, products) {
-    try { 
+    try {
       let ids = [];
       let valmius;
       let i = 0;
@@ -222,16 +222,13 @@ class PeopleCard extends Component {
 
   patchData(product) {
     const idvalues = document.getElementById(`keratty/${product._id}`).value;
-    clearTimeout(timeout);
     var maara = document.getElementById(product._id).value;
     patchKeraysData(product, idvalues, maara);
-
 
     var timeout = setTimeout(() => {
       this.props.getTables()
       clearTimeout(timeout);
     }, 5000)
-
   }
 
   putData(product) {
@@ -297,12 +294,11 @@ class PeopleCard extends Component {
     var result = this.state.startDate2;
     result.setDate(result.getDate() + 1);
     this.setState({
-      startDate2: result
+      startDate2: result,
+      location: localStorage.getItem("userLocation"),
+      changedProp: this.props.search
     });
 
-    this.setState({
-      location: localStorage.getItem("userLocation"),
-    });
     if (this.state.date) {
     } else {
       this.setState({
@@ -314,11 +310,11 @@ class PeopleCard extends Component {
   }
 
   render() {
-    const { search } = this.state;
-    let { _id, products, kauppa, date, alisatieto, toimituspvm, valmis } = this.props.person;
+    let { _id, products, kauppa, date, alisatieto, toimituspvm } = this.props.person;
     let array = [];
     let result = {};
     let counts = {};
+    let producto = [];
     array.push(
       products.map(doc => {
         return doc.keratty;
@@ -330,156 +326,45 @@ class PeopleCard extends Component {
     }
     Object.keys(result).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
 
-    return (
-      <div className="myDiv">
-        <div className="NavBlock"></div>
+    if (this.props.search !== "" && this.props.chosenData === "kukkia") {
+      producto = products.filter(filtered => filtered.kukka.toLowerCase().includes(this.props.search.toLowerCase()));
+    } else {
+      producto = products;
+    }
 
-        <div>
-          <Card className="Cards">
-            <CardTitle>{date}</CardTitle>
-            <CardTitle>{kauppa}</CardTitle>
-            <CardText>{_id}</CardText>
-            <CardText className="lisatieto">{alisatieto}</CardText>
-
-            <div className="loaders" >
-              <div className="loaderMargins">
-                <CardText>Odottaa keräystä</CardText>
-                <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} id={"Odottaa keräystä"} />
-              </div>
-
-              <div className="loaderMargins">
-                <CardText>Keräyksessä</CardText>
-                <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length} id={"Keräyksessä"} />
-              </div>
-
-              <div className="loaderMargins">
-                <CardText>Kerätty</CardText>
-                <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} id={"Kerätty"} />
-              </div>
-
-              <div className="loaderMargins">
-                <CardText className="hover">Ei ole</CardText>
-                <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} id={"Ei ole"} />
-              </div>
-            </div>
-
-            <Table className="Tables">
-
-              <Thead>
-                <Tr>
-                  <Th>Tuote</Th>
-                  <Th>Kerätään</Th>
-                  <Th>Keräyspiste</Th>
-                  <Th>Lisätietoa</Th>
-                  <Th>Keräämässä</Th>
-                  <Th>Kerättymäärä</Th>
-                </Tr>
-              </Thead>
-
-
-              <Tbody>
-                {products.map(product =>
-                  <Tr>
-                    <Td className="kukkaTable">{product.kukka}</Td>
-                    <Td>{product.toimi}</Td>
-                    <Td>{product.kerays}</Td>
-                    <Td className="Lisatieto">{product.lisatieto}</Td>
-                    <Td>
-                      <Input className="keraamassaBtn"
-                        type="button"
-                        id={`keratty/${product._id}`}
-                        value={product.keratty}
-                        placeholder={product.keratty}
-                        onClick={() => { this.patchData(product) }}>
-                      </Input>
-                    </Td>
-                    <Td>
-                      <Input className="kerattyMaara"
-                        type="number"
-                        id={product._id}
-                        placeholder={product.kerattymaara}
-                        name="kerattymaara">
-                      </Input>
-                    </Td>
-                  </Tr>
-                )}
-              </Tbody>
-            </Table>
-            <Button disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="success" onClick={() => this.valmis()}>Valmis</Button>
-            <Button disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>Muokkaa</Button>
-            <Button disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>Poista</Button>
-          </Card>
-
-          <Dialog className="DelWarn" isOpen2={this.state.openWarning} onClose={(e) => this.setState({ openWarning: false })}>
-
+    if (producto.length > 0) {
+      return (
+        <div className="myDiv">
+          <div className="NavBlock"></div>
+          <div>
             <Card className="Cards">
-
-              <CardTitle className="warningBox">Haluatko poistaa tämän taulun?</CardTitle>
-              <CardText className="warningBox">ID: {_id}</CardText>
-              <CardText className="warningBox">KAUPPA: {kauppa}</CardText>
-              <CardText className="warningBox">KERÄYSPÄIVÄMÄÄRÄ: {date}</CardText>
-              <CardText className="warningBox">TOIMITUSPÄIVÄMÄÄRÄ: {toimituspvm}</CardText>
-              <CardText className="warningBox">KUKKIEN MÄÄRÄ: {products.length}</CardText>
-
-              <Button className="btn" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>Kyllä</Button>
-              <Button className="btn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
-
-            </Card>
-          </Dialog>
-
-
-          <Dialog className="DelWarn" isOpen2={this.state.valmisWarning} onClose={(e) => this.setState({ valmisWarning: false })}>
-
-            <Card className="Cards">
-
-              <CardTitle className="warningBox">Haluatko viedä tämän taulu valmiina oleviin?</CardTitle>
-              <CardTitle className="warningBox">Onko kaikki jo kerätty?</CardTitle>
-              <CardText className="warningBox">ID: {_id}</CardText>
-              <CardText className="warningBox">Kauppa: {kauppa}</CardText>
-              <CardText className="warningBox">Keräyspäivämäärä: {date}</CardText>
-              <CardText className="warningBox">Toimitus päivämäärä: {toimituspvm}</CardText>
-              <CardText className="warningBox">Kerättävien kohteiden määrä: {products.length}</CardText>
-              <CardText className="warningBox">Kerätty: {counts.Kerätty === undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
-              <CardText className="warningBox">Ei ole: {counts.Eiole === undefined ? 0 : counts.Eiole}/{products.length}</CardText>
-
-              <Button className="btn" onClick={() => this.valmisData(_id, products)}>Kyllä</Button>
-              <Button className="btn" onClick={() => this.setState({ valmisWarning: false })}>Ei</Button>
-
-            </Card>
-          </Dialog>
-
-          <Dialog className="Muokkaus" isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
-            <Card className="UpdateCards">
-              <div>
-                <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
-                <DatePicker className="DateUpdate"
-                  selected={this.state.startDate}
-                  onChange={this.pvmMuutos}
-                  dateFormat="d/MM/yyyy"
-                  onCalendarClose={() => sessionStorage.setItem('userDate2', format(this.state.startDate, "dd/MM/yyyy"))}
-                />
-
-                <CardTitle className="ToimitusPVMText">Toimituspäivämäärä</CardTitle>
-                <DatePicker className="ToimitusPVM"
-                  selected={this.state.startDate2}
-                  onChange={this.toimituspvmMuutos}
-                  dateFormat="dd/MM/yyyy"
-                />
-
-                <Input
-                  className="CustomerInfo"
-                  type="textarea"
-                  name="customerInfo"
-                  placeholder={alisatieto}
-                  onChange={this.handleChange}>
-                </Input>
-              </div>
-
-              <CardTitle>
-                <MyAutosuggest items={this.props.items2} id={`kauppa/${_id}`} placeholder={kauppa} sendClass={"AutoCompletePropsInput"} getDivClass={"AutoCompletePropsText"}/>
-              </CardTitle>
-
+              <CardTitle>{date}</CardTitle>
+              <CardTitle>{kauppa}</CardTitle>
               <CardText>{_id}</CardText>
+              <CardText className="lisatieto">{alisatieto}</CardText>
+
+              <div className="loaders" >
+                <div className="loaderMargins">
+                  <CardText>Odottaa keräystä</CardText>
+                  <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} id={"Odottaa keräystä"} />
+                </div>
+
+                <div className="loaderMargins">
+                  <CardText>Keräyksessä</CardText>
+                  <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length} id={"Keräyksessä"} />
+                </div>
+
+                <div className="loaderMargins">
+                  <CardText>Kerätty</CardText>
+                  <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} id={"Kerätty"} />
+                </div>
+
+                <div className="loaderMargins">
+                  <CardText className="hover">Ei ole</CardText>
+                  <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} id={"Ei ole"} />
+                </div>
+              </div>
+
               <Table className="Tables">
 
                 <Thead>
@@ -488,71 +373,191 @@ class PeopleCard extends Component {
                     <Th>Kerätään</Th>
                     <Th>Keräyspiste</Th>
                     <Th>Lisätietoa</Th>
+                    <Th>Keräämässä</Th>
+                    <Th>Kerättymäärä</Th>
                   </Tr>
                 </Thead>
 
-                {products.map(product =>
-                  <Tbody>
+                {producto.map(product =>
+                  <Tbody key={product._id}>
                     <Tr>
-                      <Td >
-                        <MyAutosuggest items={this.props.items} id={`kukka/${product._id}`} placeholder={product.kukka} sendClass={"AutoCompleteInput"} getDivClass={"AutoCompleteText"}/>
-                      </Td>
-
+                      <Td className="kukkaTable">{product.kukka}</Td>
+                      <Td>{product.toimi}</Td>
+                      <Td>{product.kerays}</Td>
+                      <Td className="Lisatieto">{product.lisatieto}</Td>
                       <Td>
-                        <Input type="number"
-                          name="toimi"
-                          id={`toimi/${product._id}`}
-                          onChange={this.handleChange}
-                          className="inputlabel"
-                          placeholder={product.toimi}>
+                        <Input className="keraamassaBtn"
+                          type="button"
+                          id={`keratty/${product._id}`}
+                          value={product.keratty}
+                          placeholder={product.keratty}
+                          onClick={() => { this.patchData(product) }}>
                         </Input>
                       </Td>
-
                       <Td>
-                        <Input type="select"
-                          name="kerays"
-                          id={`kerays/${product._id}`}
-                          onChange={this.handleChange}
-                          className="inputlabel"
-                          placeholder={product.kerays}>
-                          <option>Ryönä</option>
-                          <option>Tuusjärvi</option>
-                        </Input>
-                      </Td>
-
-                      <Td>
-                        <Input type="text"
-                          name="lisatieto"
-                          id={`lisatieto/${product._id}`}
-                          onChange={this.handleChange}
-                          className="inputlabel"
-                          placeholder={product.lisatieto}>
+                        <Input className="kerattyMaara"
+                          type="number"
+                          id={product._id}
+                          placeholder={product.kerattymaara}
+                          name="kerattymaara">
                         </Input>
                       </Td>
                     </Tr>
-                    <Button color="success" onClick={() => this.putData(product)}>Päivitä kukan tiedot</Button>
-                    <Button color="danger" onClick={() => this.deleteData(product)}>Poista kukka</Button>
                   </Tbody>
                 )}
               </Table>
-              <div>
-                <Button className="addFlower" onClick={() => this.addFlowers(_id, products)}>Lisää kukka</Button>
-                <Input type="number"
-                  name="addFlowersValue"
-                  className="addFlowerInput"
-                  max={10}
-                  min={1}
-                  value={this.state.addFlowersValue}
-                  onChange={this.handleChange}>
-                </Input>
-              </div>
-              <div className="taulukkoDivider"></div>
-              <Button color="success" onClick={() => this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)}>Päivitä taulukon tiedot</Button>
+              <Button disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="success" onClick={() => this.valmis()}>Valmis</Button>
+              <Button disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>Muokkaa</Button>
+              <Button disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>Poista</Button>
             </Card>
-          </Dialog>
-        </div>
-      </div>
-    )
+
+            <Dialog className="DelWarn" isOpen2={this.state.openWarning} onClose={(e) => this.setState({ openWarning: false })}>
+
+              <Card className="Cards">
+
+                <CardTitle className="warningBox">Haluatko poistaa tämän taulun?</CardTitle>
+                <CardText className="warningBox">ID: {_id}</CardText>
+                <CardText className="warningBox">KAUPPA: {kauppa}</CardText>
+                <CardText className="warningBox">KERÄYSPÄIVÄMÄÄRÄ: {date}</CardText>
+                <CardText className="warningBox">TOIMITUSPÄIVÄMÄÄRÄ: {toimituspvm}</CardText>
+                <CardText className="warningBox">KUKKIEN MÄÄRÄ: {products.length}</CardText>
+
+                <Button className="btn" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>Kyllä</Button>
+                <Button className="btn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
+
+              </Card>
+            </Dialog>
+
+
+            <Dialog className="DelWarn" isOpen2={this.state.valmisWarning} onClose={(e) => this.setState({ valmisWarning: false })}>
+
+              <Card className="Cards">
+
+                <CardTitle className="warningBox">Haluatko viedä tämän taulu valmiina oleviin?</CardTitle>
+                <CardTitle className="warningBox">Onko kaikki jo kerätty?</CardTitle>
+                <CardText className="warningBox">ID: {_id}</CardText>
+                <CardText className="warningBox">Kauppa: {kauppa}</CardText>
+                <CardText className="warningBox">Keräyspäivämäärä: {date}</CardText>
+                <CardText className="warningBox">Toimitus päivämäärä: {toimituspvm}</CardText>
+                <CardText className="warningBox">Kerättävien kohteiden määrä: {products.length}</CardText>
+                <CardText className="warningBox">Kerätty: {counts.Kerätty === undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
+                <CardText className="warningBox">Ei ole: {counts.Eiole === undefined ? 0 : counts.Eiole}/{products.length}</CardText>
+
+                <Button className="btn" onClick={() => this.valmisData(_id, products)}>Kyllä</Button>
+                <Button className="btn" onClick={() => this.setState({ valmisWarning: false })}>Ei</Button>
+
+              </Card>
+            </Dialog>
+
+            <Dialog className="Muokkaus" isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
+              <Card className="UpdateCards">
+                <div>
+                  <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
+                  <DatePicker className="DateUpdate"
+                    selected={this.state.startDate}
+                    onChange={this.pvmMuutos}
+                    dateFormat="d/MM/yyyy"
+                    onCalendarClose={() => sessionStorage.setItem('userDate2', format(this.state.startDate, "dd/MM/yyyy"))}
+                  />
+
+                  <CardTitle className="ToimitusPVMText">Toimituspäivämäärä</CardTitle>
+                  <DatePicker className="ToimitusPVM"
+                    selected={this.state.startDate2}
+                    onChange={this.toimituspvmMuutos}
+                    dateFormat="dd/MM/yyyy"
+                  />
+
+                  <Input
+                    className="CustomerInfo"
+                    type="textarea"
+                    name="customerInfo"
+                    placeholder={alisatieto}
+                    onChange={this.handleChange}>
+                  </Input>
+                </div>
+
+                <CardTitle>
+                  <MyAutosuggest items={this.props.items2} id={`kauppa/${_id}`} placeholder={kauppa} sendClass={"AutoCompletePropsInput"} getDivClass={"AutoCompletePropsText"} />
+                </CardTitle>
+
+                <CardText>{_id}</CardText>
+                <Table className="Tables">
+
+                  <Thead>
+                    <Tr>
+                      <Th>Tuote</Th>
+                      <Th>Kerätään</Th>
+                      <Th>Keräyspiste</Th>
+                      <Th>Lisätietoa</Th>
+                    </Tr>
+                  </Thead>
+
+                  {products.map(product =>
+                    <Tbody key={"dialog" + _id}>
+                      <Tr>
+                        <Td >
+                          <MyAutosuggest items={this.props.items} id={`kukka/${product._id}`} placeholder={product.kukka} sendClass={"AutoCompleteInput"} getDivClass={"AutoCompleteText"} />
+                        </Td>
+
+                        <Td>
+                          <Input type="number"
+                            name="toimi"
+                            id={`toimi/${product._id}`}
+                            onChange={this.handleChange}
+                            className="inputlabel"
+                            placeholder={product.toimi}>
+                          </Input>
+                        </Td>
+
+                        <Td>
+                          <Input type="select"
+                            name="kerays"
+                            id={`kerays/${product._id}`}
+                            onChange={this.handleChange}
+                            className="inputlabel"
+                            placeholder={product.kerays}>
+                            <option>Ryönä</option>
+                            <option>Tuusjärvi</option>
+                          </Input>
+                        </Td>
+
+                        <Td>
+                          <Input type="text"
+                            name="lisatieto"
+                            id={`lisatieto/${product._id}`}
+                            onChange={this.handleChange}
+                            className="inputlabel"
+                            placeholder={product.lisatieto}>
+                          </Input>
+                        </Td>
+                      </Tr>
+                      <Button color="success" onClick={() => this.putData(product)}>Päivitä kukan tiedot</Button>
+                      <Button color="danger" onClick={() => this.deleteData(product)}>Poista kukka</Button>
+                    </Tbody>
+                  )}
+                </Table>
+                <div>
+                  <Button className="addFlower" onClick={() => this.addFlowers(_id, products)}>Lisää kukka</Button>
+                  <Input type="number"
+                    name="addFlowersValue"
+                    className="addFlowerInput"
+                    max={10}
+                    min={1}
+                    value={this.state.addFlowersValue}
+                    onChange={this.handleChange}>
+                  </Input>
+                </div>
+                <div className="taulukkoDivider"></div>
+                <Button color="success" onClick={() => this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)}>Päivitä taulukon tiedot</Button>
+              </Card>
+            </Dialog>
+          </div>
+        </div >
+      )
+    }
+    else {
+      return null;
+    }
   }
 }
 
