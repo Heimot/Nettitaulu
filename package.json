@@ -5,6 +5,7 @@
   "dependencies": {
     "bootstrap": "^4.0.0-alpha.6",
     "compass-mixins": "^0.12.10",
+    "fast-deep-equal": "^3.1.1",
     "i": "^0.3.6",
     "moment": "^2.24.0",
     "npm": "^6.13.7",

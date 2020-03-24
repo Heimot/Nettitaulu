@@ -1,5 +1,5 @@
 import React from 'react';
-import { Collapse, Navbar, NavbarBrand } from 'reactstrap';
+import { Navbar, NavbarBrand } from 'reactstrap';
 import './Styles/loginNav.css';
 
 export default class LoginNav extends React.Component {

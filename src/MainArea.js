@@ -7,10 +7,14 @@ import Dialogs from './components/fetch/dialog/loaderDialog';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
 import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete } from './components/fetch/apiFetch';
+
+//CSS
 import './Styles/MainAreas.css';
 
 let DataF = ["error", "abcderror"];
 let DataK = ["error", "abcderror"];
+let searchData = "";
+let chosen = "";
 
 const override = css`
   display: block;
@@ -28,6 +32,8 @@ class MainArea extends Component {
       redirect: false,
       loading: true,
       dLoader: false,
+      searched: "",
+      searchLength: 0
     }
   }
 
@@ -50,10 +56,10 @@ class MainArea extends Component {
 
     this.setState({
       people: data.product,
+      people2: data.product,
       isLoaded: true,
       loading: false
     })
-
   }
 
   async removePerson(_id, products) {
@@ -70,6 +76,16 @@ class MainArea extends Component {
     }
     await removeData(_id);
     this.setState({ people: this.state.people.filter(person => person._id !== _id), dLoader: false });
+  }
+
+  handleSearch = (search, searchChosen) => {
+    if (searchData !== search) {
+      this.setState(() => ({
+        searched: search
+      }))
+    }
+    chosen = searchChosen;
+    searchData = search;
   }
 
   render() {
@@ -94,9 +110,8 @@ class MainArea extends Component {
       return (<Redirect to={'/'} />)
     }
     let peopleCards = this.state.people.map(person => {
-      if (person.products.length > 0) {
         return (
-          <Container fluid>
+          <Container fluid key={person._id}>
             <Row>
               <Dialogs isOpen={this.state.dLoader}>
                 <div className="Spinner">
@@ -109,14 +124,13 @@ class MainArea extends Component {
                   />
                 </div>
               </Dialogs>
-              <PeopleCard key={person._id} getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={DataF} items2={DataK}/>
-              <Nav style={{ visibility: "hidden;" }} getTables={this.getTables.bind(this)} />
+              <PeopleCard getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen}
+                getSearch={this.handleSearch} />
+
+              <Nav getTables={this.getTables.bind(this)} getSearch={this.handleSearch} />
             </Row>
           </Container>
-
-
         )
-      }
     })
     return (
       <Container fluid>
