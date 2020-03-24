@@ -69,11 +69,27 @@
     }
 
     .SearchBTN {
-        visibility: hidden;
+        font-size: 20px !important;
+        width: 35 !important;
+        height: 35px !important;
+    }
+
+    .searchDiv {
+        position: absolute;
+        font-size: 20px;
+        width: 350px;
+        height: 35px;
+        display: flex;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        align-self: center;
     }
 
     .SearchInput {
-        visibility: hidden;
+        font-size: 20px !important;
+        width: 250px !important;
+        height: 35px !important;
     }
 
     .locationBtn {

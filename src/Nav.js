@@ -1,6 +1,6 @@
 import React from 'react';
 import DatePicker from "react-datepicker";
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, Button, Input, Card, CardTitle, CardText } from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, Button, Input, Card, CardTitle } from 'reactstrap';
 import Dialog from './components/fetch/dialog/editDialog';
 import Dialogs from './components/fetch/dialog/loaderDialog';
 import { Redirect } from 'react-router-dom';
@@ -72,11 +72,11 @@ export default class TopNav extends React.Component {
       dateValue: null,
       startDate2: new Date(),
       startDate3: new Date(),
-      toimituspvm: new Date(),
       date: new Date(),
       _id: '',
       dLoader: false,
       testLoader: true,
+      search: "kukkia"
     };
     this.toggle = this.toggle.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -92,6 +92,9 @@ export default class TopNav extends React.Component {
           localStorage.setItem('userLocation', "Molemmat")
           break;
         case "Molemmat":
+          localStorage.setItem('userLocation', "Ryönä")
+          break;
+        default:
           localStorage.setItem('userLocation', "Ryönä")
           break;
       }
@@ -319,23 +322,28 @@ export default class TopNav extends React.Component {
   };
 
   async Tarkastus() {
-try{
-    switch (sessionStorage.getItem("userValmis")) {
-      case "Ei":
-        sessionStorage.setItem("userValmis", "Kerätty");
-        sessionStorage.setItem("siteName", "Valmiit");
-        sessionStorage.setItem("btnName", "Valmiit");
-        break;
-      case "Kerätty":
-        sessionStorage.setItem("userValmis", "Ei");
-        sessionStorage.setItem("siteName", "Kerättävät");
-        sessionStorage.setItem("btnName", "Kerättävät");
-        break;
+    try {
+      switch (sessionStorage.getItem("userValmis")) {
+        case "Ei":
+          sessionStorage.setItem("userValmis", "Kerätty");
+          sessionStorage.setItem("siteName", "Valmiit");
+          sessionStorage.setItem("btnName", "Valmiit");
+          break;
+        case "Kerätty":
+          sessionStorage.setItem("userValmis", "Ei");
+          sessionStorage.setItem("siteName", "Kerättävät");
+          sessionStorage.setItem("btnName", "Kerättävät");
+          break;
+        default:
+          sessionStorage.setItem("userValmis", "Ei");
+          sessionStorage.setItem("siteName", "Kerättävät");
+          sessionStorage.setItem("btnName", "Kerättävät");
+          break;
+      }
+      window.location.reload()
+    } catch (err) {
+      console.log(err)
     }
-    window.location.reload()
-  } catch(err) {
-    console.log(err)
-  }
   }
 
   async addNewFlowers(_id, products) {
@@ -407,8 +415,37 @@ try{
     }
   }
 
-  render() {
+  searchInput = (e) => {
+    try {
+      let search = e.target.value;
+      let searchChosen = this.state.search;
+      this.props.getSearch(search, searchChosen)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
+  changeSearch() {
+    switch (this.state.search) {
+      case "kukkia":
+        this.setState({
+          search: "kauppoja"
+        })
+        break;
+      case "kauppoja":
+        this.setState({
+          search: "kukkia"
+        })
+        break;
+      default:
+        this.setState({
+          search: "kukkia"
+        })
+        break;
+    }
+  }
+
+  render() {
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
     }
@@ -426,6 +463,10 @@ try{
           </div>
         </Dialogs>
         <Navbar light color="info" fixed="top">
+          <div className="searchDiv">
+            <Button className="SearchBTN" color="success" onClick={() => this.changeSearch()}>^</Button>
+            <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} />
+          </div>
           <NavbarToggler right className="Toggler" onClick={this.toggle} />
           <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("siteName")}</NavbarBrand>
           <Collapse isOpen={this.state.isOpen} navbar>
@@ -444,8 +485,6 @@ try{
                 withPortal
               />
 
-              <Input className="SearchInput" placeholder="Kukan nimi" id="number" type="string" onChange={(evt) => { global.nimi11 = evt.target.value; }} />
-              <Button className="SearchBTN">Search</Button>
 
               <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false, isOpen: false })}>
                 <Card className="AddCard">
@@ -492,7 +531,7 @@ try{
                       </Thead>
 
                       {userDatas.products.map(newData =>
-                        <Tbody>
+                        <Tbody key={newData._id}>
                           <Tr>
 
                             <Td >
