@@ -3,7 +3,7 @@ import { Container, Row } from 'reactstrap';
 import PeopleCard from './PeopleCard';
 import Nav from './Nav';
 import { Redirect } from 'react-router-dom';
-import Dialogs from './components/fetch/dialog/loaderDialog';
+import Dialogs from './components/dialog/loaderDialog';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
 import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete } from './components/fetch/apiFetch';
@@ -23,6 +23,7 @@ const override = css`
 `;
 
 class MainArea extends Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
     this.state = {
@@ -32,24 +33,29 @@ class MainArea extends Component {
       redirect: false,
       loading: true,
       dLoader: false,
+      updateOnce: false,
       searched: "",
       searchLength: 0
     }
+    this.getTables = this.getTables.bind(this);
+    this.removePerson = this.removePerson.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidMount() {
-    this.getTables();
-    if (sessionStorage.getItem('userData')) {
-    } else {
-      this.setState({
+    if (sessionStorage.getItem("userData") === null) {
+      this.setState(() => ({
         redirect: true
-      });
+      }));
     }
+    this._isMounted = true;
+    this.getTables();
   }
 
 
+
   getTables = async () => {
-    const data = await getData();
+    const data = await getData(searchData, chosen);
     const Datas = await getFlowersToAutocomplete();
     DataK = Datas[1].kaupat
     DataF = Datas[0].flowers;
@@ -75,7 +81,8 @@ class MainArea extends Component {
       await deleteFlowersData(id);
     }
     await removeData(_id);
-    this.setState({ people: this.state.people.filter(person => person._id !== _id), dLoader: false });
+    this.setState({ dLoader: false })
+    this.getTables();
   }
 
   handleSearch = (search, searchChosen) => {
@@ -89,8 +96,11 @@ class MainArea extends Component {
   }
 
   render() {
+    if(this.state.redirect) {
+      return <Redirect to="/" />
+    }
 
-    if (this.state.isLoaded === false) {
+    if (!this.state.isLoaded) {
       return <div className="Spinner">
         <Loader
           css={override}
@@ -103,13 +113,23 @@ class MainArea extends Component {
     }
 
     if (this.state.people.length <= 0 && this.state.isLoaded === true) {
-      return <h1 className="TEST">Ei kerättävää päivällä {sessionStorage.getItem("userDate")}</h1>
+      if (this.state.updateOnce) {
+        this.getTables();
+
+      }
+      return (
+        <div>
+          <h1 className="TEST">Ei kerättävää päivällä {sessionStorage.getItem("userDate")}</h1>
+        </div>
+      )
     }
 
-    if (this.state.redirect) {
-      return (<Redirect to={'/'} />)
+    if (!this.state.updateOnce) {
+      this.setState(() => ({ updateOnce: true }))
     }
+
     let peopleCards = this.state.people.map(person => {
+      if (person.products.length > 0 || localStorage.getItem("userLocation") === "Molemmat") {
         return (
           <Container fluid key={person._id}>
             <Row>
@@ -124,13 +144,16 @@ class MainArea extends Component {
                   />
                 </div>
               </Dialogs>
-              <PeopleCard getTables={this.getTables.bind(this)} removePerson={this.removePerson.bind(this)} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen}
-                getSearch={this.handleSearch} />
+              <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen}
+                handleSearch={this.handleSearch} />
 
-              <Nav getTables={this.getTables.bind(this)} getSearch={this.handleSearch} />
+              <Nav getTables={this.getTables} handleSearch={this.handleSearch} items={DataF} items2={DataK} />
             </Row>
           </Container>
         )
+      } else {
+        return (<Nav getTables={this.getTables} handleSearch={this.handleSearch} items={DataF} items2={DataK} />)
+      }
     })
     return (
       <Container fluid>
