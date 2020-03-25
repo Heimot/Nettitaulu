@@ -6,7 +6,6 @@ import MainArea from './MainArea';
 import LogIn from './LogIn';
 import LoginNav from './LoginNav';
 import './Styles/App.css';
-import MainCheckArea from './MainCheckArea';
 import frontPage from './components/Etusivu/frontPage';
 
 class App extends Component {
@@ -19,8 +18,6 @@ class App extends Component {
           <Route path="/main" exact component={frontPage} />
           <Route path="/main/tables" exact component={TopNav} />
           <Route path="/main/tables" component={MainArea} />
-          <Route path="/checked" component={TopNav} />
-          <Route path="/checked" component={MainCheckArea} />
         </div>
       </Router>
     );
