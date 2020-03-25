@@ -1,6 +1,7 @@
 import format from "date-fns/format";
+import { FETCH_URL } from "../url";
 
-export const getData = () => {
+export const getData = (searchData, chosen) => {
   var GETwAuth = {
     method: 'GET',
     headers: {
@@ -19,11 +20,20 @@ export const getData = () => {
   let dateQ = `?date=${date}`;
   let valmisQ = `&valmis=${sessionStorage.getItem("userValmis")}`;
   let keraysQ = `&kerays=${localStorage.getItem('userLocation')}`;
+  let kukkaQ = `&kukka=`;
+  let kauppaQ = `&kauppa=`
+
+  if(searchData !== "" && chosen === "kauppoja") {
+    kauppaQ = `&kauppa=${searchData}`;
+  } else if(searchData !== "" && chosen === "kukkia") {
+    kukkaQ = `&kukka=${searchData}`;
+  }
+
   if (localStorage.getItem('userLocation') === "Molemmat") {
     keraysQ = "&kerays="
   }
 
-  return fetch('http://localhost:3002/orders/tables' + dateQ + valmisQ + keraysQ, GETwAuth)
+  return fetch(FETCH_URL + 'orders/tables' + dateQ + valmisQ + keraysQ + kukkaQ + kauppaQ, GETwAuth)
     .then(res => res.json())
     .catch((error) => {
       console.log(error);
@@ -40,7 +50,7 @@ export const getFlowersToAutocomplete = () => {
     }
   }
 
-  return fetch('http://localhost:3002/items/flowers', GETwAuth)
+  return fetch(FETCH_URL + 'items/flowers', GETwAuth)
     .then(res => res.json())
     .catch((error) => {
       console.log(error);
@@ -48,7 +58,7 @@ export const getFlowersToAutocomplete = () => {
 }
 
 export const removeData = (_id) => {
-  fetch('http://localhost:3002/orders/delete/id/' + _id, {
+  fetch(FETCH_URL +  + 'orders/delete/id/' + _id, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -63,7 +73,7 @@ export const removeData = (_id) => {
 }
 
 export const deleteFlowerData = (product) => {
-  fetch('http://localhost:3002/products/delete/id/' + product._id, {
+  fetch(FETCH_URL + 'products/delete/id/' + product._id, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -78,7 +88,7 @@ export const deleteFlowerData = (product) => {
 }
 
 export const deleteFlowersData = (id) => {
-  fetch('http://localhost:3002/products/delete/id/' + id, {
+  fetch(FETCH_URL + 'products/delete/id/' + id, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -109,7 +119,7 @@ export const updateFlower = (product, kukka, toimi, kerays, lisatieto) => {
     lisatieto = product.lisatieto;
   }
 
-  fetch('http://localhost:3002/products/put/id/' + product._id, {
+  fetch(FETCH_URL + 'products/put/id/' + product._id, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -148,7 +158,7 @@ export const updateFlowers = (userDatas, id, kukka, toimi, kerays, lisatieto) =>
     lisatieto = userDatas.products.lisatieto;
   }
 
-  fetch('http://localhost:3002/products/put/id/' + id, {
+  fetch(FETCH_URL + 'products/put/id/' + id, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -179,7 +189,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
 
   if (idvalues === 'Odottaa keräystä') {
     document.getElementById(`keratty/${product._id}`).value = "Keräyksessä";
-    fetch('http://localhost:3002/products/patch/id/' + product._id, {
+    fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -207,7 +217,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
 
   if (idvalues === "Keräyksessä") {
     document.getElementById(`keratty/${product._id}`).value = "Kerätty";
-    fetch('http://localhost:3002/products/patch/id/' + product._id, {
+    fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -235,7 +245,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
 
   if (idvalues === "Kerätty") {
     document.getElementById(`keratty/${product._id}`).value = "Ei ole";
-    fetch('http://localhost:3002/products/patch/id/' + product._id, {
+    fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -263,7 +273,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
 
   if (idvalues === "Ei ole") {
     document.getElementById(`keratty/${product._id}`).value = "Odottaa keräystä";
-    fetch('http://localhost:3002/products/patch/id/' + product._id, {
+    fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -305,7 +315,7 @@ export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kau
     toimitusaika = toimituspvm;
   }
 
-  fetch('http://localhost:3002/orders/put/id/' + _id, {
+  fetch(FETCH_URL + 'orders/put/id/' + _id, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -346,7 +356,7 @@ export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusai
     toimitusaika = userDatas.products.toimituspvm;
   }
 
-  fetch('http://localhost:3002/orders/put/id/' + userDatas._id, {
+  fetch(FETCH_URL + 'orders/put/id/' + userDatas._id, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -370,7 +380,7 @@ export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusai
 }
 
 export const patchValmiusData = (valmius, id) => {
-  fetch('http://localhost:3002/orders/patch/id/' + id, {
+  fetch(FETCH_URL + 'orders/patch/id/' + id, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -393,7 +403,7 @@ export const patchValmiusData = (valmius, id) => {
 }
 
 export const patchValmiusProductsData = (id, valmius) => {
-  fetch('http://localhost:3002/products/patch/id/' + id, {
+  fetch(FETCH_URL + 'products/patch/id/' + id, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
