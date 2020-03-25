@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Row, Card, Input, Button } from 'reactstrap';
-import Dialog from './components/fetch/dialog/editDialog';
+import Dialog from './components/dialog/editDialog';
 import { Redirect } from 'react-router-dom';
+import { FETCH_URL } from './components/url';
 
 class TableArea extends Component {
   constructor() {
@@ -16,7 +17,7 @@ class TableArea extends Component {
   }
 
   login() {
-      fetch('http://localhost:3002/user/login', {
+      fetch(FETCH_URL + 'user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
