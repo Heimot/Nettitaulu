@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import DatePicker from "react-datepicker";
 import { Card, CardText, CardTitle, Button, Input } from 'reactstrap';
-import Dialog from './components/fetch/dialog/editDialog';
+import Dialog from './components/dialog/editDialog';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
 import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData, patchValmiusProductsData } from './components/fetch/apiFetch';
 import MyAutosuggest from "./components/autoComplete/autoComplete";
+import { FETCH_URL } from "./components/url";
 
 //CSS files
 import "./Styles/Table.css";
@@ -166,7 +167,7 @@ class PeopleCard extends Component {
     let i = 0;
     while (i < this.state.addFlowersValue) {
 
-      await fetch('http://localhost:3002/products/post', {
+      await fetch(FETCH_URL + 'products/post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -200,7 +201,7 @@ class PeopleCard extends Component {
 
   addToIDS(_id) {
     var filteredProducts = this.state.idArray.filter(Boolean);
-    fetch('http://localhost:3002/orders/put/id/' + _id, {
+    fetch(FETCH_URL + 'orders/put/id/' + _id, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -314,7 +315,6 @@ class PeopleCard extends Component {
     let array = [];
     let result = {};
     let counts = {};
-    let producto = [];
     array.push(
       products.map(doc => {
         return doc.keratty;
@@ -326,13 +326,7 @@ class PeopleCard extends Component {
     }
     Object.keys(result).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
 
-    if (this.props.search !== "" && this.props.chosenData === "kukkia") {
-      producto = products.filter(filtered => filtered.kukka.toLowerCase().includes(this.props.search.toLowerCase()));
-    } else {
-      producto = products;
-    }
 
-    if (producto.length > 0) {
       return (
         <div className="myDiv">
           <div className="NavBlock"></div>
@@ -378,13 +372,13 @@ class PeopleCard extends Component {
                   </Tr>
                 </Thead>
 
-                {producto.map(product =>
+                {products.map(product =>
                   <Tbody key={product._id}>
                     <Tr>
-                      <Td className="kukkaTable">{product.kukka}</Td>
+                      <Td className="KukkaTable">{product.kukka}</Td>
                       <Td>{product.toimi}</Td>
                       <Td>{product.kerays}</Td>
-                      <Td className="Lisatieto">{product.lisatieto}</Td>
+                      <Td >{product.lisatieto}</Td>
                       <Td>
                         <Input className="keraamassaBtn"
                           type="button"
@@ -495,8 +489,10 @@ class PeopleCard extends Component {
                   {products.map(product =>
                     <Tbody key={"dialog" + _id}>
                       <Tr>
-                        <Td >
+                        <Td>
+                          <div className="inputlabelU">
                           <MyAutosuggest items={this.props.items} id={`kukka/${product._id}`} placeholder={product.kukka} sendClass={"AutoCompleteInput"} getDivClass={"AutoCompleteText"} />
+                          </div>
                         </Td>
 
                         <Td>
@@ -504,7 +500,7 @@ class PeopleCard extends Component {
                             name="toimi"
                             id={`toimi/${product._id}`}
                             onChange={this.handleChange}
-                            className="inputlabel"
+                            className="inputlabelU"
                             placeholder={product.toimi}>
                           </Input>
                         </Td>
@@ -514,7 +510,7 @@ class PeopleCard extends Component {
                             name="kerays"
                             id={`kerays/${product._id}`}
                             onChange={this.handleChange}
-                            className="inputlabel"
+                            className="inputlabelU"
                             placeholder={product.kerays}>
                             <option>Ryönä</option>
                             <option>Tuusjärvi</option>
@@ -526,7 +522,7 @@ class PeopleCard extends Component {
                             name="lisatieto"
                             id={`lisatieto/${product._id}`}
                             onChange={this.handleChange}
-                            className="inputlabel"
+                            className="inputlabelU"
                             placeholder={product.lisatieto}>
                           </Input>
                         </Td>
@@ -554,10 +550,6 @@ class PeopleCard extends Component {
           </div>
         </div >
       )
-    }
-    else {
-      return null;
-    }
   }
 }
 
