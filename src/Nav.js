@@ -1,16 +1,19 @@
 import React from 'react';
 import DatePicker from "react-datepicker";
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, Button, Input, Card, CardTitle } from 'reactstrap';
-import Dialog from './components/fetch/dialog/editDialog';
-import Dialogs from './components/fetch/dialog/loaderDialog';
+import Dialog from './components/dialog/editDialog';
+import Dialogs from './components/dialog/loaderDialog';
 import { Redirect } from 'react-router-dom';
 import format from "date-fns/format";
 import { Table, Thead, Tr, Tbody, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import MyAutosuggest from './components/autoComplete/autoComplete';
 import { updateFlowers, putFlowersCreatedOrderData } from './components/fetch/apiFetch';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
+import { FETCH_URL } from "./components/url";
 
+//CSS
 import "./Styles/Nav.css";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -20,6 +23,7 @@ const override = css`
   border-color: red;
 `;
 
+let search = "";
 let idSafe = "";
 let userDatas = {
   valmis: 0,
@@ -54,7 +58,6 @@ export default class TopNav extends React.Component {
 
       kauppa: '',
       customerInfo: '',
-      toimituspvm: '',
 
       kukka: '',
       toimi: '',
@@ -70,6 +73,7 @@ export default class TopNav extends React.Component {
       isLoading: true,
       startDate: null,
       dateValue: null,
+      toimituspvm: new Date(),
       startDate2: new Date(),
       startDate3: new Date(),
       date: new Date(),
@@ -86,27 +90,32 @@ export default class TopNav extends React.Component {
     try {
       switch (localStorage.getItem('userLocation')) {
         case "Ryönä":
-          localStorage.setItem('userLocation', "Tuusjärvi")
+          localStorage.setItem('userLocation', "Tuusjärvi");
+          this.setState({ isOpen: false });
           break;
         case "Tuusjärvi":
-          localStorage.setItem('userLocation', "Molemmat")
+          localStorage.setItem('userLocation', "Molemmat");
+          this.setState({ isOpen: false });
           break;
         case "Molemmat":
-          localStorage.setItem('userLocation', "Ryönä")
+          localStorage.setItem('userLocation', "Ryönä");
+          this.setState({ isOpen: false });
           break;
         default:
-          localStorage.setItem('userLocation', "Ryönä")
+          localStorage.setItem('userLocation', "Ryönä");
+          this.setState({ isOpen: false });
           break;
       }
       this.props.getTables();
     } catch (err) {
+      console.log(err)
     }
 
   }
 
   async putOrderData(userDatas) {
     try {
-      var asiakas = this.state.kauppa;
+      var asiakas = document.getElementById(`kauppa/${userDatas._id}`).value;
       var asiakaslisatieto = this.state.customerInfo;
       var keraysPVM = format(this.state.startDate2, "dd/MM/yyyy");
       var toimitusaika = format(this.state.startDate3, "dd/MM/yyyy");
@@ -159,7 +168,7 @@ export default class TopNav extends React.Component {
   }
 
   async getFetchData() {
-    await fetch('http://localhost:3002/orders/get/id/' + idSafe, {
+    await fetch(FETCH_URL + 'orders/get/id/' + idSafe, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -182,7 +191,7 @@ export default class TopNav extends React.Component {
     let i = 0;
     while (i < this.state.addFlowersValue) {
 
-      await fetch('http://localhost:3002/products/post', {
+      await fetch(FETCH_URL + 'products/post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -213,7 +222,7 @@ export default class TopNav extends React.Component {
 
   async addToIDS(_id) {
     var filteredProducts = this.state.idArray.filter(Boolean);
-    await fetch('http://localhost:3002/orders/post/', {
+    await fetch(FETCH_URL + 'orders/post/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -358,7 +367,7 @@ export default class TopNav extends React.Component {
     let i = 0;
     while (i < this.state.addFlowersValue) {
 
-      await fetch('http://localhost:3002/products/post', {
+      await fetch(FETCH_URL + 'products/post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -391,7 +400,7 @@ export default class TopNav extends React.Component {
   addToNewIDS(_id) {
     try {
       var filteredProducts = this.state.idArray.filter(Boolean);
-      fetch('http://localhost:3002/orders/put/id/' + _id, {
+      fetch(FETCH_URL + 'orders/put/id/' + _id, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -417,9 +426,9 @@ export default class TopNav extends React.Component {
 
   searchInput = (e) => {
     try {
-      let search = e.target.value;
+      search = e.target.value;
       let searchChosen = this.state.search;
-      this.props.getSearch(search, searchChosen)
+      this.props.handleSearch(search, searchChosen)
     } catch (err) {
       console.log(err)
     }
@@ -445,6 +454,19 @@ export default class TopNav extends React.Component {
     }
   }
 
+  handleKey = (e) => {
+    if (e.keyCode === 13) {
+      this.props.getTables();
+      e.target.value = "";
+      search = "";
+      this.props.handleSearch(search)
+    }
+  }
+
+  updateSearch() {
+    this.props.getTables();
+  }
+
   render() {
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
@@ -464,8 +486,8 @@ export default class TopNav extends React.Component {
         </Dialogs>
         <Navbar light color="info" fixed="top">
           <div className="searchDiv">
-            <Button className="SearchBTN" color="success" onClick={() => this.changeSearch()}>^</Button>
-            <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} />
+            <Button className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
+            <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
           </div>
           <NavbarToggler right className="Toggler" onClick={this.toggle} />
           <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("siteName")}</NavbarBrand>
@@ -513,10 +535,9 @@ export default class TopNav extends React.Component {
                         onChange={this.handleChange}>
                       </Input>
 
-                      <Input name="kauppa"
-                        onChange={this.handleChange}
-                        placeholder={userDatas.kauppa}>
-                      </Input>
+                      <div className="Customer">
+                        <MyAutosuggest items={this.props.items2} id={`kauppa/${userDatas._id}`} placeholder={userDatas.kauppa} sendClass={"AutoCompletePropsInput"} getDivClass={"AutoCompletePropsText"} />
+                      </div>
                     </div>
 
                     <Table>
@@ -535,13 +556,9 @@ export default class TopNav extends React.Component {
                           <Tr>
 
                             <Td >
-                              <Input type="text"
-                                name="kukka"
-                                id={`kukka/${newData._id}`}
-                                onChange={this.handleChange}
-                                className="inputlabel"
-                                placeholder={newData.kukka}>
-                              </Input>
+                              <div className="inputlabelU">
+                                <MyAutosuggest items={this.props.items} id={`kukka/${newData._id}`} placeholder={newData.kukka} sendClass={"AutoCompleteInput"} getDivClass={"AutoCompleteText"} />
+                              </div>
                             </Td>
 
                             <Td>
@@ -549,7 +566,7 @@ export default class TopNav extends React.Component {
                                 name="toimi"
                                 id={`toimi/${newData._id}`}
                                 onChange={this.handleChange}
-                                className="inputlabel"
+                                className="inputlabelU"
                                 placeholder={newData.toimi}>
                               </Input>
                             </Td>
@@ -559,7 +576,7 @@ export default class TopNav extends React.Component {
                                 name="kerays"
                                 id={`kerays/${newData._id}`}
                                 onChange={this.handleChange}
-                                className="inputlabel"
+                                className="inputlabelU"
                                 placeholder={newData.kerays}>
                               </Input>
                             </Td>
@@ -569,7 +586,7 @@ export default class TopNav extends React.Component {
                                 name="lisatieto"
                                 id={`lisatieto/${newData._id}`}
                                 onChange={this.handleChange}
-                                className="inputlabel"
+                                className="inputlabelU"
                                 placeholder={newData.lisatieto}>
                               </Input>
                             </Td>
