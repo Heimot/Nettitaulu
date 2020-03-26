@@ -1,5 +1,5 @@
 import format from "date-fns/format";
-import { FETCH_URL } from "../url";
+import { FETCH_URL } from "./url";
 
 export const getData = (searchData, chosen) => {
   var GETwAuth = {
@@ -23,9 +23,9 @@ export const getData = (searchData, chosen) => {
   let kukkaQ = `&kukka=`;
   let kauppaQ = `&kauppa=`
 
-  if(searchData !== "" && chosen === "kauppoja") {
+  if (searchData !== "" && chosen === "kauppoja") {
     kauppaQ = `&kauppa=${searchData}`;
-  } else if(searchData !== "" && chosen === "kukkia") {
+  } else if (searchData !== "" && chosen === "kukkia") {
     kukkaQ = `&kukka=${searchData}`;
   }
 
@@ -34,6 +34,23 @@ export const getData = (searchData, chosen) => {
   }
 
   return fetch(FETCH_URL + 'orders/tables' + dateQ + valmisQ + keraysQ + kukkaQ + kauppaQ, GETwAuth)
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+
+}
+
+export const getUserData = () => {
+  var GETwAuth = {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    }
+  }
+
+  return fetch(FETCH_URL + 'user/get/users', GETwAuth)
     .then(res => res.json())
     .catch((error) => {
       console.log(error);
@@ -58,7 +75,7 @@ export const getFlowersToAutocomplete = () => {
 }
 
 export const removeData = (_id) => {
-  fetch(FETCH_URL +  + 'orders/delete/id/' + _id, {
+  fetch(FETCH_URL + 'orders/delete/id/' + _id, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -89,6 +106,21 @@ export const deleteFlowerData = (product) => {
 
 export const deleteFlowersData = (id) => {
   fetch(FETCH_URL + 'products/delete/id/' + id, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+  })
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const delUserData = () => {
+  fetch(FETCH_URL + 'user/delete/id/' + sessionStorage.getItem("delID"), {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -379,8 +411,8 @@ export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusai
     });
 }
 
-export const patchValmiusData = (valmius, id) => {
-  fetch(FETCH_URL + 'orders/patch/id/' + id, {
+export const patchValmiusData = (valmius2, _id, location) => {
+  fetch(FETCH_URL + 'orders/patch/id/' + _id, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -388,8 +420,8 @@ export const patchValmiusData = (valmius, id) => {
     },
     body: JSON.stringify([
       {
-        propName: "valmis",
-        value: valmius,
+        propName: location,
+        value: valmius2,
       },
     ])
   })
