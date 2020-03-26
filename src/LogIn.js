@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, Row, Card, Input, Button } from 'reactstrap';
 import Dialog from './components/dialog/editDialog';
 import { Redirect } from 'react-router-dom';
-import { FETCH_URL } from './components/url';
+import { FETCH_URL } from './components/fetch/url';
 
 class TableArea extends Component {
   constructor() {
@@ -32,6 +32,7 @@ class TableArea extends Component {
           let result = json;
           if(result.token) {
           sessionStorage.setItem('userData', result.token);
+          this.parseJwt();
           this.setState({
             redirect: true
           });
@@ -41,6 +42,16 @@ class TableArea extends Component {
           console.log(error);
         });
   }
+
+  parseJwt() {
+    var base64Url = sessionStorage.getItem('userData').split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    sessionStorage.setItem('userRole', JSON.parse(jsonPayload).roles)
+  };
 
   handleChange = (event) => {
     this.setState({
