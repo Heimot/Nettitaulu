@@ -47,6 +47,10 @@ class MainArea extends Component {
       this.setState(() => ({
         redirect: true
       }));
+    } else {
+      setInterval(() => {
+        this.getTables();
+      }, 10000)
     }
     this._isMounted = true;
     this.getTables();
@@ -62,7 +66,6 @@ class MainArea extends Component {
 
     this.setState({
       people: data.product,
-      people2: data.product,
       isLoaded: true,
       loading: false
     })
@@ -129,7 +132,7 @@ class MainArea extends Component {
     }
 
     let peopleCards = this.state.people.map(person => {
-      if (person.products.length > 0 || localStorage.getItem("userLocation") === "Molemmat") {
+      if ((person.products.length > 0 && person.tuusjarvi === "Ei") || (person.products.length > 0 && person.ryona === "Ei") || (localStorage.getItem("userLocation") === "Molemmat" && sessionStorage.getItem("userValmis") !== "Kerätty" && person.tuusjarvi !== "Kyllä" && person.ryona !== "Kyllä") || (sessionStorage.getItem("userValmis") === "Kerätty" && person.ryona === "Kyllä" && sessionStorage.getItem("userValmis") === "Kerätty" && person.tuusjarvi === "Kyllä")) {
         return (
           <Container fluid key={person._id}>
             <Row>
