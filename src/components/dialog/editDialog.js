@@ -4,12 +4,12 @@ import { Button } from 'reactstrap';
 let dialogStyles = {
     width: '1000px',
     maxWidth: '100%',
-    height: '90%',
-    maxHeight: '100%',
+    height: 'auto',
+    maxHeight: '85%',
     margin: '0 auto',
     position: 'fixed',
     left: '50%',
-    top: '53%',
+    top: '50%',
     transform: 'translate(-50%,-50%)',
     zIndex: '999',
     backgroundColor: '#eee',
@@ -20,6 +20,7 @@ let dialogStyles = {
     resize: 'both',
     overflow: 'auto'
 };
+
 
 let dialogCloseButtonStyles = {
     marginBottom: '15px',
