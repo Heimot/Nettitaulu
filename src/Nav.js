@@ -11,7 +11,7 @@ import MyAutosuggest from './components/autoComplete/autoComplete';
 import { updateFlowers, putFlowersCreatedOrderData } from './components/fetch/apiFetch';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
-import { FETCH_URL } from "./components/url";
+import { FETCH_URL } from "./components/fetch/url";
 
 //CSS
 import "./Styles/Nav.css";
@@ -498,13 +498,12 @@ export default class TopNav extends React.Component {
                 {sessionStorage.getItem("btnName")}
               </Button>
 
-              <DatePicker className="Datepicker"
+              <DatePicker className="Datepick"
                 value={this.state.dateValue}
                 selected={this.state.startDate}
                 onChange={this.handleChange2}
                 onCalendarClose={() => sessionStorage.setItem('userDate', format(this.state.startDate, "dd/MM/yyyy"), window.location.reload())}
                 dateFormat="d/MM/yyyy"
-                withPortal
               />
 
 
@@ -572,12 +571,14 @@ export default class TopNav extends React.Component {
                             </Td>
 
                             <Td>
-                              <Input type="text"
+                              <Input type="select"
                                 name="kerays"
                                 id={`kerays/${newData._id}`}
                                 onChange={this.handleChange}
                                 className="inputlabelU"
                                 placeholder={newData.kerays}>
+                                <option>Ryönä</option>
+                                <option>Tuusjärvi</option>
                               </Input>
                             </Td>
 
