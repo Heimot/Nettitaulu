@@ -42,10 +42,9 @@
         background: #000;
         color: #fff;
     }
-    .Datepicker {
-        position: absolute;
-        right: 150px;
-        bottom: -75px;
+    .Datepick {
+        position: relative;
+        top: 10px;
         height: 40px;
         width: 150px;
         text-align: center;
@@ -59,6 +58,7 @@
         height: 40px;
         font-size: 20px !important;
         font-weight: bold !important;
+        z-index: 1000;
     }
     .SearchBTN {
         font-size: 20px !important;
@@ -68,7 +68,7 @@
     .searchDiv {
         position: absolute;
         font-size: 20px;
-        width: 350px;
+        width: 285px;
         height: 35px;
         display: flex;
         top: 50%;
@@ -197,10 +197,10 @@
         background: #000;
         color: #fff;
     }
-    .Datepicker {
-        position: absolute;
-        right: 150px;
-        bottom: -75px;
+    .Datepick {
+        position: relative;
+        top: 7px;
+        left: 0px;
         height: 40px;
         width: 150px;
         text-align: center;
@@ -214,11 +214,12 @@
         height: 40px;
         font-size: 20px !important;
         font-weight: bold !important;
+        z-index: 1000;
     }
     .SearchBTN {
         font-size: 20px !important;
-        width: 35 !important;
-        height: 35px !important;
+        width: 25px !important;
+        height: 25px !important;
     }
     .DataCard {
         width: 100%;
@@ -230,8 +231,8 @@
     .searchDiv {
         position: absolute;
         font-size: 20px;
-        width: 350px;
-        height: 35px;
+        width: 275px;
+        height: 25px;
         display: flex;
         top: 50%;
         left: 50%;
@@ -241,7 +242,7 @@
     .SearchInput {
         font-size: 20px !important;
         width: 250px !important;
-        height: 35px !important;
+        height: 25px !important;
     }
     .locationBtn {
         position: absolute;
@@ -376,6 +377,7 @@
         height: 40px;
         font-size: 20px !important;
         font-weight: bold !important;
+        z-index: 1000;
     }
     .SearchBTN {
         font-size: 20px !important;
@@ -385,7 +387,7 @@
     .searchDiv {
         position: absolute;
         font-size: 20px;
-        width: 350px;
+        width: 285px;
         height: 35px;
         display: flex;
         top: 50%;
@@ -531,27 +533,28 @@
         height: 40px;
         font-size: 20px !important;
         font-weight: bold !important;
+        z-index: 1000;
     }
     .SearchBTN {
         font-size: 20px !important;
         width: 35 !important;
-        height: 35px !important;
+        height: 40px !important;
     }
     .searchDiv {
         position: absolute;
         font-size: 20px;
-        width: 350px;
+        width: 175px;
         height: 35px;
         display: flex;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        top: 40%;
+        left: 32.5%;
+        transform: translate(-27%, -55%);
         align-self: center;
     }
     .SearchInput {
         font-size: 15px !important;
         width: 140px !important;
-        height: 35px !important;
+        height: 40px !important;
     }
     .locationBtn {
         position: absolute;
