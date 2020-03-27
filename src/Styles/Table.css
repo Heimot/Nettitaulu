@@ -1,4 +1,19 @@
 @media screen and (min-width: 70em) {
+        .vieExcel {
+        width: 100% !important;
+    }
+    .poistaBtn {
+        width: 100% !important;
+    }
+    .muokkaaBtn {
+        width: 100% !important;
+    }
+    .valmisBtn {
+        width: 100% !important;
+    }
+    .dialogBtn {
+        width: 100% !important;
+    }
     .Lisatieto {
         width: auto;
         max-width: 200px;
@@ -11,9 +26,15 @@
     }
 
     .KukkaTable {
-        max-width: 200px;
+        width: auto;
+        word-break: normal;
+        max-width: 210px;
     }
-
+    .lisatietoTable {
+        width: auto;
+        word-break: break-all;
+        max-width: 125px;
+    }
     .keraamassaBtn {
         display: inline-block !important;
         width: 147px !important;
@@ -76,10 +97,6 @@
         right: 10px;
         display: inline-block;
         text-align: right;
-    }
-    .kukkaTable {
-        width: auto;
-        max-width: 200px;
     }
     .Cards {
         padding-left: 10px;
@@ -159,6 +176,21 @@
 }
 
 @media screen and (max-width: 1120px) {
+    .vieExcel {
+        width: 100% !important;
+    }
+    .poistaBtn {
+        width: 100% !important;
+    }
+    .muokkaaBtn {
+        width: 100% !important;
+    }
+    .valmisBtn {
+        width: 100% !important;
+    }
+    .dialogBtn {
+        width: 100% !important;
+    }
     .Lisatieto {
         width: auto;
         max-width: 200px;
@@ -233,8 +265,14 @@
         display: inline-block;
         text-align: right;
     }
-    .kukkaTable {
+    .KukkaTable {
         width: auto;
+        word-break: break-all;
+        max-width: 225px;
+    }
+    .lisatietoTable {
+        width: auto;
+        word-break: break-all;
         max-width: 200px;
     }
     .Cards {
@@ -315,6 +353,21 @@
 }
 
 @media screen and (max-width: 910px) {
+    .vieExcel {
+        width: 100% !important;
+    }
+    .poistaBtn {
+        width: 100% !important;
+    }
+    .muokkaaBtn {
+        width: 100% !important;
+    }
+    .valmisBtn {
+        width: 100% !important;
+    }
+    .dialogBtn {
+        width: 100% !important;
+    }
     .Lisatieto {
         width: auto;
         max-width: 200px;
@@ -389,9 +442,15 @@
         display: inline-block;
         text-align: right;
     }
-    .kukkaTable {
+    .KukkaTable {
         width: auto;
-        max-width: 200px;
+        word-break: break-all;
+        max-width: 225px;
+    }
+    .lisatietoTable {
+        width: auto;
+        word-break: break-all;
+        max-width: 225px;
     }
     .Cards {
         padding-left: 10px;
@@ -471,6 +530,21 @@
 }
 
 @media screen and (max-width: 375px) {
+    .vieExcel {
+        width: 100% !important;
+    }
+    .poistaBtn {
+        width: 100% !important;
+    }
+    .muokkaaBtn {
+        width: 100% !important;
+    }
+    .valmisBtn {
+        width: 100% !important;
+    }
+    .dialogBtn {
+        width: 100% !important;
+    }
     .Lisatieto {
         width: auto;
         max-width: 200px;
@@ -545,9 +619,15 @@
         display: inline-block !important;
         text-align: right !important;
     }
-    .kukkaTable {
-        width: 150px;
-        max-width: 200px;
+    .KukkaTable {
+        width: auto;
+        word-break: break-all;
+        max-width: 225px;
+    }
+    .lisatietoTable {
+        width: auto;
+        word-break: break-all;
+        max-width: 225px;
     }
     .Cards {
         padding-left: 10px;
