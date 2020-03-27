@@ -19,6 +19,7 @@
     "react-spinners": "^0.8.0",
     "react-super-responsive-table": "^5.1.1",
     "reactstrap": "^4.8.0",
+    "socket.io-client": "^2.3.0",
     "xlsx": "^0.15.6"
   },
   "scripts": {
