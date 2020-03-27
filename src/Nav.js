@@ -12,6 +12,8 @@ import { updateFlowers, putFlowersCreatedOrderData } from './components/fetch/ap
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
 import { FETCH_URL } from "./components/fetch/url";
+import socketIOClient from "socket.io-client";
+import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 
 //CSS
 import "./Styles/Nav.css";
@@ -22,6 +24,9 @@ const override = css`
   margin: 0 auto; 
   border-color: red;
 `;
+
+const endpoint = FETCH_URL;
+const socket = socketIOClient(endpoint);
 
 let search = "";
 let idSafe = "";
@@ -106,10 +111,12 @@ export default class TopNav extends React.Component {
           this.setState({ isOpen: false });
           break;
       }
-      this.props.getTables();
-    } catch (err) {
-      console.log(err)
-    }
+      socket.emit('chat', {
+        message: true
+      });
+    } catch (error) {
+      console.log(error);
+    };
 
   }
 
@@ -121,9 +128,12 @@ export default class TopNav extends React.Component {
       var toimitusaika = format(this.state.startDate3, "dd/MM/yyyy");
 
       await putFlowersCreatedOrderData(asiakas, asiakaslisatieto, toimitusaika, keraysPVM, userDatas);
-      await this.props.getTables();
-    } catch (err) {
-    }
+      await socket.emit('chat', {
+        message: true
+      });
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   async putData(userDatas) {
@@ -143,191 +153,243 @@ export default class TopNav extends React.Component {
 
         await updateFlowers(userDatas, id, kukka, toimi, kerays, lisatieto);
       }
-      this.props.getTables();
+      socket.emit('chat', {
+        message: true
+      });
       this.setState({
         isOpen2: false,
         isOpen: false
       })
-    } catch (err) {
-    }
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   logOut() {
-    sessionStorage.setItem("userData", '');
-    sessionStorage.clear();
-    this.setState({
-      redirect: true
-    });
+    try {
+      sessionStorage.setItem("userData", '');
+      sessionStorage.clear();
+      this.setState({
+        redirect: true
+      });
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   runAdders() {
-    this.setState({
-      dLoader: true
-    })
-    this.addFlowers()
+    try {
+      this.setState({
+        dLoader: true
+      })
+      this.addFlowers()
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   async getFetchData() {
-    await fetch(FETCH_URL + 'orders/get/id/' + idSafe, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-      },
-    })
-      .then(res => res.json())
-      .then(json => {
-        userDatas = json;
-
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    await this.addData();
-
-  }
-
-  async addFlowers() {
-    let i = 0;
-    while (i < this.state.addFlowersValue) {
-
-      await fetch(FETCH_URL + 'products/post', {
-        method: 'POST',
+    try {
+      await fetch(FETCH_URL + 'orders/get/id/' + idSafe, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
         },
       })
-        .then(response => response.json())
+        .then(res => res.json())
         .then(json => {
-          console.log(json);
+          userDatas = json;
 
-          let jsonID = json.createdProduct._id;
-          this.state.idArray.push(jsonID)
-
-          this.setState({
-            idArray: this.state.idArray.toString().split(",")
-          })
         })
         .catch((error) => {
           console.log(error);
         });
-      i++;
-    }
-    this.setState({
-      alreadyLoaded: true
-    })
-    this.addToIDS();
+      await this.addData();
+    } catch (error) {
+      console.log(error);
+    };
+  }
+
+  async addFlowers() {
+    try {
+      let i = 0;
+      while (i < this.state.addFlowersValue) {
+
+        await fetch(FETCH_URL + 'products/post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+          },
+        })
+          .then(response => response.json())
+          .then(json => {
+            console.log(json);
+
+            let jsonID = json.createdProduct._id;
+            this.state.idArray.push(jsonID)
+
+            this.setState({
+              idArray: this.state.idArray.toString().split(",")
+            })
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        i++;
+      }
+      this.setState({
+        alreadyLoaded: true
+      })
+      this.addToIDS();
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   async addToIDS(_id) {
-    var filteredProducts = this.state.idArray.filter(Boolean);
-    await fetch(FETCH_URL + 'orders/post/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-      },
-      body: JSON.stringify({
-        kauppa: "Vakio",
-        alisatieto: "",
-        date: sessionStorage.getItem("userDate"),
-        toimituspvm: format(this.state.toimituspvm, 'dd/MM/yyyy'),
-        products: filteredProducts
-      }),
-    })
-      .then(response => response.json())
-      .then(json => {
-        console.log(json);
-
-        idSafe = json.createdOrder.id_
-
+    try {
+      var filteredProducts = this.state.idArray.filter(Boolean);
+      await fetch(FETCH_URL + 'orders/post/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+        },
+        body: JSON.stringify({
+          kauppa: "Vakio",
+          alisatieto: "",
+          date: sessionStorage.getItem("userDate"),
+          toimituspvm: format(this.state.toimituspvm, 'dd/MM/yyyy'),
+          products: filteredProducts
+        }),
       })
-      .catch((error) => {
-        console.log(error);
+        .then(response => response.json())
+        .then(json => {
+          console.log(json);
+
+          idSafe = json.createdOrder.id_
+
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      this.setState({
+        idArray: []
       });
-    this.setState({
-      idArray: []
-    });
-    filteredProducts = [];
-    this.getFetchData();
+      filteredProducts = [];
+      this.getFetchData();
+    } catch (error) {
+      console.log(error);
+    };
   }
 
 
   handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+    try {
+      this.setState({
+        [event.target.name]: event.target.value
+      });
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   async addData() {
-    this.setState({
-      isOpen2: true,
-      dLoader: false
-    });
-    console.log("f")
-    await this.props.getTables();
+    try {
+      this.setState({
+        isOpen2: true,
+        dLoader: false
+      });
+      console.log("f")
+      await socket.emit('chat', {
+        message: true
+      });
+    } catch (error) {
+      console.log(error);
+    };
   }
 
 
   toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    try {
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   componentDidMount() {
-    this._isMounted = true;
+    try {
+      this._isMounted = true;
 
-    if (sessionStorage.getItem("btnName") === null) {
-      sessionStorage.setItem("btnName", "Kerättävät")
-    }
+      if (sessionStorage.getItem("btnName") === null) {
+        sessionStorage.setItem("btnName", "Kerättävät")
+      }
 
-    if (sessionStorage.getItem("siteName") === null) {
-      sessionStorage.setItem("siteName", "Kerättävät");
-    }
+      if (sessionStorage.getItem("siteName") === null) {
+        sessionStorage.setItem("siteName", "Kerättävät");
+      }
 
-    if (sessionStorage.getItem("userValmis") === null) {
-      sessionStorage.setItem("userValmis", "Ei");
-    }
+      if (sessionStorage.getItem("userValmis") === null) {
+        sessionStorage.setItem("userValmis", "Ei");
+      }
 
-    var result = this.state.startDate3;
-    result.setDate(result.getDate() + 1);
-    this.setState({
-      startDate3: result
-    });
-
-    if (sessionStorage.getItem('userDate')) {
+      var result = this.state.startDate3;
+      result.setDate(result.getDate() + 1);
       this.setState({
-        dateValue: sessionStorage.getItem('userDate'),
-        startDate: new Date()
-      });
-    } else
-      this.setState({
-        startDate: new Date()
+        startDate3: result
       });
 
-    if (localStorage.getItem('userLocation') == null) {
-      localStorage.setItem('userLocation', "Ryönä")
-    }
+      if (sessionStorage.getItem('userDate')) {
+        this.setState({
+          dateValue: sessionStorage.getItem('userDate'),
+          startDate: new Date()
+        });
+      } else
+        this.setState({
+          startDate: new Date()
+        });
+
+      if (localStorage.getItem('userLocation') == null) {
+        localStorage.setItem('userLocation', "Ryönä")
+      }
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   handleChange2 = date => {
-    this.setState({
-      startDate: date
-    });
+    try {
+      this.setState({
+        startDate: date
+      });
+    } catch (error) {
+      console.log(error);
+    };
   };
 
   handleChange3 = date => {
-    this.setState({
-      startDate2: date
-    });
+    try {
+      this.setState({
+        startDate2: date
+      });
+    } catch (error) {
+      console.log(error);
+    };
   };
 
   handleChange4 = date => {
-    this.setState({
-      startDate3: date
-    });
+    try {
+      this.setState({
+        startDate3: date
+      });
+    } catch (error) {
+      console.log(error);
+    };
   };
 
   async Tarkastus() {
@@ -351,51 +413,55 @@ export default class TopNav extends React.Component {
       }
       window.location.reload()
     } catch (err) {
-      console.log(err)
-    }
+      console.log(err);
+    };
   }
 
   async addNewFlowers(_id, products) {
-    if (!this.state.alreadyLoaded) {
-      this.state.idArray.push(
-        products.map(product => {
-          return product._id
-        })
-      )
-    }
-
-    let i = 0;
-    while (i < this.state.addFlowersValue) {
-
-      await fetch(FETCH_URL + 'products/post', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-        },
-      })
-        .then(response => response.json())
-        .then(json => {
-          console.log(json);
-
-          let jsonID = json.createdProduct._id;
-          this.state.idArray.push(jsonID)
-          console.log(this.state.idArray);
-
-          this.setState({
-            idArray: this.state.idArray.toString().split(",")
+    try {
+      if (!this.state.alreadyLoaded) {
+        this.state.idArray.push(
+          products.map(product => {
+            return product._id
           })
+        )
+      }
+
+      let i = 0;
+      while (i < this.state.addFlowersValue) {
+
+        await fetch(FETCH_URL + 'products/post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+          },
         })
-        .catch((error) => {
-          console.log(error);
-        });
-      i++;
-    }
-    this.setState({
-      alreadyLoaded: true,
-      addFlowersValue: 1,
-    })
-    this.addToNewIDS(_id);
+          .then(response => response.json())
+          .then(json => {
+            console.log(json);
+
+            let jsonID = json.createdProduct._id;
+            this.state.idArray.push(jsonID)
+            console.log(this.state.idArray);
+
+            this.setState({
+              idArray: this.state.idArray.toString().split(",")
+            })
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        i++;
+      }
+      this.setState({
+        alreadyLoaded: true,
+        addFlowersValue: 1,
+      })
+      this.addToNewIDS(_id);
+    } catch (error) {
+      console.log(error);
+    };
   }
   addToNewIDS(_id) {
     try {
@@ -418,10 +484,12 @@ export default class TopNav extends React.Component {
           console.log(error);
         });
       this.getFetchData();
-      this.props.getTables();
+      socket.emit('chat', {
+        message: true
+      });
     } catch (err) {
-      console.log("error skipped")
-    }
+      console.log(err);
+    };
   }
 
   searchInput = (e) => {
@@ -430,41 +498,57 @@ export default class TopNav extends React.Component {
       let searchChosen = this.state.search;
       this.props.handleSearch(search, searchChosen)
     } catch (err) {
-      console.log(err)
-    }
+      console.log(err);
+    };
   }
 
   changeSearch() {
-    switch (this.state.search) {
-      case "kukkia":
-        this.setState({
-          search: "kauppoja"
-        })
-        break;
-      case "kauppoja":
-        this.setState({
-          search: "kukkia"
-        })
-        break;
-      default:
-        this.setState({
-          search: "kukkia"
-        })
-        break;
-    }
+    try {
+      switch (this.state.search) {
+        case "kukkia":
+          this.setState({
+            search: "kauppoja"
+          })
+          break;
+        case "kauppoja":
+          this.setState({
+            search: "kukkia"
+          })
+          break;
+        default:
+          this.setState({
+            search: "kukkia"
+          })
+          break;
+      }
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   handleKey = (e) => {
-    if (e.keyCode === 13) {
-      this.props.getTables();
-      e.target.value = "";
-      search = "";
-      this.props.handleSearch(search)
-    }
+    try {
+      if (e.keyCode === 13) {
+        socket.emit('chat', {
+          message: true
+        });
+        e.target.value = "";
+        search = "";
+        this.props.handleSearch(search)
+      }
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   updateSearch() {
-    this.props.getTables();
+    try {
+      socket.emit('chat', {
+        message: true
+      });
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   render() {
@@ -472,152 +556,155 @@ export default class TopNav extends React.Component {
       return (<Redirect to={'/'} />)
     }
     return (
-      <div>
-        <Dialogs isOpen={this.state.dLoader}>
-          <div className="Spinner">
-            <Loader
-              css={override}
-              height={140}
-              width={16}
-              color={"#123abc"}
-              loading={this.state.dLoader}
-            />
-          </div>
-        </Dialogs>
-        <Navbar light color="info" fixed="top">
-          <div className="searchDiv">
-            <Button className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
-            <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
-          </div>
-          <NavbarToggler right className="Toggler" onClick={this.toggle} />
-          <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("siteName")}</NavbarBrand>
-          <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-
-              <Button className="TarkastusBTN" onClick={() => this.Tarkastus()}>
-                {sessionStorage.getItem("btnName")}
-              </Button>
-
-              <DatePicker className="Datepick"
-                value={this.state.dateValue}
-                selected={this.state.startDate}
-                onChange={this.handleChange2}
-                onCalendarClose={() => sessionStorage.setItem('userDate', format(this.state.startDate, "dd/MM/yyyy"), window.location.reload())}
-                dateFormat="d/MM/yyyy"
+      <ErrorBoundary>
+        <div>
+          <Dialogs isOpen={this.state.dLoader}>
+            <div className="Spinner">
+              <Loader
+                css={override}
+                height={140}
+                width={16}
+                color={"#123abc"}
+                loading={this.state.dLoader}
               />
+            </div>
+          </Dialogs>
+          <Navbar light color="info" fixed="top">
+            <div className="searchDiv">
+              <Button className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
+              <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
+            </div>
+            <NavbarToggler right className="Toggler" onClick={this.toggle} />
+            <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("siteName")}</NavbarBrand>
+            <Collapse isOpen={this.state.isOpen} navbar>
+              <Nav className="ml-auto" navbar>
+
+                <Button className="TarkastusBTN" onClick={() => this.Tarkastus()}>
+                  {sessionStorage.getItem("btnName")}
+                </Button>
+
+                <DatePicker className="Datepick"
+                  value={this.state.dateValue}
+                  selected={this.state.startDate}
+                  onChange={this.handleChange2}
+                  onCalendarClose={() => sessionStorage.setItem('userDate', format(this.state.startDate, "dd/MM/yyyy"), window.location.reload())}
+                  dateFormat="d/MM/yyyy"
+                  withPortal
+                />
 
 
-              <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false, isOpen: false })}>
-                <Card className="AddCard">
+                <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false, isOpen: false })}>
+                  <Card className="AddCard">
 
-                  <div className="DataCard">
-                    <div>
-                      <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
-                      <DatePicker className="AddDate"
-                        selected={this.state.startDate2}
-                        onChange={this.handleChange3}
-                        dateFormat="dd/MM/yyyy"
-                      />
+                    <div className="DataCard">
+                      <div>
+                        <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
+                        <DatePicker className="AddDate"
+                          selected={this.state.startDate2}
+                          onChange={this.handleChange3}
+                          dateFormat="dd/MM/yyyy"
+                        />
 
-                      <CardTitle className="ToimitusPVMText">Toimituspäivämäärä</CardTitle>
-                      <DatePicker className="ToimitusPVM2"
-                        selected={this.state.startDate3}
-                        onChange={this.handleChange4}
-                        dateFormat="dd/MM/yyyy"
-                      />
+                        <CardTitle className="ToimitusPVMText">Toimituspäivämäärä</CardTitle>
+                        <DatePicker className="ToimitusPVM2"
+                          selected={this.state.startDate3}
+                          onChange={this.handleChange4}
+                          dateFormat="dd/MM/yyyy"
+                        />
 
-                      <Input
-                        className="CustomerInfo"
-                        type="textarea"
-                        name="customerInfo"
-                        placeholder={userDatas.alisatieto}
+                        <Input
+                          className="CustomerInfo"
+                          type="textarea"
+                          name="customerInfo"
+                          placeholder={userDatas.alisatieto}
+                          onChange={this.handleChange}>
+                        </Input>
+
+                        <div className="Customer">
+                          <MyAutosuggest items={this.props.items2} id={`kauppa/${userDatas._id}`} placeholder={userDatas.kauppa} sendClass={"AutoCompletePropsInput"} getDivClass={"AutoCompletePropsText"} />
+                        </div>
+                      </div>
+
+                      <Table>
+
+                        <Thead>
+                          <Tr>
+                            <Th>Tuote</Th>
+                            <Th>Kerätään</Th>
+                            <Th>Keräyspiste</Th>
+                            <Th>Lisätietoa</Th>
+                          </Tr>
+                        </Thead>
+
+                        {userDatas.products.map(newData =>
+                          <Tbody key={newData._id}>
+                            <Tr>
+
+                              <Td >
+                                <div className="inputlabelU">
+                                  <MyAutosuggest items={this.props.items} id={`kukka/${newData._id}`} placeholder={newData.kukka} sendClass={"AutoCompleteInput"} getDivClass={"AutoCompleteText"} />
+                                </div>
+                              </Td>
+
+                              <Td>
+                                <Input type="number"
+                                  name="toimi"
+                                  id={`toimi/${newData._id}`}
+                                  onChange={this.handleChange}
+                                  className="inputlabelU"
+                                  placeholder={newData.toimi}>
+                                </Input>
+                              </Td>
+
+                              <Td>
+                                <Input type="select"
+                                  name="kerays"
+                                  id={`kerays/${newData._id}`}
+                                  onChange={this.handleChange}
+                                  className="inputlabelU"
+                                  placeholder={newData.kerays}>
+                                  <option>Ryönä</option>
+                                  <option>Tuusjärvi</option>
+                                </Input>
+                              </Td>
+
+                              <Td>
+                                <Input type="text"
+                                  name="lisatieto"
+                                  id={`lisatieto/${newData._id}`}
+                                  onChange={this.handleChange}
+                                  className="inputlabelU"
+                                  placeholder={newData.lisatieto}>
+                                </Input>
+                              </Td>
+                            </Tr>
+                          </Tbody>
+                        )}
+
+                      </Table>
+                      <Button className="addFlower" onClick={() => this.addNewFlowers(userDatas._id, userDatas.products)}>Lisää kukka</Button>
+                      <Input type="number"
+                        name="addFlowersValue"
+                        className="addFlowerInput"
+                        max={10}
+                        min={1}
+                        value={this.state.addFlowersValue}
                         onChange={this.handleChange}>
                       </Input>
-
-                      <div className="Customer">
-                        <MyAutosuggest items={this.props.items2} id={`kauppa/${userDatas._id}`} placeholder={userDatas.kauppa} sendClass={"AutoCompletePropsInput"} getDivClass={"AutoCompletePropsText"} />
-                      </div>
+                      <Button onClick={() => this.putData(userDatas) + this.putOrderData(userDatas)}>Luo taulukko</Button>
                     </div>
+                  </Card>
+                </Dialog>
 
-                    <Table>
+                <Button className='addBtn' color='primary' type='button' onClick={(e) => this.runAdders()}></Button>
+                <Button className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
+                <Button className='locationBtn' onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
 
-                      <Thead>
-                        <Tr>
-                          <Th>Tuote</Th>
-                          <Th>Kerätään</Th>
-                          <Th>Keräyspiste</Th>
-                          <Th>Lisätietoa</Th>
-                        </Tr>
-                      </Thead>
-
-                      {userDatas.products.map(newData =>
-                        <Tbody key={newData._id}>
-                          <Tr>
-
-                            <Td >
-                              <div className="inputlabelU">
-                                <MyAutosuggest items={this.props.items} id={`kukka/${newData._id}`} placeholder={newData.kukka} sendClass={"AutoCompleteInput"} getDivClass={"AutoCompleteText"} />
-                              </div>
-                            </Td>
-
-                            <Td>
-                              <Input type="number"
-                                name="toimi"
-                                id={`toimi/${newData._id}`}
-                                onChange={this.handleChange}
-                                className="inputlabelU"
-                                placeholder={newData.toimi}>
-                              </Input>
-                            </Td>
-
-                            <Td>
-                              <Input type="select"
-                                name="kerays"
-                                id={`kerays/${newData._id}`}
-                                onChange={this.handleChange}
-                                className="inputlabelU"
-                                placeholder={newData.kerays}>
-                                <option>Ryönä</option>
-                                <option>Tuusjärvi</option>
-                              </Input>
-                            </Td>
-
-                            <Td>
-                              <Input type="text"
-                                name="lisatieto"
-                                id={`lisatieto/${newData._id}`}
-                                onChange={this.handleChange}
-                                className="inputlabelU"
-                                placeholder={newData.lisatieto}>
-                              </Input>
-                            </Td>
-                          </Tr>
-                        </Tbody>
-                      )}
-
-                    </Table>
-                    <Button className="addFlower" onClick={() => this.addNewFlowers(userDatas._id, userDatas.products)}>Lisää kukka</Button>
-                    <Input type="number"
-                      name="addFlowersValue"
-                      className="addFlowerInput"
-                      max={10}
-                      min={1}
-                      value={this.state.addFlowersValue}
-                      onChange={this.handleChange}>
-                    </Input>
-                    <Button onClick={() => this.putData(userDatas) + this.putOrderData(userDatas)}>Luo taulukko</Button>
-                  </div>
-                </Card>
-              </Dialog>
-
-              <Button className='addBtn' color='primary' type='button' onClick={(e) => this.runAdders()}></Button>
-              <Button className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
-              <Button className='locationBtn' onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
-
-            </Nav>
-          </Collapse>
-        </Navbar>
-      </div>
+              </Nav>
+            </Collapse>
+          </Navbar>
+        </div>
+      </ErrorBoundary>
     );
   }
 }

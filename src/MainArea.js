@@ -7,6 +7,9 @@ import Dialogs from './components/dialog/loaderDialog';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
 import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete } from './components/fetch/apiFetch';
+import socketIOClient from "socket.io-client";
+import { FETCH_URL } from './components/fetch/url';
+import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 
 //CSS
 import './Styles/MainAreas.css';
@@ -15,12 +18,17 @@ let DataF = ["error", "abcderror"];
 let DataK = ["error", "abcderror"];
 let searchData = "";
 let chosen = "";
+let data = [];
+let Datas = [];
 
 const override = css`
   display: block;
   margin: 0 auto;
   border-color: red;
 `;
+
+const endpoint = FETCH_URL;
+const socket = socketIOClient(endpoint);
 
 class MainArea extends Component {
   _isMounted = false;
@@ -35,7 +43,9 @@ class MainArea extends Component {
       dLoader: false,
       updateOnce: false,
       searched: "",
-      searchLength: 0
+      searchLength: 0,
+      error: null,
+      errorInfo: null
     }
     this.getTables = this.getTables.bind(this);
     this.removePerson = this.removePerson.bind(this);
@@ -43,63 +53,81 @@ class MainArea extends Component {
   }
 
   componentDidMount() {
-    if (sessionStorage.getItem("userData") === null) {
-      this.setState(() => ({
-        redirect: true
-      }));
-    } else {
-      setInterval(() => {
+    try {
+      if (sessionStorage.getItem("userData") === null) {
+        this.setState(() => ({
+          redirect: true
+        }));
+      } else {
         this.getTables();
-      }, 10000)
-    }
-    this._isMounted = true;
-    this.getTables();
+        socket.on('chat', async (data) => {
+          if (data.message === true) {
+            this.getTables();
+          };
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    };
   }
-
 
 
   getTables = async () => {
-    const data = await getData(searchData, chosen);
-    const Datas = await getFlowersToAutocomplete();
-    DataK = Datas[1].kaupat
-    DataF = Datas[0].flowers;
+    try {
+      data = await getData(searchData, chosen);
+      Datas = await getFlowersToAutocomplete();
+      DataK = Datas[1].kaupat
+      DataF = Datas[0].flowers;
 
-    this.setState({
-      people: data.product,
-      isLoaded: true,
-      loading: false
-    })
+      this.setState({
+        people: data.product,
+        isLoaded: true,
+        loading: false
+      })
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   async removePerson(_id, products) {
-    this.setState({
-      dLoader: true,
-    })
-    let ids = await products.map(product => {
-      return product._id
-    });
-    let i = 0;
-    while (i < ids.length) {
-      let id = ids.shift();
-      await deleteFlowersData(id);
-    }
-    await removeData(_id);
-    this.setState({ dLoader: false })
-    this.getTables();
+    try {
+      this.setState({
+        dLoader: true,
+      })
+      let ids = await products.map(product => {
+        return product._id
+      });
+      let i = 0;
+      while (i < ids.length) {
+        let id = ids.shift();
+        await deleteFlowersData(id);
+      }
+      await removeData(_id);
+      this.setState({ dLoader: false })
+      socket.emit('chat', {
+        message: true
+      });
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   handleSearch = (search, searchChosen) => {
-    if (searchData !== search) {
-      this.setState(() => ({
-        searched: search
-      }))
-    }
-    chosen = searchChosen;
-    searchData = search;
+    try {
+      if (searchData !== search) {
+        this.setState(() => ({
+          searched: search
+        }))
+      }
+      chosen = searchChosen;
+      searchData = search;
+    } catch (error) {
+      console.log(error);
+    };
   }
 
   render() {
-    if(this.state.redirect) {
+    if (this.state.redirect) {
       return <Redirect to="/" />
     }
 
@@ -134,36 +162,40 @@ class MainArea extends Component {
     let peopleCards = this.state.people.map(person => {
       if ((person.products.length > 0 && person.tuusjarvi === "Ei") || (person.products.length > 0 && person.ryona === "Ei") || (localStorage.getItem("userLocation") === "Molemmat" && sessionStorage.getItem("userValmis") !== "Kerätty" && person.tuusjarvi !== "Kyllä" && person.ryona !== "Kyllä") || (sessionStorage.getItem("userValmis") === "Kerätty" && person.ryona === "Kyllä" && sessionStorage.getItem("userValmis") === "Kerätty" && person.tuusjarvi === "Kyllä")) {
         return (
-          <Container fluid key={person._id}>
-            <Row>
-              <Dialogs isOpen={this.state.dLoader}>
-                <div className="Spinner">
-                  <Loader
-                    css={override}
-                    height={140}
-                    width={16}
-                    color={"#123abc"}
-                    loading={this.state.dLoader}
-                  />
-                </div>
-              </Dialogs>
-              <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen}
-                handleSearch={this.handleSearch} />
+          <ErrorBoundary>
+            <Container fluid key={person._id}>
+              <Row>
+                <Dialogs isOpen={this.state.dLoader}>
+                  <div className="Spinner">
+                    <Loader
+                      css={override}
+                      height={140}
+                      width={16}
+                      color={"#123abc"}
+                      loading={this.state.dLoader}
+                    />
+                  </div>
+                </Dialogs>
+                <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen}
+                  handleSearch={this.handleSearch} />
 
-              <Nav getTables={this.getTables} handleSearch={this.handleSearch} items={DataF} items2={DataK} />
-            </Row>
-          </Container>
+                <Nav getTables={this.getTables} handleSearch={this.handleSearch} items={DataF} items2={DataK} />
+              </Row>
+            </Container>
+          </ErrorBoundary>
         )
       } else {
-        return (<Nav getTables={this.getTables} handleSearch={this.handleSearch} items={DataF} items2={DataK} />)
+        return (<ErrorBoundary><Nav getTables={this.getTables} handleSearch={this.handleSearch} items={DataF} items2={DataK} /></ErrorBoundary>)
       }
     })
     return (
-      <Container fluid>
-        <Row>
-          {PeopleCard !== null ? peopleCards : undefined}
-        </Row>
-      </Container>
+      <ErrorBoundary>
+        <Container fluid>
+          <Row>
+            {PeopleCard !== null ? peopleCards : undefined}
+          </Row>
+        </Container>
+      </ErrorBoundary>
     )
   }
 }
