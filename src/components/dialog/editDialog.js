@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
+import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 
 let dialogStyles = {
     width: '1000px',
@@ -54,22 +55,26 @@ let dialogDisabler = {
 class Dialog extends Component {
     render() {
         let dialog = (
-            <div>
-                <div style={dialogDisabler}>
+            <ErrorBoundary>
+                <div>
+                    <div style={dialogDisabler}>
+                    </div>
+                    <div style={dialogStyles}>
+                        <Button style={dialogCloseButtonStyles} onClick={this.props.onClose}>x</Button>
+                        <div>{this.props.children}</div>
+                    </div>
                 </div>
-                <div style={dialogStyles}>
-                    <Button style={dialogCloseButtonStyles} onClick={this.props.onClose}>x</Button>
-                    <div>{this.props.children}</div>
-                </div>
-            </div>
+            </ErrorBoundary>
         );
         if (!this.props.isOpen2) {
             dialog = null;
         }
         return (
-            <div>
-                {dialog}
-            </div>
+            <ErrorBoundary>
+                <div>
+                    {dialog}
+                </div>
+            </ErrorBoundary>
         )
     }
 }

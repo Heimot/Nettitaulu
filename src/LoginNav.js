@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar, NavbarBrand } from 'reactstrap';
 import './Styles/loginNav.css';
+import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 
 export default class LoginNav extends React.Component {
   constructor(props) {
@@ -12,17 +13,23 @@ export default class LoginNav extends React.Component {
     };
   }
   toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    try {
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
+    } catch (error) {
+      console.log(error);
+    };
   }
   render() {
     return (
-      <div>
-        <Navbar className="loginNav" light toggleable color="info" fixed="top">
-          <NavbarBrand href="/">Kirjautumis sivu</NavbarBrand>
-        </Navbar>
-      </div>
+      <ErrorBoundary>
+        <div>
+          <Navbar className="loginNav" light toggleable color="info" fixed="top">
+            <NavbarBrand href="/">Kirjautumis sivu</NavbarBrand>
+          </Navbar>
+        </div>
+      </ErrorBoundary>
     );
   }
 }

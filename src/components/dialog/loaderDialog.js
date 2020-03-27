@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 
 let dialogStyles = {
     width: '1000px',
@@ -40,6 +41,7 @@ let dialogDisabler = {
 class Dialogs extends Component {
     render() {
         let dialog = (
+            <ErrorBoundary>
             <div>
                 <div style={dialogDisabler}>
                 </div>
@@ -47,14 +49,17 @@ class Dialogs extends Component {
                     <div>{this.props.children}</div>
                 </div>
             </div>
+            </ErrorBoundary>
         );
         if (!this.props.isOpen) {
             dialog = null;
         }
         return (
+            <ErrorBoundary>
             <div>
                 {dialog}
             </div>
+            </ErrorBoundary>
         )
     }
 }
