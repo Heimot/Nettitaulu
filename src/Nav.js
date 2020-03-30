@@ -529,9 +529,7 @@ export default class TopNav extends React.Component {
   handleKey = (e) => {
     try {
       if (e.keyCode === 13) {
-        socket.emit('chat', {
-          message: true
-        });
+        this.props.getTables();
         e.target.value = "";
         search = "";
         this.props.handleSearch(search)
@@ -543,9 +541,7 @@ export default class TopNav extends React.Component {
 
   updateSearch() {
     try {
-      socket.emit('chat', {
-        message: true
-      });
+      this.props.getTables();
     } catch (error) {
       console.log(error);
     };
@@ -571,7 +567,7 @@ export default class TopNav extends React.Component {
           </Dialogs>
           <Navbar light color="info" fixed="top">
             <div className="searchDiv">
-              <Button className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
+              <Button name="SearchBtn" className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
               <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
             </div>
             <NavbarToggler right className="Toggler" onClick={this.toggle} />
@@ -579,7 +575,7 @@ export default class TopNav extends React.Component {
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
 
-                <Button className="TarkastusBTN" onClick={() => this.Tarkastus()}>
+                <Button name="tarkastusBtn" className="TarkastusBTN" onClick={() => this.Tarkastus()}>
                   {sessionStorage.getItem("btnName")}
                 </Button>
 
@@ -682,7 +678,7 @@ export default class TopNav extends React.Component {
                         )}
 
                       </Table>
-                      <Button className="addFlower" onClick={() => this.addNewFlowers(userDatas._id, userDatas.products)}>Lisää kukka</Button>
+                      <Button name="lisaa_kukka" className="addFlower" onClick={() => this.addNewFlowers(userDatas._id, userDatas.products)}>Lisää kukka</Button>
                       <Input type="number"
                         name="addFlowersValue"
                         className="addFlowerInput"
@@ -691,14 +687,14 @@ export default class TopNav extends React.Component {
                         value={this.state.addFlowersValue}
                         onChange={this.handleChange}>
                       </Input>
-                      <Button onClick={() => this.putData(userDatas) + this.putOrderData(userDatas)}>Luo taulukko</Button>
+                      <Button name="luo_taulukko" onClick={() => this.putData(userDatas) + this.putOrderData(userDatas)}>Luo taulukko</Button>
                     </div>
                   </Card>
                 </Dialog>
 
-                <Button className='addBtn' color='primary' type='button' onClick={(e) => this.runAdders()}></Button>
-                <Button className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
-                <Button className='locationBtn' onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
+                <Button name="lisaa_taulukko" className='addBtn' color='primary' type='button' onClick={(e) => this.runAdders()}></Button>
+                <Button name="kirjaudu_ulos" className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
+                <Button name="location" className='locationBtn' onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
 
               </Nav>
             </Collapse>
