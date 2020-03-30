@@ -176,8 +176,7 @@ class MainArea extends Component {
                     />
                   </div>
                 </Dialogs>
-                <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen}
-                  handleSearch={this.handleSearch} />
+                <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen} handleSearch={this.handleSearch} />
 
                 <Nav getTables={this.getTables} handleSearch={this.handleSearch} items={DataF} items2={DataK} />
               </Row>

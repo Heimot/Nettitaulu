@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Row, Card, Input, Button } from 'reactstrap';
+import { Container, Row, Card, Input, Button, CardText } from 'reactstrap';
 import Dialog from './components/dialog/editDialog';
 import { Redirect } from 'react-router-dom';
 import { FETCH_URL } from './components/fetch/url';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
+
+//CSS
+import './Styles/login.css';
 
 class TableArea extends Component {
   constructor() {
@@ -13,7 +16,8 @@ class TableArea extends Component {
       isOpen2: true,
       email: "",
       password: "",
-      redirect: false
+      redirect: false,
+      loginFailed: false,
     }
   }
 
@@ -30,17 +34,26 @@ class TableArea extends Component {
     })
       .then(response => response.json())
       .then(json => {
+        if(json.message === "Auth failed") {
+          this.setState({
+            loginFailed: true
+          })
+        }
         let result = json;
         if (result.token) {
           sessionStorage.setItem('userData', result.token);
           this.parseJwt();
           this.setState({
-            redirect: true
+            redirect: true,
+            loginFailed: false
           });
         }
       })
       .catch((error) => {
         console.log(error);
+        this.setState({
+          loginFailed: true
+        })
       });
   }
 
@@ -65,9 +78,9 @@ class TableArea extends Component {
   }
 
   render() {
+    let { redirect, loginFailed } = this.state;
 
-
-    if (this.state.redirect) {
+    if (redirect) {
       return (<Redirect to={'/main'} />)
     }
 
@@ -80,13 +93,14 @@ class TableArea extends Component {
         <Container fluid>
           <Row>
             <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
+            {loginFailed === true ? <CardText className="loginFailed">Salasana tai nimi on väärin.</CardText> : undefined}
               <Card>
                 <Input
                   type="text"
                   name="username"
                   onChange={this.handleChange}
                   className="lposition"
-                  placeholder="Username">
+                  placeholder="Käyttäjänimi">
                 </Input>
 
                 <Input
@@ -94,10 +108,10 @@ class TableArea extends Component {
                   name="password"
                   onChange={this.handleChange}
                   className="lposition"
-                  placeholder="Password">
+                  placeholder="Salasana">
                 </Input>
 
-                <Button type="submit" onClick={(e) => this.login()} >Login</Button>
+                <Button name="kirjaudu" type="submit" onClick={(e) => this.login()} >Kirjaudu sisään</Button>
 
               </Card>
             </Dialog>

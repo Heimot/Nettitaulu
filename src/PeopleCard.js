@@ -37,7 +37,7 @@ function changeNormal() {
 
 const Progress = ({ done, count, counter, id }) => {
   try {
-    let data = change === false ? done = done ? done + "%" : "" : count === undefined ? "" : count + "/" + counter;
+    let data = change === false ? done = done ? done + "%" : "" : count === undefined ? "" : `${count}/${counter}`;
     if (data.includes('.')) {
       data = data.substring(0, data.indexOf(".")) + "%";
     }
@@ -55,7 +55,9 @@ const Progress = ({ done, count, counter, id }) => {
     return (
       <div className="progress" onMouseEnter={() => changeData()} onMouseLeave={() => changeNormal()}>
         <div className={(((done === "100%" || count === counter) && id === "Kerätty") || (count === counter && id === "Kerätty") ? "progress-ready" : "progress-needed" && id === "Ei ole" ? "progress-cantbedone" : "progress-needed")} style={style}>
-          {data}
+          <div className="dataFont">
+            {data}
+          </div>
         </div>
       </div>
     )
@@ -489,17 +491,17 @@ class PeopleCard extends Component {
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardText>Tarkastettu Tuusjärvi: {tuusjarvi}</CardText> : undefined}
               <div className="loaders" >
                 <div className="loaderMargins">
-                  <CardText>Odottaa keräystä</CardText>
+                  <CardText className="hover">Odottaa keräystä</CardText>
                   <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} id={"Odottaa keräystä"} />
                 </div>
 
                 <div className="loaderMargins">
-                  <CardText>Keräyksessä</CardText>
+                  <CardText className="hover">Keräyksessä</CardText>
                   <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length} id={"Keräyksessä"} />
                 </div>
 
                 <div className="loaderMargins">
-                  <CardText>Kerätty</CardText>
+                  <CardText className="hover">Kerätty</CardText>
                   <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} id={"Kerätty"} />
                 </div>
 
@@ -550,10 +552,10 @@ class PeopleCard extends Component {
                   </Tbody>
                 )}
               </Table>
-              {sessionStorage.getItem('userRole') === "Admin" ? <Button className="valmisBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="success" onClick={() => this.valmis()}>Valmis</Button> : undefined}
-              {sessionStorage.getItem('userRole') === "Admin" ? <Button className="muokkaaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>Muokkaa</Button> : undefined}
-              {sessionStorage.getItem('userRole') === "Admin" ? <Button className="poistaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>Poista</Button> : undefined}
-              {sessionStorage.getItem('userRole') === "Admin" ? <Button className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} onClick={() => this.jsonToExcel(products, _id)}>Vie Exceliin</Button> : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="valmisBtn" className="valmisBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="success" onClick={() => this.valmis()}>Valmis</Button> : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="muokkaaBtn" className="muokkaaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>Muokkaa</Button> : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="poistaBtn" className="poistaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>Poista</Button> : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="info" onClick={() => this.jsonToExcel(products, _id)}>Vie Exceliin</Button> : undefined}
             </Card>
 
             <Dialog className="DelWarn" isOpen2={this.state.openWarning} onClose={(e) => this.setState({ openWarning: false })}>
@@ -567,8 +569,8 @@ class PeopleCard extends Component {
                 <CardText className="warningBox">TOIMITUSPÄIVÄMÄÄRÄ: {toimituspvm}</CardText>
                 <CardText className="warningBox">KUKKIEN MÄÄRÄ: {products.length}</CardText>
 
-                <Button className="dialogBtn" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>Kyllä</Button>
-                <Button className="dialogBtn" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
+                <Button name="delete_kylla" className="dialogBtn" color="success" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>Kyllä</Button>
+                <Button name="delete_ei" className="dialogBtn" color="danger" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
 
               </Card>
             </Dialog>
@@ -589,8 +591,8 @@ class PeopleCard extends Component {
                 <CardText className="warningBox">Kerätty: {counts.Kerätty === undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
                 <CardText className="warningBox">Ei ole: {counts.Eiole === undefined ? 0 : counts.Eiole}/{products.length}</CardText>
 
-                <Button className="dialogBtn" onClick={() => this.valmisData(_id, products)}>Kyllä</Button>
-                <Button className="dialogBtn" onClick={() => this.setState({ valmisWarning: false })}>Ei</Button>
+                <Button name="valmis_kylla" className="dialogBtn" color="success" onClick={() => this.valmisData(_id, products)}>Kyllä</Button>
+                <Button name="valmis_ei" className="dialogBtn" color="danger" onClick={() => this.setState({ valmisWarning: false })}>Ei</Button>
 
               </Card>
             </Dialog>
@@ -663,7 +665,7 @@ class PeopleCard extends Component {
                             id={`kerays/${product._id}`}
                             onChange={this.handleChange}
                             className="inputlabelU"
-                            placeholder={product.kerays}>
+                            defaultValue={product.kerays}>
                             <option>Ryönä</option>
                             <option>Tuusjärvi</option>
                           </Input>
@@ -679,13 +681,13 @@ class PeopleCard extends Component {
                           </Input>
                         </Td>
                       </Tr>
-                      <Button color="success" onClick={() => this.putData(product)}>Päivitä kukan tiedot</Button>
-                      <Button color="danger" onClick={() => this.deleteData(product)}>Poista kukka</Button>
+                      <Button name="paivita_kukan_tiedot" color="success" onClick={() => this.putData(product)}>Päivitä kukan tiedot</Button>
+                      <Button name="poista_kukka" color="danger" onClick={() => this.deleteData(product)}>Poista kukka</Button>
                     </Tbody>
                   )}
                 </Table>
                 <div>
-                  <Button className="addFlower" onClick={() => this.addFlowers(_id, products)}>Lisää kukka</Button>
+                  <Button name="lisaa_kukka" className="addFlower" onClick={() => this.addFlowers(_id, products)}>Lisää kukka</Button>
                   <Input type="number"
                     name="addFlowersValue"
                     className="addFlowerInput"
@@ -696,7 +698,7 @@ class PeopleCard extends Component {
                   </Input>
                 </div>
                 <div className="taulukkoDivider"></div>
-                <Button color="success" onClick={() => this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)}>Päivitä taulukon tiedot</Button>
+                <Button name="paivita_taulukon_tiedot" color="success" onClick={() => this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)}>Päivitä taulukon tiedot</Button>
               </Card>
             </Dialog>
           </div>

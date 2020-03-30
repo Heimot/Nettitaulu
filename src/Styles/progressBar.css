@@ -5,16 +5,15 @@
     margin: 15px 0 !important;
     height: 25px !important;
     width: 150px !important;
+
 }
 .progress-done {
     background: linear-gradient(to right, #007991, #78ffd6);
     box-shadow: 0 3px 3px -5px #78ffd6, 0 2px 5px #78ffd6;
     border-radius: 20px;
-    color: #fff;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 10px;
+    font-size: 13px;
     height: 100%;
     width: 0;
     opacity: 0;
@@ -31,6 +30,13 @@
     height: 80px;
     padding: 5px;
 }
+
+.dataFont {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+}
+
 .loaderMargins {
     flex: 1 1 auto;
 }
@@ -39,11 +45,9 @@
     background: linear-gradient(to right, #56ab2f, #a8e063);
     box-shadow: 0 3px 3px -5px #a8e063, 0 2px 5px #a8e063;
     border-radius: 20px;
-    color: #fff;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 10px;
+    font-size: 13px;
     height: 100%;
     width: 0;
     opacity: 0;
@@ -55,11 +59,9 @@
     background: linear-gradient(to right, #f7971e, #ffd200);
     box-shadow: 0 3px 3px -5px #ffd200, 0 2px 5px #ffd200;
     border-radius: 20px;
-    color: #fff;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 10px;
+    font-size: 13px;
     height: 100%;
     width: 0;
     opacity: 0;
@@ -71,11 +73,9 @@
     background: linear-gradient(to right, #e52d27, #b31217);
     box-shadow: 0 3px 3px -5px #78ffd6, 0 2px 5px #78ffd6;
     border-radius: 20px;
-    color: #fff;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 10px;
+    font-size: 13px;
     height: 100%;
     width: 0;
     opacity: 0;

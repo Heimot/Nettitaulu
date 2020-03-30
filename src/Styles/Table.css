@@ -1,18 +1,43 @@
 @media screen and (min-width: 70em) {
-        .vieExcel {
+    .vieExcel {
         width: 100% !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .poistaBtn {
         width: 100% !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .muokkaaBtn {
         width: 100% !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .valmisBtn {
         width: 100% !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
+        background-color: #238423 !important;
+        border: #238423 !important;
+    }
+    .valmisBtn:hover {
+        width: 100% !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
+        background-color: #007000 !important;
+        border: #238423 !important;
     }
     .dialogBtn {
         width: 100% !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .Lisatieto {
         width: auto;
@@ -24,16 +49,17 @@
         width: 147px !important;
         text-align: center;
     }
-
     .KukkaTable {
         width: auto;
         word-break: normal;
         max-width: 210px;
+        font-size: 20px;
     }
     .lisatietoTable {
         width: auto;
         word-break: break-all;
         max-width: 125px;
+        font-size: 15px;
     }
     .keraamassaBtn {
         display: inline-block !important;
@@ -43,7 +69,6 @@
     .keraamassaBtn:hover {
         border-color: blue;
     }
-
     .kerattyMaara {
         display: inline-block !important;
         width: 147px !important;
@@ -52,7 +77,6 @@
     .kerattyMaara:hover {
         border-color: blue;
     }
-
     .block {
         display: inline-block;
         width: 100%;
@@ -168,28 +192,74 @@
         width: 70px !important;
         left: 50%;
         text-align: center;
-        transform:translateX(-50%);
+        transform: translateX(-50%);
     }
     .hidden {
         visibility: hidden;
     }
+    .loaders {
+        position: relative;
+        left: -20px;
+    }
 }
 
 @media screen and (max-width: 1120px) {
+    .Tables {
+        width: 99%;
+        position: relative;
+        left: -10px;
+    }
     .vieExcel {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .poistaBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .muokkaaBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .valmisBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
+        background-color: #238423 !important;
+        border: #238423 !important;
+    }
+    .valmisBtn:hover {
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
+        background-color: #007000 !important;
+        border: #238423 !important;
     }
     .dialogBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .Lisatieto {
         width: auto;
@@ -201,7 +271,6 @@
         width: 147px !important;
         text-align: center;
     }
-
     .keraamassaBtn {
         display: inline-block !important;
         width: 147px !important;
@@ -210,7 +279,6 @@
     .keraamassaBtn:hover {
         border-color: blue;
     }
-
     .kerattyMaara {
         display: inline-block !important;
         width: 147px !important;
@@ -219,7 +287,6 @@
     .kerattyMaara:hover {
         border-color: blue;
     }
-
     .block {
         display: inline-block;
         width: 100%;
@@ -266,14 +333,10 @@
         text-align: right;
     }
     .KukkaTable {
-        width: auto;
-        word-break: break-all;
-        max-width: 225px;
+        word-break: normal;
     }
     .lisatietoTable {
-        width: auto;
-        word-break: break-all;
-        max-width: 200px;
+        word-break: normal;
     }
     .Cards {
         padding-left: 10px;
@@ -345,28 +408,57 @@
         width: 70px !important;
         left: 50%;
         text-align: center;
-        transform:translateX(-50%);
+        transform: translateX(-50%);
     }
     .hidden {
         visibility: hidden;
+    }
+    .loaders {
+        position: relative;
+        left: -20px;
     }
 }
 
 @media screen and (max-width: 910px) {
     .vieExcel {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .poistaBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .muokkaaBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .valmisBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .dialogBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .Lisatieto {
         width: auto;
@@ -378,7 +470,6 @@
         width: 147px !important;
         text-align: center;
     }
-
     .keraamassaBtn {
         display: inline-block !important;
         width: 147px !important;
@@ -387,7 +478,6 @@
     .keraamassaBtn:hover {
         border-color: blue;
     }
-
     .kerattyMaara {
         display: inline-block !important;
         width: 147px !important;
@@ -396,7 +486,6 @@
     .kerattyMaara:hover {
         border-color: blue;
     }
-
     .block {
         display: inline-block;
         width: 100%;
@@ -443,14 +532,10 @@
         text-align: right;
     }
     .KukkaTable {
-        width: auto;
-        word-break: break-all;
-        max-width: 225px;
+        word-break: normal;
     }
     .lisatietoTable {
-        width: auto;
-        word-break: break-all;
-        max-width: 225px;
+        word-break: normal;
     }
     .Cards {
         padding-left: 10px;
@@ -522,28 +607,57 @@
         width: 70px !important;
         left: 50%;
         text-align: center;
-        transform:translateX(-50%);
+        transform: translateX(-50%);
     }
     .hidden {
         visibility: hidden;
+    }
+    .loaders {
+        position: relative;
+        left: -20px;
     }
 }
 
 @media screen and (max-width: 375px) {
     .vieExcel {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .poistaBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .muokkaaBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .valmisBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .dialogBtn {
-        width: 100% !important;
+        width: 99% !important;
+        position: relative !important;
+        left: -10px !important;
+        font-weight: bold !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        color: white !important;
     }
     .Lisatieto {
         width: auto;
@@ -555,7 +669,6 @@
         width: 147px !important;
         text-align: center;
     }
-
     .keraamassaBtn {
         display: inline-block !important;
         width: 147px !important;
@@ -564,7 +677,6 @@
     .keraamassaBtn:hover {
         border-color: blue;
     }
-
     .kerattyMaara {
         display: inline-block !important;
         width: 147px !important;
@@ -573,7 +685,6 @@
     .kerattyMaara:hover {
         border-color: blue;
     }
-
     .block {
         display: inline-block;
         width: 100%;
@@ -620,14 +731,10 @@
         text-align: right !important;
     }
     .KukkaTable {
-        width: auto;
-        word-break: break-all;
-        max-width: 225px;
+        word-break: normal;
     }
     .lisatietoTable {
-        width: auto;
-        word-break: break-all;
-        max-width: 225px;
+        word-break: normal;
     }
     .Cards {
         padding-left: 10px;
@@ -638,7 +745,6 @@
     .lisatietoMain {
         font-size: 20px !important;
     }
-
     .UpdateCards {
         padding-left: 10px;
         padding-right: 10px;
@@ -703,7 +809,7 @@
         width: 70px !important;
         left: 50%;
         text-align: center;
-        transform:translateX(-50%);
+        transform: translateX(-50%);
     }
     .hidden {
         visibility: hidden;

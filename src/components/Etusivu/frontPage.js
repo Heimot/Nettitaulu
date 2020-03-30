@@ -25,7 +25,13 @@ class frontPage extends Component {
       userName: "",
       passWord: "",
       Roles: "User",
+      kaupatExcel: false,
+      kukatExcel: false,
+      kaupatError: false,
+      kukatError: false,  
     }
+    this.handleFile = this.handleFile.bind(this);
+    this.handleFile2 = this.handleFile2.bind(this);
   }
 
   componentDidMount() {
@@ -62,21 +68,18 @@ class frontPage extends Component {
 
   handleFile = (e) => {
     try {
-      console.log(Object.keys(XLSX.utils))
       var file = e.target.files[0];
       // input canceled, return
       if (!file) return;
 
       var FR = new FileReader();
-      FR.onload = function (e) {
+      FR.onload = (e) => {
         var data = new Uint8Array(e.target.result);
         var workbook = XLSX.read(data, { type: "array" });
         var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
 
         // header: 1 instructs xlsx to create an 'array of arrays'
         var result = XLSX.utils.sheet_to_csv(firstSheet, { header: 1 });
-
-        console.log(result)
 
         fetch(FETCH_URL + 'items/put/id/5e71e2d16f0335253c8374e5', {
           method: 'PUT',
@@ -91,9 +94,17 @@ class frontPage extends Component {
           .then(response => response.json())
           .then(json => {
             console.log(json);
+            this.setState({
+              kukatExcel: true,
+              kukatError: false
+            })
           })
           .catch((error) => {
             console.log(error);
+            this.setState({
+              kukatError: true,
+              kukatExcel: false
+            })
           });
 
       };
@@ -105,21 +116,18 @@ class frontPage extends Component {
 
   handleFile2 = (e) => {
     try {
-      console.log(Object.keys(XLSX.utils))
       var file = e.target.files[0];
       // input canceled, return
       if (!file) return;
 
       var FR = new FileReader();
-      FR.onload = function (e) {
+      FR.onload = (e) => {
         var data = new Uint8Array(e.target.result);
         var workbook = XLSX.read(data, { type: "array" });
         var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
 
         // header: 1 instructs xlsx to create an 'array of arrays'
         var result = XLSX.utils.sheet_to_csv(firstSheet, { header: 1 });
-
-        console.log(result)
 
         fetch(FETCH_URL + 'items/put/id/5e748700bee89f3d5c27ae55', {
           method: 'PUT',
@@ -134,9 +142,17 @@ class frontPage extends Component {
           .then(response => response.json())
           .then(json => {
             console.log(json);
+            this.setState({
+              kaupatExcel: true,
+              kaupatError: false
+            })
           })
           .catch((error) => {
             console.log(error);
+            this.setState({
+              kaupatError: true,
+              kaupatExcel: false
+            })
           });
 
       };
@@ -144,7 +160,7 @@ class frontPage extends Component {
     } catch (error) {
       console.log(error);
     };
-  };
+  }
 
   async delID() {
     try {
@@ -205,7 +221,9 @@ class frontPage extends Component {
   }
 
   render() {
-    if (this.state.redirect) {
+    let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect } = this.state;
+    
+    if (redirect) {
       return (<Redirect to={'/main/tables'} />)
     }
 
@@ -213,10 +231,10 @@ class frontPage extends Component {
       <ErrorBoundary>
         <div className="frontPage">
           <div className="frontPageMenu">
-            <Button className="frontPageSettings"></Button>
+            <Button name="settings" className="frontPageSettings"></Button>
             <div className="frontMainBtn">
 
-              <Button className="redirect"
+              <Button name="kerattavat" className="redirect"
                 onClick={() =>
                   this.setState({ redirect: true }) +
                   sessionStorage.setItem("userValmis", "Ei") +
@@ -226,7 +244,7 @@ class frontPage extends Component {
             </Button>
 
               {sessionStorage.getItem("userRole") === "Admin" ?
-                <Button className="redirect2"
+                <Button name="valmiit" className="redirect2"
                   onClick={() =>
                     this.setState({ redirect: true }) +
                     sessionStorage.setItem("userValmis", "Kerätty") +
@@ -236,7 +254,7 @@ class frontPage extends Component {
             </Button>
                 : undefined}
 
-              {sessionStorage.getItem("userRole") === "Admin" ? <Button className="redirect3" onClick={() => this.adminRoles()}>Admin</Button> : undefined}
+              {sessionStorage.getItem("userRole") === "Admin" ? <Button name="adminpanel" className="redirect3" onClick={() => this.adminRoles()}>Admin</Button> : undefined}
             </div>
             <div className="pictureDot"></div>
           </div>
@@ -249,8 +267,12 @@ class frontPage extends Component {
                 <div className="adminSettings">
                   <CardText>Kukat auto täydentämiseen.</CardText>
                   <Input type="file" name="file" id="exampleFile" accept=".xls,.xlsx,.ods" onChange={(e) => this.handleFile(e)}></Input>
+                  {kukatExcel === true ? <CardText>Kukkien tiedot tallennettu!</CardText> : undefined}
+                  {kukatError === true ? <CardText>Kukkien tiedoissa on jokin virhe tai tietokanta on alhaalla tai ei ole toiminta kunnossa!</CardText> : undefined}
                   <CardText>Asiakkaat auto täydentämiseen.</CardText>
                   <Input type="file" name="file2" id="exampleFile2" accept=".xls,.xlsx,.ods" onChange={(e) => this.handleFile2(e)}></Input>
+                  {kaupatExcel === true ? <CardText>Kauppojen tiedot tallennettu!</CardText> : undefined}
+                  {kaupatError === true ? <CardText>Kauppojen tiedoissa on jokin virhe tai tietokanta on alhaalla tai ei ole toiminta kunnossa!</CardText> : undefined}
                 </div>
                 <div className="accountCreate">
                   <CardTitle>Käyttäjien lisääminen ja poistaminen.</CardTitle>
@@ -289,8 +311,8 @@ class frontPage extends Component {
           <Dialog className="adminDialog" isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
             <Card>
               <CardText className="deleteUser">Poistetaanko käyttäjä?</CardText>
-              <Button onClick={() => this.delID()}>Kyllä</Button>
-              <Button onClick={() => this.setState({ isOpen2: false }) + sessionStorage.removeItem("delID")}>Ei</Button>
+              <Button name="delKylla" onClick={() => this.delID()}>Kyllä</Button>
+              <Button name="delEi" onClick={() => this.setState({ isOpen2: false }) + sessionStorage.removeItem("delID")}>Ei</Button>
             </Card>
           </Dialog>
         </div>
