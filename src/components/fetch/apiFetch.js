@@ -212,6 +212,45 @@ export const updateFlowers = (userDatas, id, kukka, toimi, kerays, lisatieto) =>
     });
 }
 
+export const updateFlowersEdit = (products, id, kukka, toimi, kerays, lisatieto) => {
+  if (kukka.length < 1) {
+    kukka = products.kukka;
+  }
+
+  if (toimi.length < 1) {
+    toimi = products.toimi;
+  }
+
+  if (kerays.length < 1) {
+    kerays = products.kerays;
+  }
+
+  if (lisatieto.length < 1) {
+    lisatieto = products.lisatieto;
+  }
+
+  fetch(FETCH_URL + 'products/put/id/' + id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      kukka: kukka,
+      toimi: toimi,
+      kerays: kerays,
+      lisatieto: lisatieto
+    }),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 export const patchKeraysData = (product, idvalues, maara) => {
   if (maara > 0) {
     maara = document.getElementById(product._id).value;
