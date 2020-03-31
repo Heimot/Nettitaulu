@@ -28,6 +28,7 @@ const override = css`
 const endpoint = FETCH_URL;
 const socket = socketIOClient(endpoint);
 
+let printTF = false;
 let search = "";
 let idSafe = "";
 let userDatas = {
@@ -77,7 +78,6 @@ export default class TopNav extends React.Component {
       locationName: '',
       isLoading: true,
       startDate: null,
-      dateValue: null,
       toimituspvm: new Date(),
       startDate2: new Date(),
       startDate3: new Date(),
@@ -141,7 +141,6 @@ export default class TopNav extends React.Component {
       let ids = await userDatas.products.map(product => {
         return product._id
       })
-      console.log(ids)
 
       let i = 0;
       while (i < ids.length) {
@@ -325,6 +324,7 @@ export default class TopNav extends React.Component {
   componentDidMount() {
     try {
       this._isMounted = true;
+      var newDate = new Date();
 
       if (sessionStorage.getItem("btnName") === null) {
         sessionStorage.setItem("btnName", "Kerättävät")
@@ -338,16 +338,22 @@ export default class TopNav extends React.Component {
         sessionStorage.setItem("userValmis", "Ei");
       }
 
-      var result = this.state.startDate3;
-      result.setDate(result.getDate() + 1);
-      this.setState({
-        startDate3: result
-      });
+      if (sessionStorage.getItem('userDate')) {
+        var dateS = sessionStorage.getItem('userDate').split('/');
+        newDate = `${dateS[1]}/${dateS[0]}/${dateS[2]}`;
+
+
+        var result = new Date(newDate);
+        result.setDate(result.getDate() + 1);
+        this.setState({
+          startDate3: result,
+          startDate2: new Date(newDate)
+        });
+      }
 
       if (sessionStorage.getItem('userDate')) {
         this.setState({
-          dateValue: sessionStorage.getItem('userDate'),
-          startDate: new Date()
+          startDate: new Date(newDate)
         });
       } else
         this.setState({
@@ -547,6 +553,15 @@ export default class TopNav extends React.Component {
     };
   }
 
+  print() {
+    if (printTF) {
+      printTF = false;
+    } else {
+      printTF = true;
+    }
+    this.props.printData(printTF);
+  }
+
   render() {
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
@@ -570,6 +585,7 @@ export default class TopNav extends React.Component {
               <Button name="SearchBtn" className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
               <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
             </div>
+            <Button className="printBtn" onClick={() => this.print()}></Button>
             <NavbarToggler right className="Toggler" onClick={this.toggle} />
             <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("siteName")}</NavbarBrand>
             <Collapse isOpen={this.state.isOpen} navbar>
@@ -580,7 +596,6 @@ export default class TopNav extends React.Component {
                 </Button>
 
                 <DatePicker className="Datepick"
-                  value={this.state.dateValue}
                   selected={this.state.startDate}
                   onChange={this.handleChange2}
                   onCalendarClose={() => sessionStorage.setItem('userDate', format(this.state.startDate, "dd/MM/yyyy"), window.location.reload())}

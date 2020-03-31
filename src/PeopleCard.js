@@ -6,7 +6,7 @@ import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
-import { deleteFlowerData, updateFlower, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData } from './components/fetch/apiFetch';
+import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit } from './components/fetch/apiFetch';
 import MyAutosuggest from "./components/autoComplete/autoComplete";
 import { FETCH_URL } from "./components/fetch/url";
 import XLSX from 'xlsx';
@@ -18,6 +18,7 @@ import "./Styles/Table.css";
 import "./Styles/progressBar.css";
 
 let change = false;
+var arr = [];
 
 function changeData() {
   try {
@@ -78,6 +79,7 @@ class PeopleCard extends Component {
       sent: false,
       search: "",
       suggestions: [],
+      printData: [],
 
       response: false,
       endpoint: 'http://localhost:3002',
@@ -106,7 +108,14 @@ class PeopleCard extends Component {
 
   muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm) {
     try {
+      var dateS = date.split('/');
+      var newDate = `${dateS[1]}/${dateS[0]}/${dateS[2]}`;
+
+      var dateSp = toimituspvm.split('/');
+      var newToimitusPVM = `${dateSp[1]}/${dateSp[0]}/${dateSp[2]}`;
       this.setState({
+        startDate: new Date(newDate),
+        startDate2: new Date(newToimitusPVM),
         isOpen2: true,
       })
     } catch (error) {
@@ -332,11 +341,11 @@ class PeopleCard extends Component {
       const idvalues = document.getElementById(`keratty/${product._id}`).value;
       var maara = document.getElementById(product._id).value;
       patchKeraysData(product, idvalues, maara);
+      socket.emit('chat', {
+        message: true
+      });
 
       var timeout = setTimeout(() => {
-        socket.emit('chat', {
-          message: true
-        });
         clearTimeout(timeout);
       }, 5000)
     } catch (error) {
@@ -344,17 +353,26 @@ class PeopleCard extends Component {
     };
   }
 
-  putData(product) {
+  async putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date) {
     try {
-      var kukka = document.getElementById(`kukka/${product._id}`).value;
-      var toimi = document.getElementById(`toimi/${product._id}`).value;
-      var kerays = document.getElementById(`kerays/${product._id}`).value;
-      var lisatieto = document.getElementById(`lisatieto/${product._id}`).value;
+      let ids = await products.map(product => {
+        return product._id
+      })
 
-      updateFlower(product, kukka, toimi, kerays, lisatieto);
+      let i = 0;
+      while (i < ids.length) {
+        let id = ids.shift();
+        var kukka = document.getElementById(`kukka/${id}`).value;
+        var toimi = document.getElementById(`toimi/${id}`).value;
+        var kerays = document.getElementById(`kerays/${id}`).value;
+        var lisatieto = document.getElementById(`lisatieto/${id}`).value;
+
+        await updateFlowersEdit(products, id, kukka, toimi, kerays, lisatieto);
+      }
       socket.emit('chat', {
         message: true
       });
+      this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)
     } catch (error) {
       console.log(error);
     };
@@ -381,6 +399,9 @@ class PeopleCard extends Component {
 
   deleteData(product) {
     try {
+      document.getElementById(`kukka/${product._id}`).value = null;
+      document.getElementById(`toimi/${product._id}`).value = null;
+      document.getElementById(`lisatieto/${product._id}`).value = null;
       deleteFlowerData(product);
       socket.emit('chat', {
         message: true
@@ -434,6 +455,22 @@ class PeopleCard extends Component {
     };
   }
 
+  printOut(product, kauppa) {
+    if (product.keratty === "Odottaa keräystä") {
+      arr.push({
+        kauppa: kauppa,
+        tuote: product.kukka,
+        maara: product.toimi,
+        lisatieto: product.lisatieto
+      });
+
+      this.setState({
+        printData: arr
+      })
+      this.props.printDataArr(arr)
+    }
+  }
+
   componentDidMount() {
     try {
       this._isMounted = true;
@@ -461,6 +498,7 @@ class PeopleCard extends Component {
 
   render() {
     let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm } = this.props.person;
+
     let array = [];
     let result = {};
     let counts = {};
@@ -537,7 +575,7 @@ class PeopleCard extends Component {
                           id={`keratty/${product._id}`}
                           value={product.keratty}
                           placeholder={product.keratty}
-                          onClick={() => { this.patchData(product) }}>
+                          onClick={() => this.patchData(product) + this.printOut(product, kauppa)}>
                         </Input>
                       </Td>
                       <Td>
@@ -676,13 +714,12 @@ class PeopleCard extends Component {
                             name="lisatieto"
                             id={`lisatieto/${product._id}`}
                             onChange={this.handleChange}
-                            className="inputlabelU"
+                            className="inputlabelA"
                             placeholder={product.lisatieto}>
                           </Input>
+                          <Button className="delProduct" name="poista_kukka" color="danger" onClick={() => this.deleteData(product)}>X</Button>
                         </Td>
                       </Tr>
-                      <Button name="paivita_kukan_tiedot" color="success" onClick={() => this.putData(product)}>Päivitä kukan tiedot</Button>
-                      <Button name="poista_kukka" color="danger" onClick={() => this.deleteData(product)}>Poista kukka</Button>
                     </Tbody>
                   )}
                 </Table>
@@ -698,7 +735,7 @@ class PeopleCard extends Component {
                   </Input>
                 </div>
                 <div className="taulukkoDivider"></div>
-                <Button name="paivita_taulukon_tiedot" color="success" onClick={() => this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)}>Päivitä taulukon tiedot</Button>
+                <Button name="paivita_taulukon_tiedot" color="success" onClick={() => this.putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date)}>Päivitä taulukon tiedot</Button>
               </Card>
             </Dialog>
           </div>

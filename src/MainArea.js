@@ -10,6 +10,7 @@ import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete } from
 import socketIOClient from "socket.io-client";
 import { FETCH_URL } from './components/fetch/url';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
+import Printer from './components/printWindow/printData';
 
 //CSS
 import './Styles/MainAreas.css';
@@ -45,11 +46,15 @@ class MainArea extends Component {
       searched: "",
       searchLength: 0,
       error: null,
-      errorInfo: null
+      errorInfo: null,
+      print: false,
+      printArr: [],
     }
     this.getTables = this.getTables.bind(this);
     this.removePerson = this.removePerson.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+    this.printDataNav = this.printDataNav.bind(this);
+    this.printDataArray = this.printDataArray.bind(this);
   }
 
   componentDidMount() {
@@ -126,7 +131,36 @@ class MainArea extends Component {
     };
   }
 
+  printDataNav(printTF) {
+    try {
+      this.setState({
+        print: printTF,
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  printDataArray(arr) {
+    try {
+      this.setState({
+        printArr: arr
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   render() {
+    if (this.state.print === true) {
+      return (
+        <div>
+          <Nav printData={this.printDataNav} />
+          <Printer newData={this.state.printArr} print={this.state.print} printData={this.printDataNav} />
+        </div>
+      )
+    }
+
     if (this.state.redirect) {
       return <Redirect to="/" />
     }
@@ -176,15 +210,15 @@ class MainArea extends Component {
                     />
                   </div>
                 </Dialogs>
-                <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen} handleSearch={this.handleSearch} />
+                <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen} handleSearch={this.handleSearch} printDataArr={this.printDataArray} />
 
-                <Nav getTables={this.getTables} handleSearch={this.handleSearch} items={DataF} items2={DataK} />
+                <Nav getTables={this.getTables} handleSearch={this.handleSearch} printData={this.printDataNav} items={DataF} items2={DataK} />
               </Row>
             </Container>
           </ErrorBoundary>
         )
       } else {
-        return (<ErrorBoundary><Nav getTables={this.getTables} handleSearch={this.handleSearch} items={DataF} items2={DataK} /></ErrorBoundary>)
+        return (<ErrorBoundary><Nav getTables={this.getTables} handleSearch={this.handleSearch} printData={this.printDataNav} items={DataF} items2={DataK} /></ErrorBoundary>)
       }
     })
     return (
