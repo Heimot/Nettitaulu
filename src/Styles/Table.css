@@ -96,6 +96,14 @@
         width: 100% !important;
         display: inline-block !important;
     }
+    .inputlabelA {
+        width: 85% !important;
+        display: inline-block !important;
+    }
+    .delProduct {
+        width: 15% !important;
+        display: inline-block !important;
+    }
     .btnlabel {
         display: inline-block;
         width: 10px;

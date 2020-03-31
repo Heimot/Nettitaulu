@@ -2,6 +2,17 @@
     .ml-auto {
         height: 140px !important;
     }
+    .printBtn {
+        position: absolute;
+        width: 100px;
+        height: 35px;
+        top: 15px;
+        left: 200px;
+        background-image: url('../pictures/print.png');
+        background-size: 34px 34px;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
     .navName {
         font-size: 25px !important;
         font-weight: bold !important;
