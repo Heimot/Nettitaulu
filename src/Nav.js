@@ -571,7 +571,7 @@ export default class TopNav extends React.Component {
               />
             </div>
           </Dialogs>
-          <Navbar light color="info" fixed="top">
+          <Navbar light color={sessionStorage.getItem('btnName') === "Valmiit" ? "success" : "info"} fixed="top">
             <div className="searchDiv">
               <Button name="SearchBtn" className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
               <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />

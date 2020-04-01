@@ -562,8 +562,8 @@ class PeopleCard extends Component {
 
                 {products.map(product =>
                   <Tbody key={product._id}>
-                    <Tr>
-                      <Td className="KukkaTable">{product.kukka}</Td>
+                    <Tr className={product.tarkastettu === "Ei" ? "EiRow" : "ValmisRow"}>
+                      <Td className="KukkaTable" onDoubleClick={sessionStorage.getItem('btnName') === "Valmiit" ? () => console.log("F") : undefined}>{product.kukka}</Td>
                       <Td>{product.toimi}</Td>
                       <Td>{product.kerays}</Td>
                       <Td className="lisatietoTable">{product.lisatieto}</Td>

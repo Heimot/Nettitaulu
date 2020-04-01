@@ -9,17 +9,6 @@
     .printTable {
         position: relative;
     }
-    th, td {
-        border: 1px solid #000;
-        padding: 0.75rem;
-        text-align: left;
-        font-size: 20px;
-    }
-    th {
-        font-weight: bold;
-        white-space: nowrap;
-        background: #000;
-    }
     .printBtn2 {
         position: fixed;
         width: 40px;

@@ -2,6 +2,12 @@
     .ml-auto {
         height: 140px !important;
     }
+    .ValmisRow {
+        background-color: green !important;
+    }
+    .EiValmis {
+
+    }
     .printBtn {
         position: absolute;
         width: 40px;
@@ -79,6 +85,7 @@
         font-size: 20px !important;
         width: 35 !important;
         height: 35px !important;
+        border: white 1px solid !important;
     }
     .searchDiv {
         position: absolute;
@@ -249,6 +256,7 @@
         font-size: 20px !important;
         width: 25px !important;
         height: 25px !important;
+        border: white 1px solid !important;
     }
     .DataCard {
         width: 100%;
@@ -412,6 +420,7 @@
         font-size: 20px !important;
         width: 35 !important;
         height: 35px !important;
+        border: white 1px solid !important;
     }
     .searchDiv {
         position: absolute;
@@ -582,6 +591,7 @@
         font-size: 20px !important;
         width: 35 !important;
         height: 40px !important;
+        border: white 1px solid !important;
     }
     .searchDiv {
         position: absolute;
