@@ -43,7 +43,7 @@ class Printer extends Component {
                         </Thead>
                         {newData.map(data => {
                             return (
-                                <Tbody>
+                                <Tbody key={data.id}>
                                     <Tr>
                                         <Td>{data.tuote}</Td>
                                         <Td>{data.maara}</Td>

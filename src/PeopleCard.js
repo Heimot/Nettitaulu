@@ -336,18 +336,15 @@ class PeopleCard extends Component {
     };
   }
 
-  patchData(product) {
+  patchData(product, kauppa) {
     try {
+      this.printOut(product, kauppa)
       const idvalues = document.getElementById(`keratty/${product._id}`).value;
       var maara = document.getElementById(product._id).value;
       patchKeraysData(product, idvalues, maara);
       socket.emit('chat', {
         message: true
       });
-
-      var timeout = setTimeout(() => {
-        clearTimeout(timeout);
-      }, 5000)
     } catch (error) {
       console.log(error);
     };
@@ -461,7 +458,8 @@ class PeopleCard extends Component {
         kauppa: kauppa,
         tuote: product.kukka,
         maara: product.toimi,
-        lisatieto: product.lisatieto
+        lisatieto: product.lisatieto,
+        id: product._id
       });
 
       this.setState({
@@ -575,7 +573,7 @@ class PeopleCard extends Component {
                           id={`keratty/${product._id}`}
                           value={product.keratty}
                           placeholder={product.keratty}
-                          onClick={() => this.patchData(product) + this.printOut(product, kauppa)}>
+                          onClick={() => this.patchData(product, kauppa)}>
                         </Input>
                       </Td>
                       <Td>
