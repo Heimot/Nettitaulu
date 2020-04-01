@@ -6,15 +6,24 @@ import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 //CSS
 import '../../Styles/print.css'
 
+let printTF = true;
+
 class Printer extends Component {
-    printOrder = () => {
+    printOrder = async () => {
         const printableElements = document.getElementById('printDiv').innerHTML;
-        const orderHtml = '<html><head><title></title></head><body>' + printableElements + '</body></html>'
+        const orderHtml = '<html><head><title></title></head><body>' + printableElements + '</body></html>';
         const oldPage = document.body.innerHTML;
-        document.body.innerHTML = orderHtml;
+        window.onbeforeprint = () => {
+            document.body.innerHTML = orderHtml;
+        }
         window.print();
-        document.body.innerHTML = oldPage
+        window.onafterprint = () => {
+            document.body.innerHTML = oldPage;
+            window.location.reload();
+        }
+        document.body.innerHTML = oldPage;
         window.location.reload();
+
     }
 
     render() {
@@ -47,6 +56,7 @@ class Printer extends Component {
                     </Table>
                     <Button onClick={() => this.printOrder()}>Tulosta</Button>
                 </div>
+                <Button className="printBtn2" onClick={() => this.props.printData(printTF)}></Button>
             </div >
         )
     }

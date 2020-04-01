@@ -4,14 +4,17 @@
     }
     .printBtn {
         position: absolute;
-        width: 100px;
-        height: 35px;
-        top: 15px;
-        left: 200px;
+        width: 40px;
+        height: 40px;
+        top: 1500%;
+        right: 50px;
         background-image: url('../pictures/print.png');
         background-size: 34px 34px;
         background-repeat: no-repeat;
         background-position: center;
+        border-radius: 50% !important;
+        border: grey;
+        z-index: 100000;
     }
     .navName {
         font-size: 25px !important;
@@ -168,6 +171,20 @@
 @media screen and (max-width: 1120px) {
     .ml-auto {
         height: 140px !important;
+    }
+    .printBtn {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        top: 100%;
+        right: 50px;
+        background-image: url('../pictures/print.png');
+        background-size: 34px 34px;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 50% !important;
+        border: grey;
+        z-index: 100000;
     }
     .navName {
         font-size: 25px !important;
@@ -487,6 +504,20 @@
 @media screen and (max-width: 375px) {
     .ml-auto {
         height: 140px !important;
+    }
+    .printBtn {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        top: 1500%;
+        right: 50px;
+        background-image: url('../pictures/print.png');
+        background-size: 34px 34px;
+        background-repeat: no-repeat;
+        background-position: center;
+        border-radius: 50% !important;
+        border: grey;
+        z-index: 100000;
     }
     .navName {
         font-size: 25px !important;

@@ -1,1 +1,1 @@
-export const FETCH_URL = "http://localhost:3002/";
+export const FETCH_URL = "https://4815a0a1.ngrok.io/";

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row } from 'reactstrap';
+import { Container, Row, Button } from 'reactstrap';
 import PeopleCard from './PeopleCard';
 import Nav from './Nav';
 import { Redirect } from 'react-router-dom';
@@ -133,9 +133,17 @@ class MainArea extends Component {
 
   printDataNav(printTF) {
     try {
-      this.setState({
-        print: printTF,
-      })
+      if (printTF) {
+        printTF = false;
+        this.setState({
+          print: printTF,
+        })
+      } else {
+        printTF = true;
+        this.setState({
+          print: printTF,
+        })
+      }
     } catch (err) {
       console.log(err);
     }
@@ -155,7 +163,6 @@ class MainArea extends Component {
     if (this.state.print === true) {
       return (
         <div>
-          <Nav printData={this.printDataNav} />
           <Printer newData={this.state.printArr} print={this.state.print} printData={this.printDataNav} />
         </div>
       )
@@ -210,6 +217,7 @@ class MainArea extends Component {
                     />
                   </div>
                 </Dialogs>
+                <Button className="printBtn1" onClick={() => this.printDataNav()}>{this.state.printArr.length > 0 ? <h1 className="printLength">{this.state.printArr.length}</h1> :  undefined}</Button>
                 <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen} handleSearch={this.handleSearch} printDataArr={this.printDataArray} />
 
                 <Nav getTables={this.getTables} handleSearch={this.handleSearch} printData={this.printDataNav} items={DataF} items2={DataK} />

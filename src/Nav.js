@@ -28,7 +28,6 @@ const override = css`
 const endpoint = FETCH_URL;
 const socket = socketIOClient(endpoint);
 
-let printTF = false;
 let search = "";
 let idSafe = "";
 let userDatas = {
@@ -301,7 +300,6 @@ export default class TopNav extends React.Component {
         isOpen2: true,
         dLoader: false
       });
-      console.log("f")
       await socket.emit('chat', {
         message: true
       });
@@ -355,11 +353,13 @@ export default class TopNav extends React.Component {
         this.setState({
           startDate: new Date(newDate)
         });
-      } else
+        sessionStorage.setItem('userDate', format(new Date(newDate), 'dd/MM/yyyy')); 
+      } else {
         this.setState({
           startDate: new Date()
         });
-
+        sessionStorage.setItem('userDate', format(new Date(), 'dd/MM/yyyy'));
+      }
       if (localStorage.getItem('userLocation') == null) {
         localStorage.setItem('userLocation', "Ryönä")
       }
@@ -553,15 +553,6 @@ export default class TopNav extends React.Component {
     };
   }
 
-  print() {
-    if (printTF) {
-      printTF = false;
-    } else {
-      printTF = true;
-    }
-    this.props.printData(printTF);
-  }
-
   render() {
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
@@ -585,7 +576,6 @@ export default class TopNav extends React.Component {
               <Button name="SearchBtn" className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
               <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
             </div>
-            <Button className="printBtn" onClick={() => this.print()}></Button>
             <NavbarToggler right className="Toggler" onClick={this.toggle} />
             <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("siteName")}</NavbarBrand>
             <Collapse isOpen={this.state.isOpen} navbar>

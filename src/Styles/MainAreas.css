@@ -15,3 +15,25 @@
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
 }
+
+.printBtn1 {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    bottom: 5%;
+    right: 5%;
+    background-image: url('../pictures/print.png');
+    background-size: 34px 34px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50% !important;
+    border: grey;
+    z-index: 100000;
+}
+
+.printLength {
+    position: absolute;
+    left: 35px;
+    color: 	#FF6347;
+    font-family: Arial, Helvetica, sans-serif;
+}
