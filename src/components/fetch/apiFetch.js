@@ -438,7 +438,6 @@ export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusai
       alisatieto: asiakaslisatieto,
       date: keraysPVM,
       toimituspvm: toimitusaika,
-      valmis: userDatas.products.valmis,
     }),
   })
     .then(response => response.json())
@@ -495,4 +494,3 @@ export const patchValmiusProductsData = (id, valmius) => {
       console.log(error);
     });
 }
-
