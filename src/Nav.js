@@ -353,7 +353,7 @@ export default class TopNav extends React.Component {
         this.setState({
           startDate: new Date(newDate)
         });
-        sessionStorage.setItem('userDate', format(new Date(newDate), 'dd/MM/yyyy')); 
+        sessionStorage.setItem('userDate', format(new Date(newDate), 'dd/MM/yyyy'));
       } else {
         this.setState({
           startDate: new Date()
@@ -406,11 +406,19 @@ export default class TopNav extends React.Component {
           sessionStorage.setItem("siteName", "Valmiit");
           sessionStorage.setItem("btnName", "Valmiit");
           break;
+
         case "Kerätty":
+          sessionStorage.setItem("userValmis", "Arkistoitu");
+          sessionStorage.setItem("siteName", "Arkistoitu");
+          sessionStorage.setItem("btnName", "Arkistoitu");
+          break;
+
+        case "Arkistoitu":
           sessionStorage.setItem("userValmis", "Ei");
           sessionStorage.setItem("siteName", "Kerättävät");
           sessionStorage.setItem("btnName", "Kerättävät");
           break;
+
         default:
           sessionStorage.setItem("userValmis", "Ei");
           sessionStorage.setItem("siteName", "Kerättävät");
@@ -571,17 +579,21 @@ export default class TopNav extends React.Component {
               />
             </div>
           </Dialogs>
-          <Navbar light color={sessionStorage.getItem('btnName') === "Valmiit" ? "success" : "info"} fixed="top">
+          <Navbar light color={sessionStorage.getItem('siteName') === "Valmiit" ? "success" : sessionStorage.getItem('siteName') === "Arkistoitu" ? "warning" : "info"} fixed="top">
+
+            {!this.state.isOpen ? 
             <div className="searchDiv">
               <Button name="SearchBtn" className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
               <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
-            </div>
+            </div> 
+            : undefined}
+
             <NavbarToggler right className="Toggler" onClick={this.toggle} />
             <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("siteName")}</NavbarBrand>
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
 
-                <Button name="tarkastusBtn" className="TarkastusBTN" onClick={() => this.Tarkastus()}>
+                <Button name="tarkastusBtn" className="TarkastusBTN" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} onClick={() => this.Tarkastus()}>
                   {sessionStorage.getItem("btnName")}
                 </Button>
 
@@ -697,7 +709,7 @@ export default class TopNav extends React.Component {
                   </Card>
                 </Dialog>
 
-                <Button name="lisaa_taulukko" className='addBtn' color='primary' type='button' onClick={(e) => this.runAdders()}></Button>
+                <Button name="lisaa_taulukko" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} className='addBtn' color='primary' type='button' onClick={(e) => this.runAdders()}></Button>
                 <Button name="kirjaudu_ulos" className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
                 <Button name="location" className='locationBtn' onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
 

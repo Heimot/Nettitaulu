@@ -258,7 +258,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
     maara = 0;
   }
 
-  if (idvalues === 'Odottaa keräystä') {
+  if (idvalues === 'Odottaa keräystä' || idvalues === 'Awaiting collecting') {
     document.getElementById(`keratty/${product._id}`).value = "Keräyksessä";
     fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',
@@ -286,7 +286,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
       });
   }
 
-  if (idvalues === "Keräyksessä") {
+  if (idvalues === "Keräyksessä" || idvalues === 'Collecting') {
     document.getElementById(`keratty/${product._id}`).value = "Kerätty";
     fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',
@@ -314,7 +314,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
       });
   }
 
-  if (idvalues === "Kerätty") {
+  if (idvalues === "Kerätty" || idvalues === "Collected") {
     document.getElementById(`keratty/${product._id}`).value = "Ei ole";
     fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',
@@ -342,7 +342,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
       });
   }
 
-  if (idvalues === "Ei ole") {
+  if (idvalues === "Ei ole" || idvalues === "Nope" ) {
     document.getElementById(`keratty/${product._id}`).value = "Odottaa keräystä";
     fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',
@@ -482,6 +482,29 @@ export const patchValmiusProductsData = (id, valmius) => {
     body: JSON.stringify([
       {
         propName: "valmis",
+        value: valmius,
+      },
+    ])
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const patchTarkastettuProductsData = (product, valmius) => {
+  fetch(FETCH_URL + 'products/patch/id/' + product._id, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify([
+      {
+        propName: "tarkastettu",
         value: valmius,
       },
     ])

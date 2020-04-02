@@ -7,6 +7,7 @@ import Dialog from "../dialog/editDialog";
 import { getUserData, delUserData } from '../fetch/apiFetch';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
+import language from '../language/language';
 
 //CSS
 import "../../Styles/frontPage.css";
@@ -240,7 +241,7 @@ class frontPage extends Component {
                   sessionStorage.setItem("userValmis", "Ei") +
                   sessionStorage.setItem("siteName", "Kerättävät") +
                   sessionStorage.setItem("btnName", "Kerättävät")}>
-                Kerättävät
+                {language[localStorage.getItem('language')].collect}
             </Button>
 
               {sessionStorage.getItem("userRole") === "Admin" ?
@@ -250,7 +251,7 @@ class frontPage extends Component {
                     sessionStorage.setItem("userValmis", "Kerätty") +
                     sessionStorage.setItem("siteName", "Valmiit") +
                     sessionStorage.setItem("btnName", "Valmiit")}>
-                  Valmiit
+                  {language[localStorage.getItem('language')].ready}
             </Button>
                 : undefined}
 

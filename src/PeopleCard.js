@@ -6,12 +6,13 @@ import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
-import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit } from './components/fetch/apiFetch';
+import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData } from './components/fetch/apiFetch';
 import MyAutosuggest from "./components/autoComplete/autoComplete";
 import { FETCH_URL } from "./components/fetch/url";
 import XLSX from 'xlsx';
 import socketIOClient from "socket.io-client";
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
+import language from './components/language/language';
 
 //CSS files
 import "./Styles/Table.css";
@@ -143,7 +144,7 @@ class PeopleCard extends Component {
     };
   }
 
-  async valmisData(_id, products) {
+  async valmisData(_id, products, counts2) {
     try {
       let ids = [];
       let valmius;
@@ -153,20 +154,9 @@ class PeopleCard extends Component {
       let p = 0;
       let id;
 
-      let valmiukset = await products.map(product => {
-        return product.valmis
-      })
-      let eivalmiit = valmiukset.filter(valmiit => {
-        return valmiit === "Ei"
-      })
-      let valmiit = valmiukset.filter(valmiit => {
-        return valmiit === "Kerätty"
-      })
-
-      if (eivalmiit.length > valmiit.length) {
-
-        valmius = "Kerätty";
-        valmius2 = "Kyllä";
+      if (products.length === counts2.Kyllä && sessionStorage.getItem('siteName') === "Valmiit") {
+        valmius = "Arkistoitu";
+        valmius2 = "Arkistoitu";
         switch (localStorage.getItem("userLocation")) {
           case "Tuusjärvi":
             location = "tuusjarvi";
@@ -206,18 +196,17 @@ class PeopleCard extends Component {
         }
         i++;
       } else {
-
-        valmius = "Ei";
-        valmius2 = "Ei";
+        valmius = "Kerätty";
+        valmius2 = "Kyllä";
         switch (localStorage.getItem("userLocation")) {
           case "Tuusjärvi":
-            location = "tuusjarvi"
-            patchValmiusData(valmius2, _id, location)
+            location = "tuusjarvi";
+            patchValmiusData(valmius2, _id, location);
             break;
 
           case "Ryönä":
-            location = "ryona"
-            patchValmiusData(valmius2, _id, location)
+            location = "ryona";
+            patchValmiusData(valmius2, _id, location);
             break;
 
           case "Molemmat":
@@ -233,15 +222,14 @@ class PeopleCard extends Component {
               }
             }
             break;
-
           default:
             // ...
             break;
         }
-
         ids = await products.map(product => {
           return product._id
         })
+
         i = 0;
         while (i < ids.length) {
           id = ids.shift();
@@ -338,7 +326,7 @@ class PeopleCard extends Component {
 
   patchData(product, kauppa) {
     try {
-      this.printOut(product, kauppa)
+      this.printOut(product, kauppa);
       const idvalues = document.getElementById(`keratty/${product._id}`).value;
       var maara = document.getElementById(product._id).value;
       patchKeraysData(product, idvalues, maara);
@@ -469,6 +457,27 @@ class PeopleCard extends Component {
     }
   }
 
+  patchTarkastettu(product) {
+    let valmius;
+    switch (product.tarkastettu) {
+      case "Ei":
+        valmius = "Kyllä";
+        break;
+
+      case "Kyllä":
+        valmius = "Ei";
+        break;
+
+      default:
+        valmius = "Ei";
+        break;
+    }
+    patchTarkastettuProductsData(product, valmius);
+    socket.emit('chat', {
+      message: true
+    });
+  }
+
   componentDidMount() {
     try {
       this._isMounted = true;
@@ -497,6 +506,7 @@ class PeopleCard extends Component {
   render() {
     let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm } = this.props.person;
 
+    // Counter for displaying procentages.
     let array = [];
     let result = {};
     let counts = {};
@@ -510,6 +520,21 @@ class PeopleCard extends Component {
       result[array[i]] = (result[array[i]] || 0) + 1
     }
     Object.keys(result).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+
+    // Counter2 for displaying button in valmiit.
+    let array2 = [];
+    let result2 = {};
+    let counts2 = {};
+    array2.push(
+      products.map(doc => {
+        return doc.tarkastettu;
+      })
+    )
+    Object.keys(result2).map(key => ({ [key]: result2[key] }))
+    for (let i = 0; i < array.length; i++) {
+      result2[array2[i]] = (result2[array2[i]] || 0) + 1
+    }
+    Object.keys(result2).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts2[x] = (counts2[x] || 0) + 1; });
 
     return (
       <ErrorBoundary>
@@ -527,22 +552,22 @@ class PeopleCard extends Component {
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardText>Tarkastettu Tuusjärvi: {tuusjarvi}</CardText> : undefined}
               <div className="loaders" >
                 <div className="loaderMargins">
-                  <CardText className="hover">Odottaa keräystä</CardText>
+                  <CardText className="hover">{language[localStorage.getItem('language')].statusBar1}</CardText>
                   <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} id={"Odottaa keräystä"} />
                 </div>
 
                 <div className="loaderMargins">
-                  <CardText className="hover">Keräyksessä</CardText>
+                  <CardText className="hover">{language[localStorage.getItem('language')].statusBar2}</CardText>
                   <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length} id={"Keräyksessä"} />
                 </div>
 
                 <div className="loaderMargins">
-                  <CardText className="hover">Kerätty</CardText>
+                  <CardText className="hover">{language[localStorage.getItem('language')].statusBar3}</CardText>
                   <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} id={"Kerätty"} />
                 </div>
 
                 <div className="loaderMargins">
-                  <CardText className="hover">Ei ole</CardText>
+                  <CardText className="hover">{language[localStorage.getItem('language')].statusBar4}</CardText>
                   <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} id={"Ei ole"} />
                 </div>
               </div>
@@ -551,59 +576,71 @@ class PeopleCard extends Component {
 
                 <Thead>
                   <Tr>
-                    <Th>Tuote</Th>
-                    <Th>Kerätään</Th>
-                    <Th>Keräyspiste</Th>
-                    <Th>Lisätietoa</Th>
-                    <Th>Keräämässä</Th>
-                    <Th>Kerättymäärä</Th>
+                    <Th>{language[localStorage.getItem('language')].tuote}</Th>
+                    <Th>{language[localStorage.getItem('language')].kerataan}</Th>
+                    <Th>{language[localStorage.getItem('language')].kerayspiste}</Th>
+                    <Th>{language[localStorage.getItem('language')].lisatietoa}</Th>
+                    <Th>{language[localStorage.getItem('language')].keraamassa}</Th>
+                    <Th>{language[localStorage.getItem('language')].kerattymaara}</Th>
                   </Tr>
                 </Thead>
 
-                {products.map(product =>
-                  <Tbody key={product._id}>
-                    <Tr className={product.tarkastettu === "Ei" ? "EiRow" : "ValmisRow"}>
-                      <Td className="KukkaTable" onDoubleClick={sessionStorage.getItem('btnName') === "Valmiit" ? () => console.log("F") : undefined}>{product.kukka}</Td>
-                      <Td>{product.toimi}</Td>
-                      <Td>{product.kerays}</Td>
-                      <Td className="lisatietoTable">{product.lisatieto}</Td>
-                      <Td>
-                        <Input className="keraamassaBtn"
-                          type="button"
-                          id={`keratty/${product._id}`}
-                          value={product.keratty}
-                          placeholder={product.keratty}
-                          onClick={() => this.patchData(product, kauppa)}>
-                        </Input>
-                      </Td>
-                      <Td>
-                        <Input className="kerattyMaara"
-                          type="number"
-                          id={product._id}
-                          placeholder={product.kerattymaara}
-                          name="kerattymaara">
-                        </Input>
-                      </Td>
-                    </Tr>
-                  </Tbody>
-                )}
+                {products.map(product => {
+                  return (
+                    <Tbody key={product._id}>
+                      <Tr className={product.tarkastettu === "Ei" ? undefined : "ValmisRow"} onDoubleClick={sessionStorage.getItem('btnName') === "Valmiit" ? () => this.patchTarkastettu(product) : undefined}>
+                        <Td className="KukkaTable">{product.kukka}</Td>
+                        <Td>{product.toimi}</Td>
+                        <Td>{product.kerays}</Td>
+                        <Td className="lisatietoTable">{product.lisatieto}</Td>
+                        <Td>
+                          <Input className="keraamassaBtn"
+                            type="button"
+                            id={`keratty/${product._id}`}
+                            value={localStorage.getItem('language') === "1" ? product.keratty === "Odottaa keräystä" ? language[1].statusBar1 : product.keratty === "Keräyksessä" ? language[1].statusBar2 : product.keratty === "Kerätty" ? language[1].statusBar3 : product.keratty === "Ei ole" ? language[1].statusBar4 : product.keratty : product.keratty}
+                            placeholder={product.keratty}
+                            onClick={() => this.patchData(product, kauppa)}>
+                          </Input>
+                        </Td>
+                        <Td>
+                          <Input className="kerattyMaara"
+                            type="number"
+                            id={product._id}
+                            placeholder={product.kerattymaara}
+                            name="kerattymaara">
+                          </Input>
+                        </Td>
+                      </Tr>
+                    </Tbody>
+                  )
+                })}
               </Table>
-              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="valmisBtn" className="valmisBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="success" onClick={() => this.valmis()}>Valmis</Button> : undefined}
-              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="muokkaaBtn" className="muokkaaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>Muokkaa</Button> : undefined}
-              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="poistaBtn" className="poistaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>Poista</Button> : undefined}
-              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="info" onClick={() => this.jsonToExcel(products, _id)}>Vie Exceliin</Button> : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ?
+                <Button
+                  name="valmisBtn"
+                  className="valmisBtn"
+                  disabled={sessionStorage.getItem('userRole') === "Admin" ? sessionStorage.getItem('siteName') === "Valmiit" ? products.length === counts2.Kyllä ? false : true : false : true}
+                  color="success"
+                  onClick={() => this.valmis()}>
+                  {sessionStorage.getItem("siteName") === "Valmiit" ? language[localStorage.getItem('language')].arkistoi : language[localStorage.getItem('language')].valmis}
+                </Button>
+                : undefined}
+
+              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="muokkaaBtn" className="muokkaaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].muokkaa}</Button> : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="poistaBtn" className="poistaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>{language[localStorage.getItem('language')].poista}</Button> : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="info" onClick={() => this.jsonToExcel(products, _id)}>{language[localStorage.getItem('language')].vieExceliin}</Button> : undefined}
             </Card>
 
             <Dialog className="DelWarn" isOpen2={this.state.openWarning} onClose={(e) => this.setState({ openWarning: false })}>
 
               <Card className="Cards">
 
-                <CardTitle className="warningBox">Haluatko poistaa tämän taulun?</CardTitle>
-                <CardText className="warningBox">ID: {_id}</CardText>
-                <CardText className="warningBox">KAUPPA: {kauppa}</CardText>
-                <CardText className="warningBox">KERÄYSPÄIVÄMÄÄRÄ: {date}</CardText>
-                <CardText className="warningBox">TOIMITUSPÄIVÄMÄÄRÄ: {toimituspvm}</CardText>
-                <CardText className="warningBox">KUKKIEN MÄÄRÄ: {products.length}</CardText>
+                <CardTitle className="warningBox">{language[localStorage.getItem('language')].delete1}</CardTitle>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready3 + _id}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready4 + kauppa}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready5 + date}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready6 + toimituspvm}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].delete2 + products.length}</CardText>
 
                 <Button name="delete_kylla" className="dialogBtn" color="success" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>Kyllä</Button>
                 <Button name="delete_ei" className="dialogBtn" color="danger" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
@@ -616,19 +653,19 @@ class PeopleCard extends Component {
 
               <Card className="Cards">
 
-                {sessionStorage.getItem("userValmis") === "Ei" ? <CardTitle className="warningBox">Haluatko viedä tämän taulun valmiina oleviin?</CardTitle> : undefined}
-                {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardTitle className="warningBox">Haluatko viedä tämän taulun pois valmiina olevista?</CardTitle> : undefined}
-                {sessionStorage.getItem("userValmis") === "Ei" ? <CardTitle className="warningBox">Onko kaikki jo kerätty?</CardTitle> : undefined}
-                <CardText className="warningBox">ID: {_id}</CardText>
-                <CardText className="warningBox">Kauppa: {kauppa}</CardText>
-                <CardText className="warningBox">Keräyspäivämäärä: {date}</CardText>
-                <CardText className="warningBox">Toimitus päivämäärä: {toimituspvm}</CardText>
-                <CardText className="warningBox">Kerättävien kohteiden määrä: {products.length}</CardText>
-                <CardText className="warningBox">Kerätty: {counts.Kerätty === undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
-                <CardText className="warningBox">Ei ole: {counts.Eiole === undefined ? 0 : counts.Eiole}/{products.length}</CardText>
+                {sessionStorage.getItem("userValmis") === "Ei" ? <CardTitle className="warningBox">{language[localStorage.getItem('language')].ready1}</CardTitle> : undefined}
+                {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardTitle className="warningBox">{language[localStorage.getItem('language')].ready11}</CardTitle> : undefined}
+                {sessionStorage.getItem("userValmis") === "Ei" ? <CardTitle className="warningBox">{language[localStorage.getItem('language')].ready2}</CardTitle> : undefined}
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready3 + _id}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready4 + kauppa}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready5 + date}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready6 + toimituspvm}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready7 + products.length}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready8} {counts.Kerätty === undefined ? 0 : counts.Kerätty}/{products.length}</CardText>
+                <CardText className="warningBox">{language[localStorage.getItem('language')].ready9} {counts.Eiole === undefined ? 0 : counts.Eiole}/{products.length}</CardText>
 
-                <Button name="valmis_kylla" className="dialogBtn" color="success" onClick={() => this.valmisData(_id, products)}>Kyllä</Button>
-                <Button name="valmis_ei" className="dialogBtn" color="danger" onClick={() => this.setState({ valmisWarning: false })}>Ei</Button>
+                <Button name="valmis_kylla" className="dialogBtn" color="success" onClick={() => this.valmisData(_id, products, counts2)}>{language[localStorage.getItem('language')].yes}</Button>
+                <Button name="valmis_ei" className="dialogBtn" color="danger" onClick={() => this.setState({ valmisWarning: false })}>{language[localStorage.getItem('language')].no}</Button>
 
               </Card>
             </Dialog>
@@ -636,7 +673,7 @@ class PeopleCard extends Component {
             <Dialog className="Muokkaus" isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
               <Card className="UpdateCards">
                 <div>
-                  <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
+                  <CardTitle className="KeraysPVM">{language[localStorage.getItem('language')].kerayspvm}</CardTitle>
                   <DatePicker className="DateUpdate"
                     selected={this.state.startDate}
                     onChange={this.pvmMuutos}
@@ -644,7 +681,7 @@ class PeopleCard extends Component {
                     onCalendarClose={() => sessionStorage.setItem('userDate2', format(this.state.startDate, "dd/MM/yyyy"))}
                   />
 
-                  <CardTitle className="ToimitusPVMText">Toimituspäivämäärä</CardTitle>
+                  <CardTitle className="ToimitusPVMText">{language[localStorage.getItem('language')].toimituspvm}</CardTitle>
                   <DatePicker className="ToimitusPVM"
                     selected={this.state.startDate2}
                     onChange={this.toimituspvmMuutos}
@@ -669,10 +706,10 @@ class PeopleCard extends Component {
 
                   <Thead>
                     <Tr>
-                      <Th>Tuote</Th>
-                      <Th>Kerätään</Th>
-                      <Th>Keräyspiste</Th>
-                      <Th>Lisätietoa</Th>
+                      <Th>{language[localStorage.getItem('language')].tuote}</Th>
+                      <Th>{language[localStorage.getItem('language')].kerataan}</Th>
+                      <Th>{language[localStorage.getItem('language')].kerayspiste}</Th>
+                      <Th>{language[localStorage.getItem('language')].lisatietoa}</Th>
                     </Tr>
                   </Thead>
 
@@ -722,7 +759,7 @@ class PeopleCard extends Component {
                   )}
                 </Table>
                 <div>
-                  <Button name="lisaa_kukka" className="addFlower" onClick={() => this.addFlowers(_id, products)}>Lisää kukka</Button>
+                  <Button name="lisaa_kukka" className="addFlower" onClick={() => this.addFlowers(_id, products)}>{language[localStorage.getItem('language')].addflower}</Button>
                   <Input type="number"
                     name="addFlowersValue"
                     className="addFlowerInput"
@@ -733,7 +770,7 @@ class PeopleCard extends Component {
                   </Input>
                 </div>
                 <div className="taulukkoDivider"></div>
-                <Button name="paivita_taulukon_tiedot" color="success" onClick={() => this.putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date)}>Päivitä taulukon tiedot</Button>
+                  <Button name="paivita_taulukon_tiedot" color="success" onClick={() => this.putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date)}>{language[localStorage.getItem('language')].paivita}</Button>
               </Card>
             </Dialog>
           </div>

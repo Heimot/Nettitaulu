@@ -55,10 +55,14 @@ class MainArea extends Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.printDataNav = this.printDataNav.bind(this);
     this.printDataArray = this.printDataArray.bind(this);
+    this.emptyData = this.emptyData.bind(this);
   }
 
   componentDidMount() {
     try {
+      if(localStorage.getItem('language') === null) {
+        localStorage.setItem('language', 0) 
+      }
       if (sessionStorage.getItem("userData") === null) {
         this.setState(() => ({
           redirect: true
@@ -159,11 +163,17 @@ class MainArea extends Component {
     }
   }
 
+  emptyData() {
+    this.setState({
+      printArr: []
+    });
+  }
+
   render() {
     if (this.state.print === true) {
       return (
         <div>
-          <Printer newData={this.state.printArr} print={this.state.print} printData={this.printDataNav} />
+          <Printer newData={this.state.printArr} print={this.state.print} printData={this.printDataNav} emptyData={this.emptyData} />
         </div>
       )
     }

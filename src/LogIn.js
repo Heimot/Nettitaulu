@@ -4,9 +4,14 @@ import Dialog from './components/dialog/editDialog';
 import { Redirect } from 'react-router-dom';
 import { FETCH_URL } from './components/fetch/url';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
+import language from './components/language/language';
 
 //CSS
 import './Styles/login.css';
+
+if(localStorage.getItem('language') === null) {
+  localStorage.setItem('language', 0);
+}
 
 class TableArea extends Component {
   constructor() {
@@ -93,14 +98,14 @@ class TableArea extends Component {
         <Container fluid>
           <Row>
             <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
-            {loginFailed === true ? <CardText className="loginFailed">Salasana tai nimi on väärin.</CardText> : undefined}
+            {loginFailed === true ? <CardText className="loginFailed">{language[localStorage.getItem('language')].loginWarning}</CardText> : undefined}
               <Card>
                 <Input
                   type="text"
                   name="username"
                   onChange={this.handleChange}
                   className="lposition"
-                  placeholder="Käyttäjänimi">
+                  placeholder={language[localStorage.getItem('language')].username}>
                 </Input>
 
                 <Input
@@ -108,10 +113,10 @@ class TableArea extends Component {
                   name="password"
                   onChange={this.handleChange}
                   className="lposition"
-                  placeholder="Salasana">
+                  placeholder={language[localStorage.getItem('language')].password}>
                 </Input>
 
-                <Button name="kirjaudu" type="submit" onClick={(e) => this.login()} >Kirjaudu sisään</Button>
+                <Button name="kirjaudu" type="submit" onClick={(e) => this.login()}>{language[localStorage.getItem('language')].login}</Button>
 
               </Card>
             </Dialog>

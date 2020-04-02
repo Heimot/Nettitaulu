@@ -1,33 +1,44 @@
+.printDiv {
+    position: absolute;
+    padding-top: 70px;
+    left: 50%;
+    transform: translate(-50%);
+    width: 80%;
+}
 
-    .printDiv {
-        position: absolute;
-        padding-top: 70px;
-        left: 50%;
-        transform: translate(-50%);
-        width: 80%;
-    }
-    .printTable {
-        position: relative;
-    }
-    .printBtn2 {
-        position: fixed;
-        width: 40px;
-        height: 40px;
-        bottom: 5%;
-        right: 5.8%;
-        background-image: url('../pictures/print.png');
-        background-size: 34px 34px;
-        background-repeat: no-repeat;
-        background-position: center;
-        border-radius: 50% !important;
-        border: grey;
-        z-index: 100000;
-    }
-    .printingBtn {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
+.printTable {
+    position: relative;
+}
 
+.printBtn2 {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    bottom: 5%;
+    right: 5.8%;
+    background-image: url('../pictures/print.png');
+    background-size: 34px 34px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50% !important;
+    border: grey;
+    z-index: 100000;
+}
 
+.printingBtn {
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    width: 150px;
+    height: 50px;
+    font-size: 25px !important;
+    font-weight: bold !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    transform: translate(-50%, -50%);
+}
+
+@media screen and (max-width: 110em) {
+    .blockerMobile {
+        height: 75px;
+    }
+}
