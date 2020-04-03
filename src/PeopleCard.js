@@ -37,37 +37,6 @@ function changeNormal() {
   };
 }
 
-const Progress = ({ done, count, counter, id }) => {
-  try {
-    let data = change === false ? done = done ? done + "%" : "" : count === undefined ? "" : `${count}/${counter}`;
-    if (data.includes('.')) {
-      data = data.substring(0, data.indexOf(".")) + "%";
-    }
-    const [style, setStyle] = React.useState({});
-
-
-    setTimeout(() => {
-      const newStyle = {
-        opacity: 1,
-        width: `${done}`
-      }
-      setStyle(newStyle);
-    }, 100);
-
-    return (
-      <div className="progress" onMouseEnter={() => changeData()} onMouseLeave={() => changeNormal()}>
-        <div className={(((done === "100%" || count === counter) && id === "Kerätty") || (count === counter && id === "Kerätty") ? "progress-ready" : "progress-needed" && id === "Ei ole" ? "progress-cantbedone" : "progress-needed")} style={style}>
-          <div className="dataFont">
-            {data}
-          </div>
-        </div>
-      </div>
-    )
-  } catch (error) {
-    console.log(error);
-  };
-}
-
 const endpoint = FETCH_URL;
 const socket = socketIOClient(endpoint);
 
@@ -106,6 +75,38 @@ class PeopleCard extends Component {
       alreadyLoaded: false,
     }
   }
+
+  Progress = ({ done, count, counter, id }) => {
+    try {
+      let data = change === false ? done = done ? done + "%" : "" : count === undefined ? "" : `${count}/${counter}`;
+      if (data.includes('.')) {
+        data = data.substring(0, data.indexOf(".")) + "%";
+      }
+      const [style, setStyle] = React.useState({});
+  
+  
+      setTimeout(() => {
+        const newStyle = {
+          opacity: 1,
+          width: `${done}`
+        }
+        setStyle(newStyle);
+      }, 100);
+  
+      return (
+        <div className="progress" onMouseEnter={() => changeData()} onMouseLeave={() => changeNormal()}>
+          <div className={(((done === "100%" || count === counter) && id === "Kerätty") || (count === counter && id === "Kerätty") ? "progress-ready" : "progress-needed" && id === "Ei ole" ? "progress-cantbedone" : "progress-needed")} style={style}>
+            <div className="dataFont">
+              {data}
+            </div>
+          </div>
+        </div>
+      )
+    } catch (error) {
+      console.log(error);
+    };
+  }
+  
 
   muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm) {
     try {
@@ -554,22 +555,22 @@ class PeopleCard extends Component {
               <div className="loaders" >
                 <div className="loaderMargins">
                   <CardText className="hover">{language[localStorage.getItem('language')].statusBar1}</CardText>
-                  <Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} id={"Odottaa keräystä"} />
+                  <this.Progress done={100 * Math.abs(counts.Odottaakeräystä / Object.keys(result).toString().split(",").length)} count={counts.Odottaakeräystä} counter={products.length} id={"Odottaa keräystä"} />
                 </div>
 
                 <div className="loaderMargins">
                   <CardText className="hover">{language[localStorage.getItem('language')].statusBar2}</CardText>
-                  <Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length} id={"Keräyksessä"} />
+                  <this.Progress done={100 * Math.abs(counts.Keräyksessä / Object.keys(result).toString().split(",").length)} count={counts.Keräyksessä} counter={products.length} id={"Keräyksessä"} />
                 </div>
 
                 <div className="loaderMargins">
                   <CardText className="hover">{language[localStorage.getItem('language')].statusBar3}</CardText>
-                  <Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} id={"Kerätty"} />
+                  <this.Progress done={100 * Math.abs(counts.Kerätty / Object.keys(result).toString().split(",").length)} count={counts.Kerätty} counter={products.length} id={"Kerätty"} />
                 </div>
 
                 <div className="loaderMargins">
                   <CardText className="hover">{language[localStorage.getItem('language')].statusBar4}</CardText>
-                  <Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} id={"Ei ole"} />
+                  <this.Progress done={100 * Math.abs(counts.Eiole / Object.keys(result).toString().split(",").length)} count={counts.Eiole} counter={products.length} id={"Ei ole"} />
                 </div>
               </div>
 
