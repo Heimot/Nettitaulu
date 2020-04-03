@@ -577,8 +577,8 @@ class PeopleCard extends Component {
                 <Thead>
                   <Tr>
                     <Th>{language[localStorage.getItem('language')].tuote}</Th>
-                    <Th>>{language[localStorage.getItem('language')].kerataan}</Th>
-                    <Th>>{language[localStorage.getItem('language')].kerayspiste}</Th>
+                    <Th>{language[localStorage.getItem('language')].kerataan}</Th>
+                    <Th>{language[localStorage.getItem('language')].kerayspiste}</Th>
                     <Th>{language[localStorage.getItem('language')].lisatietoa}</Th>
                     <Th>{language[localStorage.getItem('language')].keraamassa}</Th>
                     <Th>{language[localStorage.getItem('language')].kerattymaara}</Th>
