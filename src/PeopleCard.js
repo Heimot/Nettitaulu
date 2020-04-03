@@ -447,7 +447,8 @@ class PeopleCard extends Component {
         tuote: product.kukka,
         maara: product.toimi,
         lisatieto: product.lisatieto,
-        id: product._id
+        id: product._id,
+        kerays: product.kerays
       });
 
       this.setState({
