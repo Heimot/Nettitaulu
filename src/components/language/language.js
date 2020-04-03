@@ -72,7 +72,7 @@ const language = [
         'statusBar3': 'Collected',
         'statusBar4': 'Nope', // DUNNO
         'tuote': 'Product',
-        'kerataan': 'Collection amount',
+        'kerataan': 'Amount to be collected',
         'kerayspiste': 'Collection point',
         'lisatietoa': 'More information',
         'keraamassa': 'Collecting',

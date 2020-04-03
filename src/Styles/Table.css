@@ -2,6 +2,7 @@
     .ValmisRow {
         background-color: green;
     }
+
     .vieExcel {
         width: 100% !important;
         font-weight: bold !important;
@@ -54,15 +55,23 @@
     }
     .KukkaTable {
         width: auto;
-        word-break: normal;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-all;
+        word-break: break-word;
+        hyphens: auto;
         max-width: 210px;
         font-size: 20px;
     }
     .lisatietoTable {
         width: auto;
-        word-break: break-all;
         max-width: 125px;
         font-size: 15px;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-all;
+        word-break: break-word;
+        hyphens: auto;
     }
     .keraamassaBtn {
         display: inline-block !important;
@@ -216,6 +225,9 @@
 }
 
 @media screen and (max-width: 1120px) {
+    .ValmisRow {
+        background-color: green;
+    }
     .Tables {
         width: 99%;
         position: relative;
@@ -433,6 +445,9 @@
 }
 
 @media screen and (max-width: 910px) {
+    .ValmisRow {
+        background-color: green;
+    }
     .vieExcel {
         width: 99% !important;
         position: relative !important;
@@ -633,6 +648,10 @@
 }
 
 @media screen and (max-width: 375px) {
+    .ValmisRow {
+        background-color: green;
+    }
+
     .vieExcel {
         width: 99% !important;
         position: relative !important;

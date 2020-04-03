@@ -577,8 +577,8 @@ class PeopleCard extends Component {
                 <Thead>
                   <Tr>
                     <Th>{language[localStorage.getItem('language')].tuote}</Th>
-                    <Th>{language[localStorage.getItem('language')].kerataan}</Th>
-                    <Th>{language[localStorage.getItem('language')].kerayspiste}</Th>
+                    <Th>>{language[localStorage.getItem('language')].kerataan}</Th>
+                    <Th>>{language[localStorage.getItem('language')].kerayspiste}</Th>
                     <Th>{language[localStorage.getItem('language')].lisatietoa}</Th>
                     <Th>{language[localStorage.getItem('language')].keraamassa}</Th>
                     <Th>{language[localStorage.getItem('language')].kerattymaara}</Th>
@@ -642,8 +642,8 @@ class PeopleCard extends Component {
                 <CardText className="warningBox">{language[localStorage.getItem('language')].ready6 + toimituspvm}</CardText>
                 <CardText className="warningBox">{language[localStorage.getItem('language')].delete2 + products.length}</CardText>
 
-                <Button name="delete_kylla" className="dialogBtn" color="success" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>Kyllä</Button>
-                <Button name="delete_ei" className="dialogBtn" color="danger" onClick={() => this.setState({ openWarning: false })}>Ei</Button>
+                <Button name="delete_kylla" className="dialogBtn" color="success" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>{language[localStorage.getItem('language')].yes}</Button>
+              <Button name="delete_ei" className="dialogBtn" color="danger" onClick={() => this.setState({ openWarning: false })}>{language[localStorage.getItem('language')].no}</Button>
 
               </Card>
             </Dialog>

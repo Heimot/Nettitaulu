@@ -2,26 +2,6 @@
     .ml-auto {
         height: 140px !important;
     }
-    .ValmisRow {
-        background-color: green !important;
-    }
-    .EiValmis {
-
-    }
-    .printBtn {
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        top: 1500%;
-        right: 50px;
-        background-image: url('../pictures/print.png');
-        background-size: 34px 34px;
-        background-repeat: no-repeat;
-        background-position: center;
-        border-radius: 50% !important;
-        border: grey;
-        z-index: 100000;
-    }
     .navName {
         font-size: 25px !important;
         font-weight: bold !important;
@@ -178,20 +158,6 @@
 @media screen and (max-width: 1120px) {
     .ml-auto {
         height: 140px !important;
-    }
-    .printBtn {
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        top: 100%;
-        right: 50px;
-        background-image: url('../pictures/print.png');
-        background-size: 34px 34px;
-        background-repeat: no-repeat;
-        background-position: center;
-        border-radius: 50% !important;
-        border: grey;
-        z-index: 100000;
     }
     .navName {
         font-size: 25px !important;
@@ -514,20 +480,7 @@
     .ml-auto {
         height: 140px !important;
     }
-    .printBtn {
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        top: 1500%;
-        right: 50px;
-        background-image: url('../pictures/print.png');
-        background-size: 34px 34px;
-        background-repeat: no-repeat;
-        background-position: center;
-        border-radius: 50% !important;
-        border: grey;
-        z-index: 100000;
-    }
+
     .navName {
         font-size: 25px !important;
         font-weight: bold !important;
