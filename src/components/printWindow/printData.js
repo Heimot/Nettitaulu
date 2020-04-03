@@ -1,4 +1,4 @@
-import React, { Component, useCallback } from 'react';
+import React, { Component } from 'react';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import { Button } from 'reactstrap';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
