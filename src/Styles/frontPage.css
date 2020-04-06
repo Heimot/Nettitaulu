@@ -35,6 +35,15 @@
         height: 50px;
         width: 50px;
     }
+
+    .frontPageSettings:hover {
+        position: absolute;
+        top: 0.5%;
+        left: 88.5%;
+        height: 53px;
+        width: 53px;
+    }
+
     .frontText {
         position: absolute;
         left: 550px;
@@ -195,6 +204,20 @@
         height: 50px;
         width: 50px;
     }
+
+    .frontPageSettings:hover {
+        position: absolute;
+        border: none !important;
+        background-color: transparent !important;
+        background-image: url("../pictures/settings.png") !important;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        top: 0.5%;
+        left: 80%;
+        height: 60px;
+        width: 60px;
+    }
+
     .frontText {
         visibility: hidden;
     }

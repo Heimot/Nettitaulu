@@ -14,6 +14,7 @@ import Loader from "react-spinners/ScaleLoader";
 import { FETCH_URL } from "./components/fetch/url";
 import socketIOClient from "socket.io-client";
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
+import language from './components/language/language';
 
 //CSS
 import "./Styles/Nav.css";
@@ -581,20 +582,20 @@ export default class TopNav extends React.Component {
           </Dialogs>
           <Navbar light color={sessionStorage.getItem('siteName') === "Valmiit" ? "success" : sessionStorage.getItem('siteName') === "Arkistoitu" ? "warning" : "info"} fixed="top">
 
-            {!this.state.isOpen ? 
-            <div className="searchDiv">
-              <Button name="SearchBtn" className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
-              <Input className="SearchInput" placeholder={`Etsi ${this.state.search}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
-            </div> 
-            : undefined}
+            {!this.state.isOpen ?
+              <div className="searchDiv">
+                <Button name="SearchBtn" className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
+                <Input className="SearchInput" placeholder={`${language[localStorage.getItem('language')].search} ${this.state.search === "kukkia" ? language[localStorage.getItem('language')].navFlowers : language[localStorage.getItem('language')].navKaupat}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
+              </div>
+              : undefined}
 
             <NavbarToggler right className="Toggler" onClick={this.toggle} />
-            <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("siteName")}</NavbarBrand>
+            <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("btnName") === "Kerättävät" ? language[localStorage.getItem('language')].navCollect : sessionStorage.getItem("btnName") === "Valmiit" ? language[localStorage.getItem('language')].navReady : language[localStorage.getItem('language')].navArchived}</NavbarBrand>
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
 
                 <Button name="tarkastusBtn" className="TarkastusBTN" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} onClick={() => this.Tarkastus()}>
-                  {sessionStorage.getItem("btnName")}
+                  {sessionStorage.getItem("btnName") === "Kerättävät" ? language[localStorage.getItem('language')].navCollect : sessionStorage.getItem("btnName") === "Valmiit" ? language[localStorage.getItem('language')].navReady : language[localStorage.getItem('language')].navArchived}
                 </Button>
 
                 <DatePicker className="Datepick"
@@ -611,14 +612,14 @@ export default class TopNav extends React.Component {
 
                     <div className="DataCard">
                       <div>
-                        <CardTitle className="KeraysPVM">Keräyspäivämäärä</CardTitle>
+                        <CardTitle className="KeraysPVM">{language[localStorage.getItem('language')].navKeraysPVM}</CardTitle>
                         <DatePicker className="AddDate"
                           selected={this.state.startDate2}
                           onChange={this.handleChange3}
                           dateFormat="dd/MM/yyyy"
                         />
 
-                        <CardTitle className="ToimitusPVMText">Toimituspäivämäärä</CardTitle>
+                        <CardTitle className="ToimitusPVMText">{language[localStorage.getItem('language')].navToimitusPVM}</CardTitle>
                         <DatePicker className="ToimitusPVM2"
                           selected={this.state.startDate3}
                           onChange={this.handleChange4}
@@ -642,10 +643,10 @@ export default class TopNav extends React.Component {
 
                         <Thead>
                           <Tr>
-                            <Th>Tuote</Th>
-                            <Th>Kerätään</Th>
-                            <Th>Keräyspiste</Th>
-                            <Th>Lisätietoa</Th>
+                            <Th>{language[localStorage.getItem('language')].tuote}</Th>
+                            <Th>{language[localStorage.getItem('language')].kerataan}</Th>
+                            <Th>{language[localStorage.getItem('language')].kerayspiste}</Th>
+                            <Th>{language[localStorage.getItem('language')].lisatietoa}</Th>
                           </Tr>
                         </Thead>
 
@@ -695,7 +696,7 @@ export default class TopNav extends React.Component {
                         )}
 
                       </Table>
-                      <Button name="lisaa_kukka" className="addFlower" onClick={() => this.addNewFlowers(userDatas._id, userDatas.products)}>Lisää kukka</Button>
+                      <Button name="lisaa_kukka" className="addFlower" onClick={() => this.addNewFlowers(userDatas._id, userDatas.products)}>{language[localStorage.getItem('language')].addflower}</Button>
                       <Input type="number"
                         name="addFlowersValue"
                         className="addFlowerInput"
@@ -704,13 +705,13 @@ export default class TopNav extends React.Component {
                         value={this.state.addFlowersValue}
                         onChange={this.handleChange}>
                       </Input>
-                      <Button name="luo_taulukko" onClick={() => this.putData(userDatas) + this.putOrderData(userDatas)}>Luo taulukko</Button>
+                      <Button name="luo_taulukko" onClick={() => this.putData(userDatas) + this.putOrderData(userDatas)}>{language[localStorage.getItem('language')].luotaulukko}</Button>
                     </div>
                   </Card>
                 </Dialog>
 
                 <Button name="lisaa_taulukko" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} className='addBtn' color='primary' type='button' onClick={(e) => this.runAdders()}></Button>
-                <Button name="kirjaudu_ulos" className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>Kirjaudu ulos</Button>
+                <Button name="kirjaudu_ulos" className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>{language[localStorage.getItem('language')].logout}</Button>
                 <Button name="location" className='locationBtn' onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
 
               </Nav>

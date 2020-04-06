@@ -37,6 +37,21 @@
     transform: translate(-50%, -50%);
 }
 
+.printInput {
+    flex-grow: 1;
+    height: auto;
+}
+
+.printButton {
+    height: auto;
+}
+
+.buttonInputRow {
+    display: flex !important;
+    height: auto;
+    border: none;
+}
+
 @media screen and (max-width: 110em) {
     .blockerMobile {
         height: 75px;

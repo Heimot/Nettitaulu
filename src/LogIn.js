@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { FETCH_URL } from './components/fetch/url';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import language from './components/language/language';
+import LanguageBtn from './components/language/languageBtn';
 
 //CSS
 import './Styles/login.css';
@@ -14,8 +15,8 @@ if(localStorage.getItem('language') === null) {
 }
 
 class TableArea extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       people: [],
       isOpen2: true,
@@ -23,7 +24,9 @@ class TableArea extends Component {
       password: "",
       redirect: false,
       loginFailed: false,
+      reRender: false,
     }
+    this.reRender = this.reRender.bind(this)
   }
 
   login() {
@@ -76,6 +79,12 @@ class TableArea extends Component {
     };
   };
 
+  reRender() {
+    this.setState({
+      reRender: true,
+    })
+  }
+
   handleChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value
@@ -119,6 +128,7 @@ class TableArea extends Component {
                 <Button name="kirjaudu" type="submit" onClick={(e) => this.login()}>{language[localStorage.getItem('language')].login}</Button>
 
               </Card>
+              <LanguageBtn reRender={this.reRender}/>
             </Dialog>
           </Row>
         </Container>

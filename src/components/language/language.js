@@ -24,6 +24,8 @@ const language = [
         'lisatietoa': 'Lisätietoa',
         'keraamassa': 'Keräämässä',
         'kerattymaara': 'Kerättymäärä',
+        'tarkastettuR': 'Ryönä tarkastettu: ',
+        'tarkastettuT': 'Tuusjärvi tarkastettu: ',
         // TBC buttons
         'valmis': 'Valmis',
         'arkistoi': 'Arkistoi',
@@ -49,8 +51,23 @@ const language = [
         // Delete table
         'delete1': 'Haluatko poistaa tämän taulun?',
         'delete2': 'Kukkien määrä: ',
-        '': '',
-        '': '',
+        // Printing tables
+        'tulosta': 'Tulosta',
+        'kauppa': 'Kauppa',
+        'tarrat': 'Tarrojen määrä',
+        // Nav
+        'navKeraysPVM': 'Keräyspäivämäärä',
+        'navToimitusPVM': 'Toimituspäivämäärä',
+        'luotaulukko': 'Luo taulukko',
+        'logout': 'Kirjaudu ulos',
+        'navCollect': 'Kerättävät',
+        'navReady': 'Valmiit',
+        'navArchived': 'Arkistoitu',
+        'tarkastettuAnswerYes': 'Kyllä',
+        'tarkastettuAnswerNo': 'Ei',
+        'search': 'Etsi',
+        'navFlowers': 'kukkia',
+        'navKaupat': 'kauppoja',
     },
     // English language[localStorage.getItem('language')].
     {
@@ -77,6 +94,8 @@ const language = [
         'lisatietoa': 'More information',
         'keraamassa': 'Collecting',
         'kerattymaara': 'Amount collected',
+        'tarkastettuR': 'Ryönä inspected: ',
+        'tarkastettuT': 'Tuusjärvi inspected: ',
         // TBC buttons
         'valmis': 'Ready',
         'arkistoi': 'Archive',
@@ -102,8 +121,23 @@ const language = [
         // Delete table
         'delete1': 'Do you want delete this table?',
         'delete2': 'Flowers: ',
-        '': '',
-        '': '',
+        // Printing tables
+        'tulosta': 'Print',
+        'kauppa': 'Store',
+        'tarrat': 'Amount of stickers',
+        // Nav
+        'navKeraysPVM': 'Collection date',
+        'navToimitusPVM': 'Delivery date',
+        'luotaulukko': 'Create a table',
+        'logout': 'Log out',
+        'navCollect': 'To be collected',
+        'navReady': 'Ready',
+        'navArchived': 'Archived',
+        'tarkastettuAnswerYes': 'Yes',
+        'tarkastettuAnswerNo': 'No',
+        'search': 'Search for',
+        'navFlowers': 'flowers',
+        'navKaupat': 'stores',
     }
 ]
 export default language;

@@ -4,15 +4,17 @@ import { Redirect } from 'react-router-dom';
 import XLSX from 'xlsx';
 import { FETCH_URL } from "../fetch/url";
 import Dialog from "../dialog/editDialog";
-import { getUserData, delUserData } from '../fetch/apiFetch';
+import { getUserData, delUserData, getFlowersToAutocomplete } from '../fetch/apiFetch';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 import language from '../language/language';
+import LanguageBtn from '../language/languageBtn';
 
 //CSS
 import "../../Styles/frontPage.css";
 
 let Data = [{ "email": "f", "_id": "123", "roles": "user" }, { "email": "f", "_id": "123", "roles": "user" }];
+let Datas = [];
 
 class frontPage extends Component {
   constructor(props) {
@@ -29,43 +31,51 @@ class frontPage extends Component {
       kaupatExcel: false,
       kukatExcel: false,
       kaupatError: false,
-      kukatError: false,  
+      kukatError: false,
+      settingsOpen: false,
+      reRender: false,
     }
     this.handleFile = this.handleFile.bind(this);
     this.handleFile2 = this.handleFile2.bind(this);
+    this.reRender = this.reRender.bind(this);
   }
 
   componentDidMount() {
-    sessionStorage.removeItem("delID");
+    try {
+      sessionStorage.removeItem("delID");
+      this.getAndPost();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
-  sendData(result) {
+  async getAndPost() {
     try {
-      this.setState({
-        saved: result
-      });
-
-      fetch(FETCH_URL + 'items/put/id/5e71e2d16f0335253c8374e5/', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-        },
-        body: JSON.stringify({
-          flowers: this.state.saved
-        }),
-      })
-        .then(response => response.json())
-        .then(json => {
-          console.log(json);
+      Datas = await getFlowersToAutocomplete();
+      if (Datas.message) {
+        fetch(FETCH_URL + 'items/flowers/post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+          },
+          body: JSON.stringify({
+            flowers: ["Empty", "Empty", "Empty"],
+            kaupat: ["Empty", "Empty", "Empty"]
+          }),
         })
-        .catch((error) => {
-          console.log(error);
-        });
-    } catch (error) {
-      console.log(error);
-    };
-  };
+          .then(response => response.json())
+          .then(json => {
+            console.log(json);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   handleFile = (e) => {
     try {
@@ -82,15 +92,18 @@ class frontPage extends Component {
         // header: 1 instructs xlsx to create an 'array of arrays'
         var result = XLSX.utils.sheet_to_csv(firstSheet, { header: 1 });
 
-        fetch(FETCH_URL + 'items/put/id/5e71e2d16f0335253c8374e5', {
-          method: 'PUT',
+        fetch(FETCH_URL + 'items/patch/id/items', {
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
           },
-          body: JSON.stringify({
-            flowers: result.split("\n")
-          }),
+          body: JSON.stringify([
+            {
+              propName: "flowers",
+              value: result.split("\n")
+            }
+          ])
         })
           .then(response => response.json())
           .then(json => {
@@ -107,7 +120,6 @@ class frontPage extends Component {
               kukatExcel: false
             })
           });
-
       };
       FR.readAsArrayBuffer(file);
     } catch (error) {
@@ -130,15 +142,18 @@ class frontPage extends Component {
         // header: 1 instructs xlsx to create an 'array of arrays'
         var result = XLSX.utils.sheet_to_csv(firstSheet, { header: 1 });
 
-        fetch(FETCH_URL + 'items/put/id/5e748700bee89f3d5c27ae55', {
-          method: 'PUT',
+        fetch(FETCH_URL + 'items/patch/id/items', {
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
           },
-          body: JSON.stringify({
-            kaupat: result.split("\n")
-          }),
+          body: JSON.stringify([
+            {
+              propName: "kaupat",
+              value: result.split("\n")
+            }
+          ])
         })
           .then(response => response.json())
           .then(json => {
@@ -155,12 +170,17 @@ class frontPage extends Component {
               kaupatExcel: false
             })
           });
-
       };
       FR.readAsArrayBuffer(file);
     } catch (error) {
       console.log(error);
     };
+  }
+
+  reRender() {
+    this.setState({
+      reRender: true
+    })
   }
 
   async delID() {
@@ -223,7 +243,7 @@ class frontPage extends Component {
 
   render() {
     let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect } = this.state;
-    
+
     if (redirect) {
       return (<Redirect to={'/main/tables'} />)
     }
@@ -232,7 +252,7 @@ class frontPage extends Component {
       <ErrorBoundary>
         <div className="frontPage">
           <div className="frontPageMenu">
-            <Button name="settings" className="frontPageSettings"></Button>
+            <Button name="settings" className="frontPageSettings" onClick={() => this.setState({ settingsOpen: true })}></Button>
             <div className="frontMainBtn">
 
               <Button name="kerattavat" className="redirect"
@@ -242,7 +262,7 @@ class frontPage extends Component {
                   sessionStorage.setItem("siteName", "Kerättävät") +
                   sessionStorage.setItem("btnName", "Kerättävät")}>
                 {language[localStorage.getItem('language')].collect}
-            </Button>
+              </Button>
 
               {sessionStorage.getItem("userRole") === "Admin" ?
                 <Button name="valmiit" className="redirect2"
@@ -252,7 +272,7 @@ class frontPage extends Component {
                     sessionStorage.setItem("siteName", "Valmiit") +
                     sessionStorage.setItem("btnName", "Valmiit")}>
                   {language[localStorage.getItem('language')].ready}
-            </Button>
+                </Button>
                 : undefined}
 
               {sessionStorage.getItem("userRole") === "Admin" ? <Button name="adminpanel" className="redirect3" onClick={() => this.adminRoles()}>Admin</Button> : undefined}
@@ -262,6 +282,11 @@ class frontPage extends Component {
           <h1 className="frontText">Ohjelma</h1>
           <div className="frontPagePictureDiv">
           </div>
+
+          <Dialog className="adminDialog" isOpen2={this.state.settingsOpen} onClose={(e) => this.setState({ settingsOpen: false })}>
+            <LanguageBtn reRender={this.reRender} />
+          </Dialog>
+
           <Dialog className="adminDialog" isOpen2={this.state.isOpen} onClose={(e) => this.setState({ isOpen: false })}>
             <Card className="Cards">
               <div className="containDiv">

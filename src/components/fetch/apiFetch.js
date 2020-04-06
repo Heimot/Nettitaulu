@@ -41,6 +41,23 @@ export const getData = (searchData, chosen) => {
 
 }
 
+export const getTableId = (data) => {
+  var GETwAuth = {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    }
+  }
+
+  return fetch(FETCH_URL + 'orders/get/id/' + data.id, GETwAuth)
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+
+}
+
 export const getUserData = () => {
   var GETwAuth = {
     method: 'GET',
@@ -67,7 +84,7 @@ export const getFlowersToAutocomplete = () => {
     }
   }
 
-  return fetch(FETCH_URL + 'items/flowers', GETwAuth)
+  return fetch(FETCH_URL + 'items/get/id/items', GETwAuth)
     .then(res => res.json())
     .catch((error) => {
       console.log(error);
@@ -342,7 +359,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
       });
   }
 
-  if (idvalues === "Ei ole" || idvalues === "Nope" ) {
+  if (idvalues === "Ei ole" || idvalues === "Nope") {
     document.getElementById(`keratty/${product._id}`).value = "Odottaa keräystä";
     fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',

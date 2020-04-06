@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 import Dialogs from './components/dialog/loaderDialog';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
-import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete } from './components/fetch/apiFetch';
+import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete, getTableId } from './components/fetch/apiFetch';
 import socketIOClient from "socket.io-client";
 import { FETCH_URL } from './components/fetch/url';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
@@ -21,6 +21,7 @@ let searchData = "";
 let chosen = "";
 let data = [];
 let Datas = [];
+let delPrint = false;
 
 const override = css`
   display: block;
@@ -56,12 +57,13 @@ class MainArea extends Component {
     this.printDataNav = this.printDataNav.bind(this);
     this.printDataArray = this.printDataArray.bind(this);
     this.emptyData = this.emptyData.bind(this);
+    this.cleanUp = this.cleanUp.bind(this);
   }
 
   componentDidMount() {
     try {
-      if(localStorage.getItem('language') === null) {
-        localStorage.setItem('language', 0) 
+      if (localStorage.getItem('language') === null) {
+        localStorage.setItem('language', 0)
       }
       if (sessionStorage.getItem("userData") === null) {
         this.setState(() => ({
@@ -74,10 +76,31 @@ class MainArea extends Component {
             this.getTables();
           };
         });
+        socket.on('idUpdate', async (data) => {
+          if (data.message === true) {
+            this.getTable(data);
+          };
+        });
       }
     } catch (error) {
       console.log(error);
     };
+  }
+
+  getTable = async (data) => {
+    try {
+      let { people } = this.state;
+
+      let dataTable = [await getTableId(data)];
+    
+      var updtData = people.map(obj => dataTable.find(o => o._id === obj._id) || obj);
+      console.log(dataTable)
+      this.setState({
+        people: updtData
+      })
+    } catch (err) {
+      console.log(err);
+    }
   }
 
 
@@ -85,8 +108,13 @@ class MainArea extends Component {
     try {
       data = await getData(searchData, chosen);
       Datas = await getFlowersToAutocomplete();
-      DataK = Datas[1].kaupat
-      DataF = Datas[0].flowers;
+      if (Datas === undefined || Datas.message) {
+        DataK = ["Error", "Error2", "DatabaseNoData"];
+        DataF = ["Error", "Error2", "DatabaseNoData"];
+      } else {
+        DataK = Datas.item.kaupat
+        DataF = Datas.item.flowers;
+      }
 
       this.setState({
         people: data.product,
@@ -137,7 +165,7 @@ class MainArea extends Component {
 
   printDataNav(printTF) {
     try {
-      if (printTF) {
+      if (printTF === true) {
         printTF = false;
         this.setState({
           print: printTF,
@@ -168,12 +196,20 @@ class MainArea extends Component {
       printArr: []
     });
   }
+  
+  cleanUp(delPrint2) {
+    if(delPrint2) {
+      delPrint = true;
+    } else {
+      delPrint = false;
+    }
+  }
 
   render() {
     if (this.state.print === true) {
       return (
         <div>
-          <Printer newData={this.state.printArr} print={this.state.print} printData={this.printDataNav} emptyData={this.emptyData} />
+          <Printer newData={this.state.printArr} print={this.state.print} printData={this.printDataNav} emptyData={this.emptyData} delPrint={delPrint} cleanUp={this.cleanUp} />
         </div>
       )
     }
@@ -227,8 +263,8 @@ class MainArea extends Component {
                     />
                   </div>
                 </Dialogs>
-                <Button className="printBtn1" onClick={() => this.printDataNav()}>{this.state.printArr.length > 0 ? <h1 className="printLength">{this.state.printArr.length}</h1> :  undefined}</Button>
-                <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen} handleSearch={this.handleSearch} printDataArr={this.printDataArray} />
+                <Button className="printBtn1" onClick={() => this.printDataNav()}>{this.state.printArr.length > 0 ? <h1 className="printLength">{this.state.printArr.length}</h1> : undefined}</Button>
+                <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen} handleSearch={this.handleSearch} printDataArr={this.printDataArray} delPrint={delPrint} cleanUp={this.cleanUp}/>
 
                 <Nav getTables={this.getTables} handleSearch={this.handleSearch} printData={this.printDataNav} items={DataF} items2={DataK} />
               </Row>

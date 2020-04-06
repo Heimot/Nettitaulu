@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
-import { Button } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 import * as jsPDF from 'jspdf';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 import EU from '../../pictures/Eu-lippuMV.JPG';
 import logo from '../../pictures/Heimosen_Puutarha_logo.png';
+import language from '../language/language';
 
 //CSS
 import '../../Styles/print.css'
 
 let printTF = true;
+let arr = [];
+let docArr = [];
+let delPrint2 = false;
 
 // 68 38
 
@@ -26,8 +30,13 @@ class Printer extends Component {
     printOrder = async (newData) => {
         try {
             var doc = new jsPDF('l', 'mm', [107.716, 197.755]);
-            let size = newData.length;
-            await newData.map(data => {
+
+            if (docArr.length <= 0) {
+                docArr = newData;
+            }
+            let size = docArr.length;
+
+            await docArr.map(data => {
                 doc.addImage(img, "JPEG", 4, 2, 10, 7)
                 doc.addImage(img2, "png", 45, 2, 24, 10)
                 doc.setFontSize(10)
@@ -40,12 +49,11 @@ class Printer extends Component {
                 doc.text(`Kauppa: ${data.kauppa.toString()}`, 5, 25)
                 doc.text(`Määrä: ${data.maara.toString()}`, 5, 30)
                 doc.text(`Lisätietoa: ${data.lisatieto.toString()}`, 5, 35)
-                //doc.text(`${data.id.toString()}`, 5, 23)
                 if (size >= 1) {
                     doc.addPage()
                     size--;
                 } else {
-                    return null;
+
                 }
             })
             doc.save('tarrat.pdf')
@@ -55,8 +63,36 @@ class Printer extends Component {
         }
     }
 
+    emptyData() {
+        docArr = [];
+        arr = [];
+        delPrint2 = true;
+        this.props.cleanUp(delPrint2);
+    }
+
+    handleChange = (data) => {
+        let stickerAmount = document.getElementById(`kukka/${data.id}`).value;
+        let i = 1;
+
+        for (i = 1; i < stickerAmount; i++) {
+            arr.push({
+                kauppa: data.kauppa,
+                tuote: data.tuote,
+                maara: data.maara,
+                lisatieto: data.lisatieto,
+                id: data.id,
+                kerays: data.kerays
+            });
+        }
+        docArr = arr.concat(docArr)
+    }
+
     render() {
         let { newData } = this.props;
+
+        if (newData) {
+            docArr = newData
+        }
 
         return (
             <ErrorBoundary>
@@ -66,10 +102,11 @@ class Printer extends Component {
                         <Table id="printTables" className="printTable">
                             <Thead>
                                 <Tr>
-                                    <Th>Tuote</Th>
-                                    <Th>Kerätään</Th>
-                                    <Th>Lisätietoa</Th>
-                                    <Th>Kauppa</Th>
+                                    <Th>{language[localStorage.getItem('language')].tuote}</Th>
+                                    <Th>{language[localStorage.getItem('language')].kerataan}</Th>
+                                    <Th>{language[localStorage.getItem('language')].lisatietoa}</Th>
+                                    <Th>{language[localStorage.getItem('language')].kauppa}</Th>
+                                    <Th>{language[localStorage.getItem('language')].tarrat}</Th>
                                 </Tr>
                             </Thead>
                             {newData.map(data => {
@@ -80,14 +117,15 @@ class Printer extends Component {
                                             <Td>{data.maara}</Td>
                                             <Td>{data.lisatieto}</Td>
                                             <Td>{data.kauppa}</Td>
+                                            <Td className="buttonInputRow"><Input className="printInput" id={"kukka/" + data.id} min="0" type="number"></Input> <Button className="printButton" onClick={() => this.handleChange(data)}>X</Button></Td>
                                         </Tr>
                                     </Tbody>
                                 )
                             })}
                         </Table>
                     </div>
-                    <Button className="printingBtn" color="success" onClick={() => this.printOrder(newData)}>Tulosta</Button>
-                    <Button className="printBtn2" onClick={() => this.props.printData(printTF)}></Button>
+                    <Button className="printingBtn" color="success" onClick={() => this.printOrder(newData) + this.emptyData()}>{language[localStorage.getItem('language')].tulosta}</Button>
+                    <Button className="printBtn2" onClick={() => this.props.printData(printTF) + console.log(printTF)}></Button>
                 </div >
             </ErrorBoundary>
         )
