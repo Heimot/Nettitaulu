@@ -359,7 +359,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
       });
   }
 
-  if (idvalues === "Ei ole" || idvalues === "Nope") {
+  if (idvalues === "Ei ole" || idvalues === "Not available") {
     document.getElementById(`keratty/${product._id}`).value = "Odottaa keräystä";
     fetch(FETCH_URL + 'products/patch/id/' + product._id, {
       method: 'PATCH',

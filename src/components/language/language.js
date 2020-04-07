@@ -32,6 +32,7 @@ const language = [
         'muokkaa': 'Muokkaa',
         'poista': 'Poista',
         'vieExceliin': 'Vie Exceliin',
+        'talPDF': 'Tulosta taulukko',
         // Ready table
         'ready1': 'Haluatko viedä tämän taulun valmiina oleviin?',
         'ready11': 'Haluatko arkistoida tämän taulun?',
@@ -87,7 +88,7 @@ const language = [
         'statusBar1': 'Awaiting collecting',
         'statusBar2': 'Collecting',
         'statusBar3': 'Collected',
-        'statusBar4': 'Nope', // DUNNO
+        'statusBar4': 'Not available',
         'tuote': 'Product',
         'kerataan': 'Amount to be collected',
         'kerayspiste': 'Collection point',
@@ -102,6 +103,7 @@ const language = [
         'muokkaa': 'Edit',
         'poista': 'Delete',
         'vieExceliin': 'Export to Excel',
+        'talPDF': 'Print table',
         // Ready table
         'ready1': 'Do you want to take this table to the ready tables?',
         'ready11': 'Do you want to archive this table?',
@@ -112,7 +114,7 @@ const language = [
         'ready6': 'Delivery date: ',
         'ready7': 'Amount of products: ',
         'ready8': 'Collected: ',
-        'ready9': 'Nope: ', //???????
+        'ready9': 'Not available: ',
         // Edit table
         'kerayspvm': 'Date of collection',
         'toimituspvm': 'Delivery date',
