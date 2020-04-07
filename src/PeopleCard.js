@@ -13,6 +13,9 @@ import XLSX from 'xlsx';
 import socketIOClient from "socket.io-client";
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import language from './components/language/language';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import logo from './pictures/Heimosen_Puutarha_logo.png';
 
 //CSS files
 import "./Styles/Table.css";
@@ -21,6 +24,9 @@ import "./Styles/progressBar.css";
 let change = false;
 var arr = [];
 let delPrint2 = false;
+
+var img = new Image();
+img.src = logo;
 
 function changeData() {
   try {
@@ -74,6 +80,7 @@ class PeopleCard extends Component {
       openWarning: false,
       valmisWarning: false,
       alreadyLoaded: false,
+      rullakot: false,
     }
   }
 
@@ -445,11 +452,11 @@ class PeopleCard extends Component {
   }
 
   printOut(product, kauppa) {
-    if(this.props.delPrint) {
+    if (this.props.delPrint) {
       arr = [];
       delPrint2 = false;
       this.props.cleanUp(delPrint2);
-    } 
+    }
     if (product.keratty === "Odottaa keräystä") {
       arr.push({
         kauppa: kauppa,
@@ -488,6 +495,47 @@ class PeopleCard extends Component {
     });
   }
 
+  htmlToPDF(tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm) {
+    var doc = new jsPDF();
+    let i = 0;
+    let b = 1;
+    let productsLenght = products.length;
+    let result = [];
+
+    for (i = 0; i < productsLenght; i++) {
+      result.push([products[i].kukka.toString(), products[i].kerattymaara.toString()])
+    };
+
+    let text = alisatieto.toString();
+
+    var textLine = doc.splitTextToSize(text, 75);
+
+    var header = function () {
+      doc.setFontSize(15)
+      doc.text(`Keräyspäivämäärä: ${date.toString()}`, 15, 32)
+      doc.text(`Toimituspäivämäärä: ${toimituspvm.toString()}`, 15, 39)
+      doc.text(`${kauppa.toString()}`, 15, 50)
+      doc.addImage(img, "png", 15, 2, 50, 22)
+      doc.setFontSize(10)
+      doc.text(textLine, 150, 30)
+      doc.text(`${_id.toString()}`, 15, 58)
+      doc.text(`${b.toString()}`, 202, 7)
+      b++;
+    };
+
+    doc.autoTable({
+      head: [['Tuote', 'Kerättymäärä']],
+      body: result,
+      margin: { horizontal: 0, top: 60 },
+      bodyStyles: { valign: 'top' },
+      styles: { overflow: 'linebreak', cellWidth: 'wrap' },
+      columnStyles: { text: { cellWidth: 'auto' } },
+      didDrawPage: header
+    });
+
+    doc.save('order.pdf');
+  }
+
   componentDidMount() {
     try {
       this._isMounted = true;
@@ -514,7 +562,7 @@ class PeopleCard extends Component {
   }
 
   render() {
-    let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm } = this.props.person;
+    let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm, rullakot } = this.props.person;
 
     // Counter for displaying procentages.
     let array = [];
@@ -551,7 +599,7 @@ class PeopleCard extends Component {
         <div className="myDiv">
           <div className="NavBlock"></div>
           <div>
-            <Card className="Cards">
+            <Card className="Cards" id={`pdfPrint${_id}`}>
               <CardTitle>{language[localStorage.getItem('language')].ready5} {date}</CardTitle>
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardTitle>{language[localStorage.getItem('language')].ready6} {toimituspvm}</CardTitle> : sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardTitle>{language[localStorage.getItem('language')].ready6} {toimituspvm}</CardTitle> : undefined}
               <CardTitle>{kauppa}</CardTitle>
@@ -560,6 +608,19 @@ class PeopleCard extends Component {
               <CardText></CardText>
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardText>{language[localStorage.getItem('language')].tarkastettuR}{ryona === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardText>{language[localStorage.getItem('language')].tarkastettuT}{tuusjarvi === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
+
+              <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>Rullakot</Button>
+
+              <Dialog className="DelWarn" isOpen2={this.state.rullakot} onClose={(e) => this.setState({ rullakot: false })}>
+                {rullakot.map(rullakko =>
+                <div className="bottomRulla">
+                  <Card className="rullakkoKortti">
+                    Rullakko: {rullakko.rullakonNimi}<br/>Rullakoiden määrä: {rullakko.rullakoidenMaara}<br/>Hyllyjen määrä: {rullakko.hyllyjenMaara}
+                  </Card>
+                  </div>
+                )}
+              </Dialog>
+
               <div className="loaders" >
                 <div className="loaderMargins">
                   <CardText className="hover">{language[localStorage.getItem('language')].statusBar1}</CardText>
@@ -582,7 +643,7 @@ class PeopleCard extends Component {
                 </div>
               </div>
 
-              <Table className="Tables">
+              <Table className="Tables" id={`id/${_id}`}>
 
                 <Thead>
                   <Tr>
@@ -639,6 +700,7 @@ class PeopleCard extends Component {
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="muokkaaBtn" className="muokkaaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].muokkaa}</Button> : undefined}
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="poistaBtn" className="poistaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>{language[localStorage.getItem('language')].poista}</Button> : undefined}
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="info" onClick={() => this.jsonToExcel(products, _id)}>{language[localStorage.getItem('language')].vieExceliin}</Button> : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? sessionStorage.getItem('siteName') === "Valmiit" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="warning" onClick={() => this.htmlToPDF(tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].talPDF}</Button> : undefined : undefined}
             </Card>
 
             <Dialog className="DelWarn" isOpen2={this.state.openWarning} onClose={(e) => this.setState({ openWarning: false })}>
