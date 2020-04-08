@@ -1,6 +1,30 @@
 @media screen and (min-width: 70em) {
+    .rullakkoNimi {
+        position: relative;
+        vertical-align: middle;
+        margin: 0px 0px 5px 0;
+        bottom: 17px !important;
+        background-color: #fff;
+        border: 1px solid #ddd;
+    }
+    .rullakkoHolder {
+        padding: 10px 20px;
+        background-color: dodgerblue;
+        border: 1px solid #ddd;
+        color: white;
+    }
+    .addRullakko {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        left: 50%;
+        transform: translate(-50%);
+        border-radius: 50% !important;
+        font-size: 30px !important;
+        text-align: center;
+    }
     .bottomRulla {
-        padding-bottom: 20px;
+        padding-bottom: 50px;
     }
     .rullakkoKortti {
         width: auto;

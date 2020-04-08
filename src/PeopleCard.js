@@ -6,7 +6,7 @@ import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
-import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData } from './components/fetch/apiFetch';
+import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData, postRullakko, putRullakkoToOrders, deleteRullakkoFromOrders, updateRullakkoData } from './components/fetch/apiFetch';
 import MyAutosuggest from "./components/autoComplete/autoComplete";
 import { FETCH_URL } from "./components/fetch/url";
 import XLSX from 'xlsx';
@@ -393,13 +393,14 @@ class PeopleCard extends Component {
     };
   }
 
-  deleteData(product) {
+  deleteData(product, _id) {
     try {
       document.getElementById(`kukka/${product._id}`).value = null;
       document.getElementById(`toimi/${product._id}`).value = null;
       document.getElementById(`lisatieto/${product._id}`).value = null;
       deleteFlowerData(product);
-      socket.emit('chat', {
+      socket.emit('idUpdate', {
+        id: _id,
         message: true
       });
     } catch (error) {
@@ -495,45 +496,99 @@ class PeopleCard extends Component {
     });
   }
 
-  htmlToPDF(tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm) {
-    var doc = new jsPDF();
-    let i = 0;
-    let b = 1;
-    let productsLenght = products.length;
-    let result = [];
+  htmlToPDF(_id, products, kauppa, date, alisatieto, toimituspvm) {
+    try {
+      var doc = new jsPDF();
+      let i = 0;
+      let b = 1;
+      let productsLenght = products.length;
+      let result = [];
 
-    for (i = 0; i < productsLenght; i++) {
-      result.push([products[i].kukka.toString(), products[i].kerattymaara.toString()])
+      for (i = 0; i < productsLenght; i++) {
+        result.push([products[i].kukka.toString(), products[i].kerattymaara.toString()])
+      };
+
+      let text = alisatieto.toString();
+
+      var textLine = doc.splitTextToSize(text, 75);
+
+      var header = function () {
+        doc.setFontSize(15)
+        doc.text(`Keräyspäivämäärä: ${date.toString()}`, 15, 32)
+        doc.text(`Toimituspäivämäärä: ${toimituspvm.toString()}`, 15, 39)
+        doc.text(`${kauppa.toString()}`, 15, 50)
+        doc.addImage(img, "png", 15, 2, 50, 22)
+        doc.setFontSize(10)
+        doc.text(textLine, 150, 30)
+        doc.text(`${_id.toString()}`, 15, 58)
+        doc.text(`${b.toString()}`, 202, 7)
+        b++;
+      };
+
+      doc.autoTable({
+        head: [['Tuote', 'Kerättymäärä']],
+        body: result,
+        margin: { horizontal: 0, top: 60 },
+        bodyStyles: { valign: 'top' },
+        styles: { overflow: 'linebreak', cellWidth: 'wrap' },
+        columnStyles: { text: { cellWidth: 'auto' } },
+        didDrawPage: header
+      });
+
+      doc.save('order.pdf');
+    } catch (err) {
+      console.log(err);
     };
+  }
 
-    let text = alisatieto.toString();
-
-    var textLine = doc.splitTextToSize(text, 75);
-
-    var header = function () {
-      doc.setFontSize(15)
-      doc.text(`Keräyspäivämäärä: ${date.toString()}`, 15, 32)
-      doc.text(`Toimituspäivämäärä: ${toimituspvm.toString()}`, 15, 39)
-      doc.text(`${kauppa.toString()}`, 15, 50)
-      doc.addImage(img, "png", 15, 2, 50, 22)
-      doc.setFontSize(10)
-      doc.text(textLine, 150, 30)
-      doc.text(`${_id.toString()}`, 15, 58)
-      doc.text(`${b.toString()}`, 202, 7)
-      b++;
+  async addRullakko(kauppa, _id, rullakot) {
+    try {
+      let getRIDS = [];
+      getRIDS = rullakot.map(rullakko => {
+        return rullakko._id;
+      });
+      let rullakkoID = await postRullakko(kauppa);
+      let newID = rullakkoID.createdRullakko.id;
+      let rullakkoIDS = getRIDS.concat(newID);
+      await putRullakkoToOrders(_id, rullakkoIDS);
+      socket.emit('idUpdate', {
+        id: _id,
+        message: true
+      });
+    } catch (err) {
+      console.log(err);
     };
+  }
 
-    doc.autoTable({
-      head: [['Tuote', 'Kerättymäärä']],
-      body: result,
-      margin: { horizontal: 0, top: 60 },
-      bodyStyles: { valign: 'top' },
-      styles: { overflow: 'linebreak', cellWidth: 'wrap' },
-      columnStyles: { text: { cellWidth: 'auto' } },
-      didDrawPage: header
-    });
+  deleteRullakko(rullakko, _id) {
+    try {
+      document.getElementById(`rNimi/${rullakko._id}`).value = null;
+      document.getElementById(`rMaara/${rullakko._id}`).value = null;
+      document.getElementById(`rHyllyjenMaara/${rullakko._id}`).value = null; 
+      deleteRullakkoFromOrders(rullakko);
+      socket.emit('idUpdate', {
+        id: _id,
+        message: true
+      });
+    } catch (err) {
+      console.log(err);
+    };
+  }
 
-    doc.save('order.pdf');
+  updateRullakko(rullakko, _id, rullakot, kauppa) {
+    try {
+      let rNimi = document.getElementById(`rNimi/${rullakko._id}`).value;
+      let rMaara = document.getElementById(`rMaara/${rullakko._id}`).value;
+      let rHyllyjenMaara = document.getElementById(`rHyllyjenMaara/${rullakko._id}`).value;
+      updateRullakkoData(rullakko, kauppa, rNimi, rMaara, rHyllyjenMaara);
+
+      socket.emit('idUpdate', {
+        id: _id,
+        message: true
+      });
+    } catch (err) {
+      console.log(err);
+    };
   }
 
   componentDidMount() {
@@ -609,16 +664,24 @@ class PeopleCard extends Component {
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardText>{language[localStorage.getItem('language')].tarkastettuR}{ryona === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardText>{language[localStorage.getItem('language')].tarkastettuT}{tuusjarvi === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
 
-              <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>Rullakot</Button>
+              {sessionStorage.getItem("userValmis") === "Kerätty" ? <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>Rullakot</Button> : undefined}
 
               <Dialog className="DelWarn" isOpen2={this.state.rullakot} onClose={(e) => this.setState({ rullakot: false })}>
                 {rullakot.map(rullakko =>
-                <div className="bottomRulla">
-                  <Card className="rullakkoKortti">
-                    Rullakko: {rullakko.rullakonNimi}<br/>Rullakoiden määrä: {rullakko.rullakoidenMaara}<br/>Hyllyjen määrä: {rullakko.hyllyjenMaara}
-                  </Card>
+                  <div className="bottomRulla">
+                    <Card className="rullakkoKortti">
+                      <CardText className="rullakkoHolder">Rullakko: </CardText>
+                      <Input id={`rNimi/${rullakko._id}`} className="rullakkoNimi" placeholder={rullakko.rullakonNimi}></Input>
+                      <CardText className="rullakkoHolder">Rullakoiden määrä: </CardText>
+                      <Input id={`rMaara/${rullakko._id}`} className="rullakkoNimi" placeholder={rullakko.rullakoidenMaara}></Input>
+                      <CardText className="rullakkoHolder">Hyllyjen määrä: </CardText>
+                      <Input id={`rHyllyjenMaara/${rullakko._id}`} className="rullakkoNimi" placeholder={rullakko.hyllyjenMaara}></Input>
+                      <Button color="primary" onClick={() => this.updateRullakko(rullakko, _id, rullakot, kauppa)}>Tallenna</Button>
+                      <Button onClick={() => this.deleteRullakko(rullakko, _id)}>Poista</Button>
+                    </Card>
                   </div>
                 )}
+                <Button className="addRullakko" onClick={() => this.addRullakko(kauppa, _id, rullakot)}>+</Button>
               </Dialog>
 
               <div className="loaders" >
@@ -700,7 +763,7 @@ class PeopleCard extends Component {
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="muokkaaBtn" className="muokkaaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].muokkaa}</Button> : undefined}
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="poistaBtn" className="poistaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>{language[localStorage.getItem('language')].poista}</Button> : undefined}
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="info" onClick={() => this.jsonToExcel(products, _id)}>{language[localStorage.getItem('language')].vieExceliin}</Button> : undefined}
-              {sessionStorage.getItem('userRole') === "Admin" ? sessionStorage.getItem('siteName') === "Valmiit" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="warning" onClick={() => this.htmlToPDF(tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].talPDF}</Button> : undefined : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? sessionStorage.getItem('siteName') === "Valmiit" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="warning" onClick={() => this.htmlToPDF(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].talPDF}</Button> : undefined : undefined}
             </Card>
 
             <Dialog className="DelWarn" isOpen2={this.state.openWarning} onClose={(e) => this.setState({ openWarning: false })}>
@@ -824,7 +887,7 @@ class PeopleCard extends Component {
                             className="inputlabelA"
                             placeholder={product.lisatieto}>
                           </Input>
-                          <Button className="delProduct" name="poista_kukka" color="danger" onClick={() => this.deleteData(product)}>X</Button>
+                          <Button className="delProduct" name="poista_kukka" color="danger" onClick={() => this.deleteData(product, _id)}>X</Button>
                         </Td>
                       </Tr>
                     </Tbody>
