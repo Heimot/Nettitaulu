@@ -1,0 +1,19 @@
+.rullakkoTop {
+    margin-top: 80px !important;
+}
+
+.rullakkoCard {
+    width: 80%;
+    height: auto;
+    padding: 10px 10px 10px 10px;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.rullaList {
+    position: relative;
+    list-style-type: none;
+    font-size: 20px;
+    border: solid 1px black;
+    padding: 5px 5px 5px 5px;
+}
