@@ -534,3 +534,101 @@ export const patchTarkastettuProductsData = (product, valmius) => {
       console.log(error);
     });
 }
+
+export const postRullakko = (kauppa) => {
+  return fetch(FETCH_URL + 'rullakot/post', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      kaupanNimi: kauppa
+    }),
+  })
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const putRullakkoToOrders = (_id, rullakkoIDS) => {
+  fetch(FETCH_URL + 'orders/put/id/' + _id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      rullakot: rullakkoIDS
+    }),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const deleteRullakkoFromOrders = (rullakko) => {
+  fetch(FETCH_URL + 'rullakot/delete/id/' + rullakko._id, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+  })
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const updateRullakkoData = (rullakko, kauppa, rNimi, rMaara, rHyllyjenMaara) => {
+  if (rNimi.length <= 0) {
+    rNimi = rullakko.rullakonNimi;
+  }
+  if (rMaara.length <= 0) {
+    rMaara = rullakko.rullakoidenMaara;
+  }
+  if (rHyllyjenMaara.length <= 0) {
+    rHyllyjenMaara = rullakko.hyllyjenMaara
+  }
+  fetch(FETCH_URL + 'rullakot/put/id/' + rullakko._id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      rullakonNimi: rNimi,
+      rullakoidenMaara: rMaara,
+      hyllyjenMaara: rHyllyjenMaara,
+      kaupanNimi: kauppa
+    }),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const getRullakotData = () => {
+  return fetch(FETCH_URL + 'rullakot/get', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+  })
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
