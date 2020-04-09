@@ -6,7 +6,7 @@ import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
-import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData, postRullakko, putRullakkoToOrders, deleteRullakkoFromOrders, updateRullakkoData } from './components/fetch/apiFetch';
+import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData, postRullakko, putRullakkoToOrders, deleteRullakkoFromOrders, updateRullakkoData, postHylly, putHyllyToOrders, deleteHyllyFromOrders, updateHyllyData } from './components/fetch/apiFetch';
 import MyAutosuggest from "./components/autoComplete/autoComplete";
 import { FETCH_URL } from "./components/fetch/url";
 import XLSX from 'xlsx';
@@ -81,6 +81,7 @@ class PeopleCard extends Component {
       valmisWarning: false,
       alreadyLoaded: false,
       rullakot: false,
+      hyllyt: false,
     }
   }
 
@@ -560,11 +561,29 @@ class PeopleCard extends Component {
     };
   }
 
+  async addHylly(kauppa, _id, hyllyt) {
+    try {
+      let getRIDS = [];
+      getRIDS = hyllyt.map(hylly => {
+        return hylly._id;
+      });
+      let hyllyID = await postHylly(kauppa);
+      let newID = hyllyID.createdHylly.id;
+      let hyllyIDS = getRIDS.concat(newID);
+      await putHyllyToOrders(_id, hyllyIDS);
+      socket.emit('idUpdate', {
+        id: _id,
+        message: true
+      });
+    } catch (err) {
+      console.log(err);
+    };
+  }
+
   deleteRullakko(rullakko, _id) {
     try {
       document.getElementById(`rNimi/${rullakko._id}`).value = null;
       document.getElementById(`rMaara/${rullakko._id}`).value = null;
-      document.getElementById(`rHyllyjenMaara/${rullakko._id}`).value = null; 
       deleteRullakkoFromOrders(rullakko);
       socket.emit('idUpdate', {
         id: _id,
@@ -575,12 +594,40 @@ class PeopleCard extends Component {
     };
   }
 
-  updateRullakko(rullakko, _id, rullakot, kauppa) {
+  deleteHylly(hylly, _id) {
+    try {
+      document.getElementById(`rHylly/${hylly._id}`).value = null;
+      document.getElementById(`rHyllyjenMaara/${hylly._id}`).value = null;
+      deleteHyllyFromOrders(hylly);
+      socket.emit('idUpdate', {
+        id: _id,
+        message: true
+      });
+    } catch (err) {
+      console.log(err);
+    };
+  }
+
+  updateRullakko(rullakko, _id, kauppa) {
     try {
       let rNimi = document.getElementById(`rNimi/${rullakko._id}`).value;
       let rMaara = document.getElementById(`rMaara/${rullakko._id}`).value;
-      let rHyllyjenMaara = document.getElementById(`rHyllyjenMaara/${rullakko._id}`).value;
-      updateRullakkoData(rullakko, kauppa, rNimi, rMaara, rHyllyjenMaara);
+      updateRullakkoData(rullakko, kauppa, rNimi, rMaara);
+
+      socket.emit('idUpdate', {
+        id: _id,
+        message: true
+      });
+    } catch (err) {
+      console.log(err);
+    };
+  }
+
+  updateHylly(hylly, kauppa, _id) {
+    try {
+      let rHylly = document.getElementById(`rHylly/${hylly._id}`).value;
+      let rHyllyjenMaara = document.getElementById(`rHyllyjenMaara/${hylly._id}`).value;
+      updateHyllyData(hylly, kauppa, rHylly, rHyllyjenMaara);
 
       socket.emit('idUpdate', {
         id: _id,
@@ -617,7 +664,7 @@ class PeopleCard extends Component {
   }
 
   render() {
-    let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm, rullakot } = this.props.person;
+    let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm, rullakot, hyllyt } = this.props.person;
 
     // Counter for displaying procentages.
     let array = [];
@@ -665,23 +712,46 @@ class PeopleCard extends Component {
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardText>{language[localStorage.getItem('language')].tarkastettuT}{tuusjarvi === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
 
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>Rullakot</Button> : undefined}
+              {sessionStorage.getItem("userValmis") === "Kerätty" ? <Button className="hyllyt" onClick={() => this.setState({ hyllyt: true })}>Hyllyt</Button> : undefined}
 
               <Dialog className="DelWarn" isOpen2={this.state.rullakot} onClose={(e) => this.setState({ rullakot: false })}>
                 {rullakot.map(rullakko =>
                   <div className="bottomRulla">
                     <Card className="rullakkoKortti">
                       <CardText className="rullakkoHolder">Rullakko: </CardText>
-                      <Input id={`rNimi/${rullakko._id}`} className="rullakkoNimi" placeholder={rullakko.rullakonNimi}></Input>
+                      <Input id={`rNimi/${rullakko._id}`} defaultValue={rullakko.rullakonNimi} type="select" className="rullakkoNimi">
+                        <option>Oma</option>
+                        <option>Piraatti</option>
+                        <option>TAK5</option>
+                      </Input>
                       <CardText className="rullakkoHolder">Rullakoiden määrä: </CardText>
                       <Input id={`rMaara/${rullakko._id}`} className="rullakkoNimi" placeholder={rullakko.rullakoidenMaara}></Input>
-                      <CardText className="rullakkoHolder">Hyllyjen määrä: </CardText>
-                      <Input id={`rHyllyjenMaara/${rullakko._id}`} className="rullakkoNimi" placeholder={rullakko.hyllyjenMaara}></Input>
-                      <Button color="primary" onClick={() => this.updateRullakko(rullakko, _id, rullakot, kauppa)}>Tallenna</Button>
+
+                      <Button color="primary" onClick={() => this.updateRullakko(rullakko, _id, kauppa)}>Tallenna</Button>
                       <Button onClick={() => this.deleteRullakko(rullakko, _id)}>Poista</Button>
                     </Card>
                   </div>
                 )}
                 <Button className="addRullakko" onClick={() => this.addRullakko(kauppa, _id, rullakot)}>+</Button>
+              </Dialog>
+
+              <Dialog className="DelWarn" isOpen2={this.state.hyllyt} onClose={(e) => this.setState({ hyllyt: false })}>
+                {hyllyt.map(hylly =>
+                  <div className="bottomRulla">
+                    <Card className="rullakkoKortti">
+                      <CardText className="rullakkoHolder">Hylly: </CardText>
+                      <Input id={`rHylly/${hylly._id}`} defaultValue={hylly.hyllynNimi} type="select" className="rullakkoNimi">
+                        <option>Oma</option>
+                        <option>Vaihto</option>
+                      </Input>
+                      <CardText className="rullakkoHolder">Hyllyjen määrä: </CardText>
+                      <Input id={`rHyllyjenMaara/${hylly._id}`} className="rullakkoNimi" placeholder={hylly.hyllyjenMaara}></Input>
+                      <Button color="primary" onClick={() => this.updateHylly(hylly, kauppa, _id)}>Tallenna</Button>
+                      <Button onClick={() => this.deleteHylly(hylly, _id)}>Poista</Button>
+                    </Card>
+                  </div>
+                )}
+                <Button className="addRullakko" onClick={() => this.addHylly(kauppa, _id, hyllyt)}>+</Button>
               </Dialog>
 
               <div className="loaders" >
