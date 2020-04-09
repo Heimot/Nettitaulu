@@ -1,6 +1,8 @@
 {
   "short_name": "Heimosen puutarha",
-  "name": "Heimosen puutarha keräys ohjelma",
+  "name": "Heimosen puutarha keräysohjelma",
+  "author": "Joonas Heimonen",
+  "description": "This application is for collecting flowers.",
   "icons": [
     {
       "src": "favicon.ico",

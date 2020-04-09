@@ -1,7 +1,5 @@
 Property of Joonas Heimonen!
 
-DONT TOUCH! :)
-
 Start with
 
 NPM INSTALL
