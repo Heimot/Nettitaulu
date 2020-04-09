@@ -587,15 +587,12 @@ export const deleteRullakkoFromOrders = (rullakko) => {
     });
 }
 
-export const updateRullakkoData = (rullakko, kauppa, rNimi, rMaara, rHyllyjenMaara) => {
+export const updateRullakkoData = (rullakko, kauppa, rNimi, rMaara) => {
   if (rNimi.length <= 0) {
     rNimi = rullakko.rullakonNimi;
   }
   if (rMaara.length <= 0) {
     rMaara = rullakko.rullakoidenMaara;
-  }
-  if (rHyllyjenMaara.length <= 0) {
-    rHyllyjenMaara = rullakko.hyllyjenMaara
   }
   fetch(FETCH_URL + 'rullakot/put/id/' + rullakko._id, {
     method: 'PUT',
@@ -606,7 +603,6 @@ export const updateRullakkoData = (rullakko, kauppa, rNimi, rMaara, rHyllyjenMaa
     body: JSON.stringify({
       rullakonNimi: rNimi,
       rullakoidenMaara: rMaara,
-      hyllyjenMaara: rHyllyjenMaara,
       kaupanNimi: kauppa
     }),
   })
@@ -621,6 +617,114 @@ export const updateRullakkoData = (rullakko, kauppa, rNimi, rMaara, rHyllyjenMaa
 
 export const getRullakotData = () => {
   return fetch(FETCH_URL + 'rullakot/get', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+  })
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const postHylly = (kauppa) => {
+  return fetch(FETCH_URL + 'hyllyt/post', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      kaupanNimi: kauppa
+    }),
+  })
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const putHyllyToOrders = (_id, hyllyIDS) => {
+  fetch(FETCH_URL + 'orders/put/id/' + _id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      hyllyt: hyllyIDS
+    }),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const deleteHyllyFromOrders = (hylly) => {
+  fetch(FETCH_URL + 'hyllyt/delete/id/' + hylly._id, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+  })
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const updateHyllyData = (hylly, kauppa, rHylly, rHyllyjenMaara) => {
+  if(rHylly.length <= 0) {
+    rHylly = hylly.hyllynNimi
+  }
+  if (rHyllyjenMaara.length <= 0) {
+    rHyllyjenMaara = hylly.hyllyjenMaara
+  }
+  fetch(FETCH_URL + 'hyllyt/put/id/' + hylly._id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      hyllynNimi: rHylly,
+      hyllyjenMaara: rHyllyjenMaara,
+      kaupanNimi: kauppa
+    }),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const getHyllytData = () => {
+  return fetch(FETCH_URL + 'hyllyt/get', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+  })
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const getPalautetut = () => {
+  return fetch(FETCH_URL + 'palautetut/get', {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
