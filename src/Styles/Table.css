@@ -37,6 +37,12 @@
         right: 10px;
         top: 225px;
     }
+    .hyllyt {
+        position: absolute;
+        width: 100px;
+        right: 115px;
+        top: 225px;
+    }
     .ValmisRow {
         background-color: green;
     }

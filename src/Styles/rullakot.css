@@ -1,3 +1,16 @@
+.palautettu {
+    flex-grow: 1;
+}
+
+.lainassa {
+    flex-grow: 1;
+}
+
+.flexR {
+    width: 100%;
+    display: flex;
+}
+
 .rullakkoTop {
     margin-top: 80px !important;
 }
@@ -16,4 +29,77 @@
     font-size: 20px;
     border: solid 1px black;
     padding: 5px 5px 5px 5px;
+    background-color: dodgerblue;
+    border: 1px solid #ddd;
+}
+
+.hyllyList {
+    position: relative;
+    display: flex;
+    list-style-type: none;
+    height: 50px;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 1px black;
+    padding: 5px 5px 5px 5px;
+    background-color: white;
+    border: 1px solid dodgerblue;
+}
+
+.hyllyRullaList {
+    position: relative;
+    list-style-type: none;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 1px black;
+    padding: 5px 5px 5px 5px;
+    background-color: dodgerblue;
+    border: 1px solid #ddd;
+}
+
+.hyllyRullaList2 {
+    position: relative;
+    list-style-type: none;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 1px black;
+    padding: 5px 5px 5px 5px;
+    background-color: dodgerblue;
+    border: 1px solid #ddd;
+}
+
+.kauppaRulla {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.hyllytRulla {
+    position: relative;
+    top: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.hyllytRulla2 {
+    position: relative;
+    top: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.rullakotRulla {
+    position: relative;
+    top: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.tallennaPalautetut {
+    flex-grow: 1;
+}
+
+.inputPalautetut {
+    flex-grow: 1;
 }
