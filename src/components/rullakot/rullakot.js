@@ -2,6 +2,7 @@ import React, { Component, useRef } from 'react';
 import { Card, CardText, Button, Input } from 'reactstrap';
 import { getRullakotData, getHyllytData, getPalautetut } from '../fetch/apiFetch';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
+import socketIOClient from "socket.io-client";
 import { FETCH_URL } from '../fetch/url';
 
 // CSS
@@ -17,6 +18,8 @@ let filteredRullakkoR = [];
 let x;
 let y;
 
+const endpoint = FETCH_URL;
+const socket = socketIOClient(endpoint);
 
 class Rullakot extends Component {
     constructor() {
@@ -29,6 +32,11 @@ class Rullakot extends Component {
     }
 
     componentDidMount() {
+        socket.on('rullakotUpdt', async (data) => {
+            if (data.message === true) {
+                this.rullakotApiData();
+            };
+        });
         this.rullakotApiData();
     }
 
@@ -192,21 +200,25 @@ class Rullakot extends Component {
             return doc3.hyllynNimi === doc2
         })
         const sum = `${filteredRullakko.map(item => item._id)}`;
-        console.log(sum)
+        const value = `${filteredRullakko.map(item => item.hyllyjenMaara)}`;
+        const summaVal = parseInt(value) + parseInt(document.getElementById(`${doc}Hylly${doc2}`).value)
 
         if (sum.length > 0) {
-            if (document.getElementById(`hyllyt/${sum}`).value > 0) {
-                return fetch(FETCH_URL + 'palautetut/put/id/' + sum.split(',')[0], {
+            if (document.getElementById(`${doc}Hylly${doc2}`).value > 0) {
+                return fetch(FETCH_URL + 'palautetut/put/id/' + `${doc}Hylly${doc2}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
                     },
                     body: JSON.stringify({
-                        hyllyjenMaara: new Number(document.getElementById(`hyllyt/${sum}`).value)
+                        hyllyjenMaara: summaVal
                     }),
                 })
-                    .then(res => res.json())
+                    .then(res =>
+                        socket.emit('rullakotUpdt', {
+                            message: true
+                        }))
                     .catch((error) => {
                         console.log(error);
                     });
@@ -219,21 +231,26 @@ class Rullakot extends Component {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
                 },
                 body: JSON.stringify({
+                    _id: `${doc}Hylly${doc2}`,
                     hyllynNimi: doc2,
-                    hyllyjenMaara: 0,
+                    hyllyjenMaara: parseInt(document.getElementById(`${doc}Hylly${doc2}`).value),
                     kaupanNimi: doc
                 }),
             })
-                .then(res => res.json())
+                .then(res =>
+                    socket.emit('rullakotUpdt', {
+                        message: true
+                    }))
                 .catch((error) => {
                     console.log(error);
                 });
         }
-
     }
 
     IDGRABR(doc, doc2) {
         let { palautettuData } = this.state;
+        let summaVal = 0;
+        let value = 0;
 
         filtered = palautettuData.filter(doc2 => {
             return doc2.kaupanNimi === doc
@@ -242,24 +259,57 @@ class Rullakot extends Component {
             return doc3.rullakonNimi === doc2
         })
         const sum = `${filteredRullakko.map(item => item._id)}`;
+        value = `${filteredRullakko.map(item => item.rullakoidenMaara)}`;
+
+        if(value === "") {
+            value = 0;
+        }
+        if (typeof(parseInt(document.getElementById(`${doc}Rullakko${doc2}`).value)) !== NaN) {
+            summaVal = parseInt(value) + parseInt(document.getElementById(`${doc}Rullakko${doc2}`).value);
+        } else {
+            summaVal = parseInt(value);
+        }
+
         if (sum.length > 0) {
-            if (document.getElementById(`rullakot/${sum}`).value > 0) {
-                return fetch(FETCH_URL + 'palautetut/put/id/' + sum.split(',')[0], {
+            if (document.getElementById(`${doc}Rullakko${doc2}`).value > 0) {
+                return fetch(FETCH_URL + 'palautetut/put/id/' + `${doc}Rullakko${doc2}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
                     },
                     body: JSON.stringify({
-                        rullakoidenMaara: new Number(document.getElementById(`rullakot/${sum}`).value)
+                        rullakoidenMaara: summaVal
                     }),
                 })
-                    .then(res => res.json())
+                    .then(res =>
+                        socket.emit('rullakotUpdt', {
+                            message: true
+                        }))
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else if (document.getElementById(`${doc}Rullakko${doc2}`).value.includes('--')) {
+                return fetch(FETCH_URL + 'palautetut/put/id/' + `${doc}Rullakko${doc2}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+                    },
+                    body: JSON.stringify({
+                        rullakoidenMaara: summaVal
+                    }),
+                })
+                    .then(res =>
+                        socket.emit('rullakotUpdt', {
+                            message: true
+                        }))
                     .catch((error) => {
                         console.log(error);
                     });
             }
         } else {
+            console.log(document.getElementById(`${doc}Rullakko${doc2}`).value)
             return fetch(FETCH_URL + 'palautetut/post', {
                 method: 'POST',
                 headers: {
@@ -267,17 +317,20 @@ class Rullakot extends Component {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
                 },
                 body: JSON.stringify({
+                    _id: `${doc}Rullakko${doc2}`,
                     rullakonNimi: doc2,
-                    rullakonMaara: 0,
+                    rullakonMaara: parseInt(document.getElementById(`${doc}Rullakko${doc2}`).value),
                     kaupanNimi: doc
                 }),
             })
-                .then(res => res.json())
+                .then(res =>
+                    socket.emit('rullakotUpdt', {
+                        message: true
+                    }))
                 .catch((error) => {
                     console.log(error);
                 });;
         }
-
     }
 
     liID(doc, doc2) {
@@ -332,21 +385,21 @@ class Rullakot extends Component {
                 let pepe = palautettuData.filter(doc7 => {
                     return doc7.rullakonNimi === "Rullakko vakio"
                 })*/
-        /*
-                console.log( palautettuData.map(dox => {
-                    return   fetch('http://localhost:3002/palautetut/delete/id/' + dox._id, {
-                        method: 'DELETE',
-                        headers: {
-                          'Content-Type': 'application/json',
-                          'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
-                        },
-                      })
-                        .then(response => response.json())
-                        .then(json => console.log(json))
-                        .catch((error) => {
-                          console.log(error);
-                        });
-                }))*/
+
+        /* console.log( palautettuData.map(dox => {
+             return   fetch('http://localhost:3002/palautetut/delete/id/' + dox._id, {
+                 method: 'DELETE',
+                 headers: {
+                   'Content-Type': 'application/json',
+                   'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+                 },
+               })
+                 .then(response => response.json())
+                 .then(json => console.log(json))
+                 .catch((error) => {
+                   console.log(error);
+                 });
+         }))*/
 
         let array = [];
         let result = {};
@@ -407,7 +460,7 @@ class Rullakot extends Component {
                                                     <li className="rullaList">
                                                         {this.sumPalautetut(doc, rullakot)}
                                                         <li className="hyllyList">
-                                                            <Input className="inputPalautetut" id={`rullakot/${this.liIDR(doc, doc2)}`}></Input>
+                                                            <Input className="inputPalautetut" id={`${doc}Rullakko${doc2}`}></Input>
                                                             <Button className="tallennaPalautetut" onClick={() => this.IDGRABR(doc, doc2)}>Tallenna</Button>
                                                         </li>
                                                     </li>
@@ -416,10 +469,10 @@ class Rullakot extends Component {
                                             <CardText className="hyllytRulla">Hyllyt palautettu</CardText>
                                             {hyllyt.map(doc2 => {
                                                 return (
-                                                    <li className="hyllyRullaList">
+                                                    <li id={`${doc}HyllyValue${doc2}`} className="hyllyRullaList">
                                                         {this.sumHyllyPalautetut(doc, hyllyt)}
                                                         <li className="hyllyList">
-                                                            <Input className="inputPalautetut" id={`hyllyt/${this.liID(doc, doc2)}`}></Input>
+                                                            <Input className="inputPalautetut" id={`${doc}Hylly${doc2}`}></Input>
                                                             <Button className="tallennaPalautetut" onClick={() => this.IDGRAB(doc, doc2)}>Tallenna</Button>
                                                         </li>
                                                     </li>

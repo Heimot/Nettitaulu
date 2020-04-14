@@ -556,6 +556,9 @@ class PeopleCard extends Component {
         id: _id,
         message: true
       });
+      socket.emit('rullakotUpdt', {
+        message: true
+      });
     } catch (err) {
       console.log(err);
     };
@@ -568,11 +571,14 @@ class PeopleCard extends Component {
         return hylly._id;
       });
       let hyllyID = await postHylly(kauppa);
-      let newID = hyllyID.createdHylly.id;
+      let newID = hyllyID.createdHylly._id;
       let hyllyIDS = getRIDS.concat(newID);
       await putHyllyToOrders(_id, hyllyIDS);
       socket.emit('idUpdate', {
         id: _id,
+        message: true
+      });
+      socket.emit('rullakotUpdt', {
         message: true
       });
     } catch (err) {
@@ -589,6 +595,9 @@ class PeopleCard extends Component {
         id: _id,
         message: true
       });
+      socket.emit('rullakotUpdt', {
+        message: true
+      });
     } catch (err) {
       console.log(err);
     };
@@ -601,6 +610,9 @@ class PeopleCard extends Component {
       deleteHyllyFromOrders(hylly);
       socket.emit('idUpdate', {
         id: _id,
+        message: true
+      });
+      socket.emit('rullakotUpdt', {
         message: true
       });
     } catch (err) {
@@ -618,6 +630,9 @@ class PeopleCard extends Component {
         id: _id,
         message: true
       });
+      socket.emit('rullakotUpdt', {
+        message: true
+      });
     } catch (err) {
       console.log(err);
     };
@@ -631,6 +646,9 @@ class PeopleCard extends Component {
 
       socket.emit('idUpdate', {
         id: _id,
+        message: true
+      });
+      socket.emit('rullakotUpdt', {
         message: true
       });
     } catch (err) {
