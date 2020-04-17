@@ -1,1 +1,2 @@
-export const FETCH_URL = "https://puutarhaapi.a2hosted.com/api/";
+export const FETCH_URL = "https://www.puutarhaapi.a2hosted.com/";
+export const SOCKET_URL = "https://www.puutarhaapi.a2hosted.com/";

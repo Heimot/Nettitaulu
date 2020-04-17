@@ -11,7 +11,7 @@ import MyAutosuggest from './components/autoComplete/autoComplete';
 import { updateFlowers, putFlowersCreatedOrderData } from './components/fetch/apiFetch';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
-import { FETCH_URL } from "./components/fetch/url";
+import { FETCH_URL, SOCKET_URL } from "./components/fetch/url";
 import socketIOClient from "socket.io-client";
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import language from './components/language/language';
@@ -26,7 +26,7 @@ const override = css`
   border-color: red;
 `;
 
-const endpoint = FETCH_URL;
+const endpoint = SOCKET_URL;
 const socket = socketIOClient(endpoint);
 
 let search = "";

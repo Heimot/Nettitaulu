@@ -8,7 +8,7 @@ import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
 import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete, getTableId } from './components/fetch/apiFetch';
 import socketIOClient from "socket.io-client";
-import { FETCH_URL } from './components/fetch/url';
+import { SOCKET_URL } from './components/fetch/url';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import Printer from './components/printWindow/printData';
 
@@ -29,7 +29,7 @@ const override = css`
   border-color: red;
 `;
 
-const endpoint = FETCH_URL;
+const endpoint = SOCKET_URL;
 const socket = socketIOClient(endpoint);
 
 class MainArea extends Component {
@@ -72,11 +72,15 @@ class MainArea extends Component {
       } else {
         this.getTables();
         socket.on('chat', async (data) => {
+          console.log("FFFF#55")
+          console.log(data.message)
           if (data.message === true) {
             this.getTables();
           };
         });
         socket.on('idUpdate', async (data) => {
+          console.log("FFFF#555")
+          console.log(data.message)
           if (data.message === true) {
             this.getTable(data);
           };
@@ -108,6 +112,7 @@ class MainArea extends Component {
     try {
       data = await getData(searchData, chosen);
       Datas = await getFlowersToAutocomplete();
+      console.log(data)
       if (Datas === undefined || Datas.message) {
         DataK = ["Error", "Error2", "DatabaseNoData"];
         DataF = ["Error", "Error2", "DatabaseNoData"];

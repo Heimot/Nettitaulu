@@ -3,7 +3,7 @@ import { Card, CardText, Button, Input } from 'reactstrap';
 import { getRullakotData, getHyllytData, getPalautetut } from '../fetch/apiFetch';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 import socketIOClient from "socket.io-client";
-import { FETCH_URL } from '../fetch/url';
+import { FETCH_URL, SOCKET_URL } from '../fetch/url';
 
 // CSS
 import '../../Styles/rullakot.css';
@@ -18,7 +18,7 @@ let filteredRullakkoR = [];
 let x;
 let y;
 
-const endpoint = FETCH_URL;
+const endpoint = SOCKET_URL;
 const socket = socketIOClient(endpoint);
 
 class Rullakot extends Component {

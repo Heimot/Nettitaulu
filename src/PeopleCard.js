@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
 import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData, postRullakko, putRullakkoToOrders, deleteRullakkoFromOrders, updateRullakkoData, postHylly, putHyllyToOrders, deleteHyllyFromOrders, updateHyllyData } from './components/fetch/apiFetch';
 import MyAutosuggest from "./components/autoComplete/autoComplete";
-import { FETCH_URL } from "./components/fetch/url";
+import { FETCH_URL, SOCKET_URL } from "./components/fetch/url";
 import XLSX from 'xlsx';
 import socketIOClient from "socket.io-client";
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
@@ -44,7 +44,7 @@ function changeNormal() {
   };
 }
 
-const endpoint = FETCH_URL;
+const endpoint = SOCKET_URL;
 const socket = socketIOClient(endpoint);
 
 class PeopleCard extends Component {

@@ -1,6 +1,8 @@
 {
   "name": "puutarhaprogram",
   "version": "0.1.0",
+  "homepage": "https://tilaukset.heimosenpuutarha.com/",
+  "author": "Joonas Heimonen",
   "private": true,
   "dependencies": {
     "bootstrap": "4.0.0-alpha.6",
