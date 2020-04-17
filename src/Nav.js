@@ -85,7 +85,8 @@ export default class TopNav extends React.Component {
       _id: '',
       dLoader: false,
       testLoader: true,
-      search: "kukkia"
+      search: "kukkia",
+      navRed: false,
     };
     this.toggle = this.toggle.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -566,6 +567,9 @@ export default class TopNav extends React.Component {
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
     }
+    if (this.state.navRed) {
+      return (<Redirect to={'/main'} />)
+    }
     return (
       <ErrorBoundary>
         <div>
@@ -590,7 +594,7 @@ export default class TopNav extends React.Component {
               : undefined}
 
             <NavbarToggler right className="Toggler" onClick={this.toggle} />
-            <NavbarBrand className="navName" href="/main">{sessionStorage.getItem("btnName") === "Kerättävät" ? language[localStorage.getItem('language')].navCollect : sessionStorage.getItem("btnName") === "Valmiit" ? language[localStorage.getItem('language')].navReady : language[localStorage.getItem('language')].navArchived}</NavbarBrand>
+            <NavbarBrand className="navName" onClick={() => this.setState({ navRed: true })}>{sessionStorage.getItem("btnName") === "Kerättävät" ? language[localStorage.getItem('language')].navCollect : sessionStorage.getItem("btnName") === "Valmiit" ? language[localStorage.getItem('language')].navReady : language[localStorage.getItem('language')].navArchived}</NavbarBrand>
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
 
