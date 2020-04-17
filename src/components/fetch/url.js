@@ -1,1 +1,1 @@
-export const FETCH_URL = "http://localhost:3002/";
+export const FETCH_URL = "https://puutarhaapi.a2hosted.com/api/";
