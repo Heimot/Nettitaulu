@@ -6,8 +6,8 @@
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "192x192",
-      "type": "image/png"
+      "sizes": "74x74",
+      "type": "ico"
     }
   ],
   "start_url": "./index.html",
