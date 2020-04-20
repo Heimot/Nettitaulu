@@ -3,6 +3,8 @@ import "../../Styles/Autocomplete.css"
 import { Input } from "reactstrap";
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 
+let suggestions = [];
+
 class MyAutosuggest extends React.Component {
   constructor() {
     super();
@@ -18,7 +20,7 @@ class MyAutosuggest extends React.Component {
     try {
       const { items } = this.props;
       const value = e.target.value;
-      let suggestions = [];
+      suggestions = [];
       if (value.length > 0) {
         const regex = new RegExp(`^${value}`, 'i');
         suggestions = items.sort().filter(v => regex.test(v));
@@ -75,6 +77,13 @@ class MyAutosuggest extends React.Component {
     };
   }
 
+  hideBoxes() {
+    suggestions = [];
+    this.setState(() => ({
+      suggestions: []
+    }))
+  }
+
   renderSuggestions(id) {
     try {
       const { suggestions } = this.state;
@@ -102,6 +111,7 @@ class MyAutosuggest extends React.Component {
             className={this.props.sendClass}
             onKeyDown={this.onKeyDown}
             onChange={this.onTextChange}
+            onBlur={() => this.hideBoxes()}
           />
           {this.renderSuggestions(id)}
         </div>
