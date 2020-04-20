@@ -34,6 +34,7 @@ class frontPage extends Component {
       kukatError: false,
       settingsOpen: false,
       reRender: false,
+      redirectRullakko: false,
     }
     this.handleFile = this.handleFile.bind(this);
     this.handleFile2 = this.handleFile2.bind(this);
@@ -242,10 +243,14 @@ class frontPage extends Component {
   }
 
   render() {
-    let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect } = this.state;
+    let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect, redirectRullakko } = this.state;
 
     if (redirect) {
       return (<Redirect to={'/main/tables'} />)
+    }
+
+    if(redirectRullakko) {
+      return (<Redirect to={'/main/tables/rullakot'} />)
     }
 
     return (
@@ -255,14 +260,14 @@ class frontPage extends Component {
             <Button name="settings" className="frontPageSettings" onClick={() => this.setState({ settingsOpen: true })}></Button>
             <div className="frontMainBtn">
 
-              <Button name="kerattavat" className="redirect"
+              {sessionStorage.getItem("userRole") !== "Kuski" ? <Button name="kerattavat" className="redirect"
                 onClick={() =>
                   this.setState({ redirect: true }) +
                   sessionStorage.setItem("userValmis", "Ei") +
                   sessionStorage.setItem("siteName", "Kerättävät") +
                   sessionStorage.setItem("btnName", "Kerättävät")}>
                 {language[localStorage.getItem('language')].collect}
-              </Button>
+              </Button> : undefined}
 
               {sessionStorage.getItem("userRole") === "Admin" ?
                 <Button name="valmiit" className="redirect2"
@@ -272,6 +277,18 @@ class frontPage extends Component {
                     sessionStorage.setItem("siteName", "Valmiit") +
                     sessionStorage.setItem("btnName", "Valmiit")}>
                   {language[localStorage.getItem('language')].ready}
+                </Button>
+                : undefined}
+
+              {sessionStorage.getItem("userRole") !== "User" ?
+                <Button 
+                name="rullakot" 
+                className="redirect4"
+                onClick={() => this.setState({
+                  redirectRullakko: true
+                })}
+                >
+                  Rullakot ja hyllyt
                 </Button>
                 : undefined}
 
@@ -327,7 +344,7 @@ class frontPage extends Component {
                   <CardText>Salasana</CardText>
                   <Input name="passWord" type="password" placeholder="Salasana" onChange={this.handleChange}></Input>
                   <CardText>Rooli</CardText>
-                  <Input name="Roles" type="select" placeholder="Rooli" onChange={this.handleChange}><option>User</option><option>Admin</option></Input>
+                  <Input name="Roles" type="select" placeholder="Rooli" onChange={this.handleChange}><option>User</option><option>Admin</option><option>Kuski</option></Input>
                   <CardText></CardText>
                   <Button onClick={() => this.addProfile()}>Luo käyttäjä</Button>
                 </div>
