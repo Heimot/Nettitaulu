@@ -269,7 +269,7 @@ export default class TopNav extends React.Component {
         .then(json => {
           console.log(json);
 
-          idSafe = json.createdOrder.id_
+          idSafe = json.createdOrder._id
 
         })
         .catch((error) => {
@@ -435,7 +435,7 @@ export default class TopNav extends React.Component {
 
   async addNewFlowers(_id, products) {
     try {
-      if (!this.state.alreadyLoaded) {
+      if (this.state.alreadyLoaded) {
         this.state.idArray.push(
           products.map(product => {
             return product._id
@@ -455,11 +455,8 @@ export default class TopNav extends React.Component {
         })
           .then(response => response.json())
           .then(json => {
-            console.log(json);
-
             let jsonID = json.createdProduct._id;
             this.state.idArray.push(jsonID)
-            console.log(this.state.idArray);
 
             this.setState({
               idArray: this.state.idArray.toString().split(",")
@@ -471,7 +468,7 @@ export default class TopNav extends React.Component {
         i++;
       }
       this.setState({
-        alreadyLoaded: true,
+        alreadyLoaded: false,
         addFlowersValue: 1,
       })
       this.addToNewIDS(_id);
@@ -479,10 +476,11 @@ export default class TopNav extends React.Component {
       console.log(error);
     };
   }
-  addToNewIDS(_id) {
+
+  async addToNewIDS(_id) {
     try {
       var filteredProducts = this.state.idArray.filter(Boolean);
-      fetch(FETCH_URL + 'orders/put/id/' + _id, {
+      await fetch(FETCH_URL + 'orders/put/id/' + _id, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -714,7 +712,7 @@ export default class TopNav extends React.Component {
                   </Card>
                 </Dialog>
 
-                <Button name="lisaa_taulukko" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} className='addBtn' color='primary' type='button' onClick={(e) => this.runAdders()}></Button>
+                <Button name="lisaa_taulukko" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} className='addBtn' color='primary' type='button' onClick={() => this.runAdders()}></Button>
                 <Button name="kirjaudu_ulos" className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>{language[localStorage.getItem('language')].logout}</Button>
                 <Button name="location" className='locationBtn' onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
 
