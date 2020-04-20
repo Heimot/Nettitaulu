@@ -42,6 +42,11 @@ export const getData = (searchData, chosen) => {
 }
 
 export const getTableId = (data) => {
+  let location = localStorage.getItem('userLocation');
+  if (location === 'Molemmat') {
+    location = "";
+  }
+
   var GETwAuth = {
     method: 'GET',
     headers: {
@@ -50,7 +55,7 @@ export const getTableId = (data) => {
     }
   }
 
-  return fetch(FETCH_URL + 'orders/get/id/' + data.id, GETwAuth)
+  return fetch(`${FETCH_URL}orders/get/id/${data.id}?paikka=${location}`, GETwAuth)
     .then(res => res.json())
     .catch((error) => {
       console.log(error);
@@ -388,8 +393,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
   }
 }
 
-export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id, date) => {
-
+export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id, keraysPVM, date) => {
 
   if (asiakas.length < 1) {
     asiakas = kauppa;
@@ -403,6 +407,10 @@ export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kau
     toimitusaika = toimituspvm;
   }
 
+  if(keraysPVM.length < 1) {
+    keraysPVM = date;
+  }
+
   fetch(FETCH_URL + 'orders/put/id/' + _id, {
     method: 'PUT',
     headers: {
@@ -412,7 +420,7 @@ export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kau
     body: JSON.stringify({
       kauppa: asiakas,
       alisatieto: asiakaslisatieto,
-      date: sessionStorage.getItem("userDate"),
+      date: keraysPVM,
       toimituspvm: toimitusaika,
     }),
   })
@@ -535,7 +543,7 @@ export const patchTarkastettuProductsData = (product, valmius) => {
     });
 }
 
-export const postRullakko = (kauppa) => {
+export const postRullakko = (kauppa, rVuosi) => {
   return fetch(FETCH_URL + 'rullakot/post', {
     method: 'POST',
     headers: {
@@ -543,7 +551,8 @@ export const postRullakko = (kauppa) => {
       'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
     },
     body: JSON.stringify({
-      kaupanNimi: kauppa
+      kaupanNimi: kauppa,
+      vuosi: rVuosi
     }),
   })
     .then(res => res.json())
@@ -603,7 +612,7 @@ export const updateRullakkoData = (rullakko, kauppa, rNimi, rMaara) => {
     body: JSON.stringify({
       rullakonNimi: rNimi,
       rullakoidenMaara: rMaara,
-      kaupanNimi: kauppa
+      kaupanNimi: kauppa,
     }),
   })
     .then(response => response.json())
@@ -615,8 +624,8 @@ export const updateRullakkoData = (rullakko, kauppa, rNimi, rMaara) => {
     });
 }
 
-export const getRullakotData = () => {
-  return fetch(FETCH_URL + 'rullakot/get', {
+export const getRullakotData = (year) => {
+  return fetch(FETCH_URL + 'rullakot/get?year=' + year, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -629,7 +638,7 @@ export const getRullakotData = () => {
     });
 }
 
-export const postHylly = (kauppa) => {
+export const postHylly = (kauppa, rVuosi) => {
   return fetch(FETCH_URL + 'hyllyt/post', {
     method: 'POST',
     headers: {
@@ -637,7 +646,8 @@ export const postHylly = (kauppa) => {
       'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
     },
     body: JSON.stringify({
-      kaupanNimi: kauppa
+      kaupanNimi: kauppa,
+      vuosi: rVuosi
     }),
   })
     .then(res => res.json())
@@ -682,7 +692,7 @@ export const deleteHyllyFromOrders = (hylly) => {
 }
 
 export const updateHyllyData = (hylly, kauppa, rHylly, rHyllyjenMaara) => {
-  if(rHylly.length <= 0) {
+  if (rHylly.length <= 0) {
     rHylly = hylly.hyllynNimi
   }
   if (rHyllyjenMaara.length <= 0) {
@@ -697,7 +707,7 @@ export const updateHyllyData = (hylly, kauppa, rHylly, rHyllyjenMaara) => {
     body: JSON.stringify({
       hyllynNimi: rHylly,
       hyllyjenMaara: rHyllyjenMaara,
-      kaupanNimi: kauppa
+      kaupanNimi: kauppa,
     }),
   })
     .then(response => response.json())
@@ -709,8 +719,8 @@ export const updateHyllyData = (hylly, kauppa, rHylly, rHyllyjenMaara) => {
     });
 }
 
-export const getHyllytData = () => {
-  return fetch(FETCH_URL + 'hyllyt/get', {
+export const getHyllytData = (year) => {
+  return fetch(FETCH_URL + 'hyllyt/get?year=' + year, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -723,8 +733,8 @@ export const getHyllytData = () => {
     });
 }
 
-export const getPalautetut = () => {
-  return fetch(FETCH_URL + 'palautetut/get', {
+export const getPalautetut = (year) => {
+  return fetch(FETCH_URL + 'palautetut/get?year=' + year, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
