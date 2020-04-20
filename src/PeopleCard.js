@@ -366,10 +366,10 @@ class PeopleCard extends Component {
 
         await updateFlowersEdit(products, id, kukka, toimi, kerays, lisatieto);
       }
+      this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)
       socket.emit('chat', {
         message: true
       });
-      this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)
     } catch (error) {
       console.log(error);
     };
@@ -545,10 +545,11 @@ class PeopleCard extends Component {
   async addRullakko(kauppa, _id, rullakot) {
     try {
       let getRIDS = [];
+      let rVuosi = format(new Date(), "yyyy");
       getRIDS = rullakot.map(rullakko => {
         return rullakko._id;
       });
-      let rullakkoID = await postRullakko(kauppa);
+      let rullakkoID = await postRullakko(kauppa, rVuosi);
       let newID = rullakkoID.createdRullakko.id;
       let rullakkoIDS = getRIDS.concat(newID);
       await putRullakkoToOrders(_id, rullakkoIDS);
@@ -567,10 +568,11 @@ class PeopleCard extends Component {
   async addHylly(kauppa, _id, hyllyt) {
     try {
       let getRIDS = [];
+      let rVuosi = format(new Date(), "yyyy");
       getRIDS = hyllyt.map(hylly => {
         return hylly._id;
       });
-      let hyllyID = await postHylly(kauppa);
+      let hyllyID = await postHylly(kauppa, rVuosi);
       let newID = hyllyID.createdHylly._id;
       let hyllyIDS = getRIDS.concat(newID);
       await putHyllyToOrders(_id, hyllyIDS);
