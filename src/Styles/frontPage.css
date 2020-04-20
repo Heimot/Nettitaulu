@@ -55,19 +55,19 @@
         z-index: 100;
     }
     .redirect {
-        font-size: 50px !important;
+        font-size: 45px !important;
         font-family: 'Exo', sans-serif;
         font-weight: bold !important;
         color: #333 !important;
         border: none !important;
         background-color: transparent !important;
     }
-    .redirect:hover, .redirect2:hover, .redirect3:hover {
-        font-size: 55px !important;
+    .redirect:hover, .redirect2:hover, .redirect3:hover, .redirect4:hover {
+        font-size: 47px !important;
         text-shadow: 4px 4px 4px #333;
     }
     .redirect2 {
-        font-size: 40px !important;
+        font-size: 45px !important;
         font-family: 'Exo', sans-serif;
         font-weight: bold !important;
         color: #333 !important;
@@ -75,7 +75,15 @@
         background-color: transparent !important;
     }
     .redirect3 {
-        font-size: 40px !important;
+        font-size: 45px !important;
+        font-family: 'Exo', sans-serif;
+        font-weight: bold !important;
+        color: #333 !important;
+        border: none !important;
+        background-color: transparent !important;
+    }
+    .redirect4 {
+        font-size: 45px !important;
         font-family: 'Exo', sans-serif;
         font-weight: bold !important;
         color: #333 !important;
@@ -222,19 +230,19 @@
         visibility: hidden;
     }
     .redirect {
-        font-size: 50px !important;
+        font-size: 45px !important;
         font-family: 'Exo', sans-serif;
         font-weight: bold !important;
         color: #333 !important;
         border: none !important;
         background-color: transparent !important;
     }
-    .redirect:hover, .redirect2:hover, .redirect3:hover {
-        font-size: 55px !important;
+    .redirect:hover, .redirect2:hover, .redirect3:hover, .redirect4:hover {
+        font-size: 47px !important;
         text-shadow: 4px 4px 4px #333;
     }
     .redirect2 {
-        font-size: 40px !important;
+        font-size: 45px !important;
         font-family: 'Exo', sans-serif;
         font-weight: bold !important;
         color: #333 !important;
@@ -242,7 +250,15 @@
         background-color: transparent !important;
     }
     .redirect3 {
-        font-size: 40px !important;
+        font-size: 45px !important;
+        font-family: 'Exo', sans-serif;
+        font-weight: bold !important;
+        color: #333 !important;
+        border: none !important;
+        background-color: transparent !important;
+    }
+    .redirect4 {
+        font-size: 45px !important;
         font-family: 'Exo', sans-serif;
         font-weight: bold !important;
         color: #333 !important;
