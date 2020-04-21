@@ -46,6 +46,9 @@
     .ValmisRow {
         background-color: green;
     }
+    .ArkistoRow {
+        background-color: #F0AD4E;
+    }
     .vieExcel {
         width: 100% !important;
         font-weight: bold !important;
@@ -285,6 +288,9 @@
     .ValmisRow {
         background-color: green;
     }
+    .ArkistoRow {
+        background-color: #F0AD4E;
+    }
     .Tables {
         width: 99%;
         position: relative;
@@ -519,6 +525,9 @@
     .ValmisRow {
         background-color: green;
     }
+    .ArkistoRow {
+        background-color: #F0AD4E;
+    }
     .vieExcel {
         width: 99% !important;
         position: relative !important;
@@ -735,6 +744,9 @@
     }
     .ValmisRow {
         background-color: green;
+    }
+    .ArkistoRow {
+        background-color: #F0AD4E;
     }
     .vieExcel {
         width: 99% !important;

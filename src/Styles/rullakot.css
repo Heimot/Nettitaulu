@@ -57,7 +57,6 @@
     position: relative;
     display: flex;
     list-style-type: none;
-    height: 50px;
     font-size: 20px;
     font-family: Arial, Helvetica, sans-serif;
     border: solid 1px black;
