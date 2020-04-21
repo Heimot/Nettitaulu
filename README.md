@@ -17,7 +17,28 @@ NPM RUN BUILD creates a build version of the application.
 # Rullakkojen seurantaan vuodet
  # Tila: TEHTY 20/4/2020
 
+# Lisää try catchit rullakoille
+ # Tila: TEHTY 21/4/2020
 
+# Lisää arkistointiin tarkistus väri
+ # Tila: TEHTY 21/4/2020
+
+# Poista timer automaatti log outista
+ # Tila: KORJASIN AUTOMAATTI LOG OUTIN 21/4/2020
+
+# Lisää päivän kokonais määrä kerätty ja ym.
+ # Tila: Ei tehty
+
+# Lisää kalenteri jossa näkyy päivän kerättävät kaupat ja Api endpoint sille.
+ # Tila: Ei tehty
+
+# Lisää Rullakoille ja hyllyille historia milloin lisätty ja onko lisätty?
+ # Tila: Aloitettu 21/4/2020
+
+# Lisää myös toggler joka suurentaa ja pienentää tiedot
+ # Tila: Ei tehty
+
+ 
 
 # BUG FIXES
 
@@ -26,6 +47,9 @@ NPM RUN BUILD creates a build version of the application.
 
 # Ei voi päivittää päivämäärää
  # Tila: KORJATTU 20/4/2020
+
+# Ei voi painaa automaatti täyttö laatikkoja
+ # Tila: KORJATTU 21/4/2020
 
 
 
