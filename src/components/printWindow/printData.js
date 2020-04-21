@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import { Button, Input } from 'reactstrap';
+import { Redirect } from 'react-router-dom';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 import * as jsPDF from 'jspdf';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
@@ -89,6 +90,10 @@ class Printer extends Component {
 
     render() {
         let { newData } = this.props;
+
+        if (sessionStorage.getItem("userData") === null) {
+            return <Redirect to="/" />
+        }
 
         if (newData) {
             docArr = newData

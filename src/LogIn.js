@@ -74,6 +74,7 @@ class TableArea extends Component {
       }).join(''));
 
       sessionStorage.setItem('userRole', JSON.parse(jsonPayload).roles);
+      sessionStorage.setItem('expTime', JSON.parse(jsonPayload).exp);
     } catch (error) {
       console.log(error);
     };

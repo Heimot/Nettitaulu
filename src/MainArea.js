@@ -92,7 +92,7 @@ class MainArea extends Component {
       let { people } = this.state;
 
       let dataTable = [await getTableId(data)];
-    
+
       var updtData = people.map(obj => dataTable.find(o => o._id === obj._id) || obj);
       console.log(dataTable)
       this.setState({
@@ -196,9 +196,9 @@ class MainArea extends Component {
       printArr: []
     });
   }
-  
+
   cleanUp(delPrint2) {
-    if(delPrint2) {
+    if (delPrint2) {
       delPrint = true;
     } else {
       delPrint = false;
@@ -264,7 +264,7 @@ class MainArea extends Component {
                   </div>
                 </Dialogs>
                 <Button className="printBtn1" onClick={() => this.printDataNav()}>{this.state.printArr.length > 0 ? <h1 className="printLength">{this.state.printArr.length}</h1> : undefined}</Button>
-                <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen} handleSearch={this.handleSearch} printDataArr={this.printDataArray} delPrint={delPrint} cleanUp={this.cleanUp}/>
+                <PeopleCard getTables={this.getTables} removePerson={this.removePerson} person={person} items={DataF} items2={DataK} search={searchData} chosenData={chosen} handleSearch={this.handleSearch} printDataArr={this.printDataArray} delPrint={delPrint} cleanUp={this.cleanUp} />
 
                 <Nav getTables={this.getTables} handleSearch={this.handleSearch} printData={this.printDataNav} items={DataF} items2={DataK} />
               </Row>

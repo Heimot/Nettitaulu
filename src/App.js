@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import TopNav from './Nav';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import MainArea from './MainArea';
 import LogIn from './LogIn';
 import LoginNav from './LoginNav';
 import frontPage from './components/Etusivu/frontPage';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import Rullakot from './components/rullakot/rullakot';
+
+setInterval(function () {
+  if (sessionStorage.getItem('expTime') < Date.now() / 1000 && window.location.pathname !== '/') {
+    sessionStorage.removeItem('userData')
+  }
+}, 1000)
 
 class App extends Component {
   render() {
@@ -22,7 +28,7 @@ class App extends Component {
             <Route path="/main/tables/rullakot" component={Rullakot} />
           </div>
         </Router>
-      </ErrorBoundary>
+      </ErrorBoundary >
     );
   }
 }

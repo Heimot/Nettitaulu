@@ -245,6 +245,10 @@ class frontPage extends Component {
   render() {
     let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect, redirectRullakko } = this.state;
 
+    if (sessionStorage.getItem("userData") === null) {
+      return <Redirect to="/" />
+    }
+
     if (redirect) {
       return (<Redirect to={'/main/tables'} />)
     }
