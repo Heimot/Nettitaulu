@@ -78,10 +78,13 @@ class MyAutosuggest extends React.Component {
   }
 
   hideBoxes() {
-    suggestions = [];
-    this.setState(() => ({
-      suggestions: []
-    }))
+    setTimeout(() => {
+      suggestions = [];
+      this.setState(() => ({
+        suggestions: []
+      }))
+    }, 300)
+
   }
 
   renderSuggestions(id) {
@@ -103,7 +106,7 @@ class MyAutosuggest extends React.Component {
     let { id, placeholder } = this.props;
     return (
       <ErrorBoundary>
-        <div className={this.props.getDivClass}>
+        <div className={this.props.getDivClass} onBlur={() => this.hideBoxes()}> 
           <Input type="text"
             name="kukka"
             id={`${id}`}
@@ -111,7 +114,6 @@ class MyAutosuggest extends React.Component {
             className={this.props.sendClass}
             onKeyDown={this.onKeyDown}
             onChange={this.onTextChange}
-            onBlur={() => this.hideBoxes()}
           />
           {this.renderSuggestions(id)}
         </div>
