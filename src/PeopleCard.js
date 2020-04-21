@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import { Card, CardText, CardTitle, Button, Input } from 'reactstrap';
 import Dialog from './components/dialog/editDialog';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
+import { Redirect } from 'react-router-dom';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
@@ -484,6 +485,10 @@ class PeopleCard extends Component {
         break;
 
       case "Kyllä":
+        valmius = "Arkisto"
+        break;
+
+      case "Arkisto":
         valmius = "Ei";
         break;
 
@@ -686,6 +691,10 @@ class PeopleCard extends Component {
   render() {
     let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm, rullakot, hyllyt } = this.props.person;
 
+    if (sessionStorage.getItem("userData") === null) {
+      return <Redirect to="/" />
+    }
+
     // Counter for displaying procentages.
     let array = [];
     let result = {};
@@ -812,7 +821,7 @@ class PeopleCard extends Component {
                 {products.map(product => {
                   return (
                     <Tbody key={product._id}>
-                      <Tr className={product.tarkastettu === "Ei" ? undefined : "ValmisRow"} onDoubleClick={sessionStorage.getItem('btnName') === "Valmiit" ? () => this.patchTarkastettu(product) : undefined}>
+                      <Tr className={product.tarkastettu === "Ei" ? undefined : product.tarkastettu === "Arkisto" ? "ArkistoRow" : "ValmisRow"} onDoubleClick={sessionStorage.getItem('btnName') === "Valmiit" ? () => this.patchTarkastettu(product) : undefined}>
                         <Td className="KukkaTable">{product.kukka}</Td>
                         <Td>{product.toimi}</Td>
                         <Td>{product.kerays}</Td>
@@ -843,7 +852,7 @@ class PeopleCard extends Component {
                 <Button
                   name="valmisBtn"
                   className="valmisBtn"
-                  disabled={sessionStorage.getItem('userRole') === "Admin" ? sessionStorage.getItem('siteName') === "Valmiit" ? products.length === counts2.Kyllä ? false : true : false : true}
+                  disabled={sessionStorage.getItem('userRole') === "Admin" ? sessionStorage.getItem('siteName') === "Valmiit" ? products.length === counts2.Arkisto ? false : true : false : true}
                   color="success"
                   onClick={() => this.valmis()}>
                   {sessionStorage.getItem("siteName") === "Valmiit" ? language[localStorage.getItem('language')].arkistoi : language[localStorage.getItem('language')].valmis}
