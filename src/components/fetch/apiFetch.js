@@ -55,7 +55,7 @@ export const getTableId = (data) => {
     }
   }
 
-  return fetch(`${FETCH_URL}orders/get/id/${data.id}?paikka=${location}`, GETwAuth)
+  return fetch(`${FETCH_URL}orders/get/id/${data.id}?paikka=${location}&valmis=${sessionStorage.getItem('userValmis')}`, GETwAuth)
     .then(res => res.json())
     .catch((error) => {
       console.log(error);
@@ -552,7 +552,8 @@ export const postRullakko = (kauppa, rVuosi) => {
     },
     body: JSON.stringify({
       kaupanNimi: kauppa,
-      vuosi: rVuosi
+      vuosi: rVuosi,
+      history: format(new Date(), "dd/MM/yyyy")
     }),
   })
     .then(res => res.json())
@@ -647,7 +648,8 @@ export const postHylly = (kauppa, rVuosi) => {
     },
     body: JSON.stringify({
       kaupanNimi: kauppa,
-      vuosi: rVuosi
+      vuosi: rVuosi,
+      history: format(new Date(), "dd/MM/yyyy")
     }),
   })
     .then(res => res.json())
