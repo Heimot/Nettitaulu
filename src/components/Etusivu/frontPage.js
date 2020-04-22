@@ -253,7 +253,7 @@ class frontPage extends Component {
       return (<Redirect to={'/main/tables'} />)
     }
 
-    if(redirectRullakko) {
+    if (redirectRullakko) {
       return (<Redirect to={'/main/tables/rullakot'} />)
     }
 
@@ -261,42 +261,49 @@ class frontPage extends Component {
       <ErrorBoundary>
         <div className="frontPage">
           <div className="frontPageMenu">
+
             <Button name="settings" className="frontPageSettings" onClick={() => this.setState({ settingsOpen: true })}></Button>
             <div className="frontMainBtn">
-
-              {sessionStorage.getItem("userRole") !== "Kuski" ? <Button name="kerattavat" className="redirect"
-                onClick={() =>
-                  this.setState({ redirect: true }) +
-                  sessionStorage.setItem("userValmis", "Ei") +
-                  sessionStorage.setItem("siteName", "Kerättävät") +
-                  sessionStorage.setItem("btnName", "Kerättävät")}>
-                {language[localStorage.getItem('language')].collect}
-              </Button> : undefined}
-
-              {sessionStorage.getItem("userRole") === "Admin" ?
-                <Button name="valmiit" className="redirect2"
-                  onClick={() =>
-                    this.setState({ redirect: true }) +
-                    sessionStorage.setItem("userValmis", "Kerätty") +
-                    sessionStorage.setItem("siteName", "Valmiit") +
-                    sessionStorage.setItem("btnName", "Valmiit")}>
-                  {language[localStorage.getItem('language')].ready}
+              <ol className="noList">
+                <li>
+                  {sessionStorage.getItem("userRole") !== "Kuski" ? <Button name="kerattavat" className="redirect"
+                    onClick={() =>
+                      this.setState({ redirect: true }) +
+                      sessionStorage.setItem("userValmis", "Ei") +
+                      sessionStorage.setItem("siteName", "Kerättävät") +
+                      sessionStorage.setItem("btnName", "Kerättävät")}>
+                    {language[localStorage.getItem('language')].collect}
+                  </Button> : undefined}
+                </li>
+                <li>
+                  {sessionStorage.getItem("userRole") === "Admin" ?
+                    <Button name="valmiit" className="redirect2"
+                      onClick={() =>
+                        this.setState({ redirect: true }) +
+                        sessionStorage.setItem("userValmis", "Kerätty") +
+                        sessionStorage.setItem("siteName", "Valmiit") +
+                        sessionStorage.setItem("btnName", "Valmiit")}>
+                      {language[localStorage.getItem('language')].ready}
+                    </Button>
+                    : undefined}
+                </li>
+                <li>
+                  {sessionStorage.getItem("userRole") !== "User" ?
+                    <Button
+                      name="rullakot"
+                      className="redirect4"
+                      onClick={() => this.setState({
+                        redirectRullakko: true
+                      })}
+                    >
+                      Rullakot ja hyllyt
                 </Button>
-                : undefined}
-
-              {sessionStorage.getItem("userRole") !== "User" ?
-                <Button 
-                name="rullakot" 
-                className="redirect4"
-                onClick={() => this.setState({
-                  redirectRullakko: true
-                })}
-                >
-                  Rullakot ja hyllyt
-                </Button>
-                : undefined}
-
-              {sessionStorage.getItem("userRole") === "Admin" ? <Button name="adminpanel" className="redirect3" onClick={() => this.adminRoles()}>Admin</Button> : undefined}
+                    : undefined}
+                </li>
+                <li>
+                  {sessionStorage.getItem("userRole") === "Admin" ? <Button name="adminpanel" className="redirect3" onClick={() => this.adminRoles()}>Admin</Button> : undefined}
+                </li>
+              </ol>
             </div>
             <div className="pictureDot"></div>
           </div>
