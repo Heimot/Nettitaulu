@@ -45,7 +45,7 @@ const language = [
         'ready8': 'Kerätty: ',
         'ready9': 'Ei ole: ',
         // Edit table
-        'keräyspvm': 'Keräyspäivämäärä',
+        'kerayspvm': 'Keräyspäivämäärä',
         'toimituspvm': 'Toimituspäivämäärä',
         'addflower': 'Lisää kukka',
         'paivita': 'Päivitä taulukon tiedot',
