@@ -1,4 +1,7 @@
 @media screen and (min-width: 1130px) {
+    .noList {
+        list-style-type: none;
+    }
     .frontPage {
         position: absolute;
         display: block;
@@ -94,7 +97,7 @@
         position: absolute;
         display: inline-block;
         transform: translate(-50%);
-        left: 50%;
+        left: 47.5%;
         top: 400px;
         text-align: center;
     }
@@ -176,6 +179,9 @@
 }
 
 @media screen and (max-width: 1120px) {
+    .noList {
+        list-style-type: none;
+    }
     .frontPage {
         position: absolute;
         display: block;
@@ -273,7 +279,7 @@
         position: absolute;
         display: inline-block;
         transform: translate(-50%);
-        left: 50%;
+        left: 47.5%;
         top: 400px;
         text-align: center;
     }

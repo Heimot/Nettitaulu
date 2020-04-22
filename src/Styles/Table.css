@@ -89,11 +89,6 @@
         font-family: Arial, Helvetica, sans-serif !important;
         color: white !important;
     }
-    .Lisatieto {
-        width: auto;
-        max-width: 200px;
-        font-size: 15px;
-    }
     .label {
         display: inline-block !important;
         width: 147px !important;
@@ -183,7 +178,9 @@
     }
     .lisatieto {
         position: absolute;
-        width: 250px;
+        max-width: 250px !important;
+        height: 200px !important;
+        word-break: break-all !important;
         right: 10px;
         display: inline-block;
         text-align: right;
@@ -271,18 +268,48 @@
 }
 
 @media screen and (max-width: 1120px) {
+    .rullakkoNimi {
+        position: relative;
+        vertical-align: middle;
+        margin: 0px 0px 5px 0;
+        bottom: 17px !important;
+        background-color: #fff;
+        border: 1px solid #ddd;
+    }
+    .rullakkoHolder {
+        padding: 10px 20px;
+        background-color: dodgerblue;
+        border: 1px solid #ddd;
+        color: white;
+    }
+    .addRullakko {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        left: 50%;
+        transform: translate(-50%);
+        border-radius: 50% !important;
+        font-size: 30px !important;
+        text-align: center;
+    }
     .bottomRulla {
         padding-bottom: 20px;
     }
     .rullakkoKortti {
         width: auto;
-        height: 75px;
+        height: auto;
         padding: 10px;
     }
     .rullakot {
         position: absolute;
         width: 100px;
         right: 10px;
+        top: 225px;
+    }
+    .hyllyt {
+        position: absolute;
+        width: 100px;
+        right: 115px;
         top: 225px;
     }
     .ValmisRow {
@@ -348,11 +375,6 @@
         font-family: Arial, Helvetica, sans-serif !important;
         color: white !important;
     }
-    .Lisatieto {
-        width: auto;
-        max-width: 200px;
-        font-size: 15px;
-    }
     .label {
         display: inline-block !important;
         width: 147px !important;
@@ -414,7 +436,9 @@
     }
     .lisatieto {
         position: absolute;
-        width: 250px;
+        max-width: 250px !important;
+        height: 200px !important;
+        word-break: break-all !important;
         right: 10px;
         display: inline-block;
         text-align: right;
@@ -508,18 +532,48 @@
 }
 
 @media screen and (max-width: 910px) {
+    .rullakkoNimi {
+        position: relative;
+        vertical-align: middle;
+        margin: 0px 0px 5px 0;
+        bottom: 17px !important;
+        background-color: #fff;
+        border: 1px solid #ddd;
+    }
+    .rullakkoHolder {
+        padding: 10px 20px;
+        background-color: dodgerblue;
+        border: 1px solid #ddd;
+        color: white;
+    }
+    .addRullakko {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        left: 50%;
+        transform: translate(-50%);
+        border-radius: 50% !important;
+        font-size: 30px !important;
+        text-align: center;
+    }
     .bottomRulla {
         padding-bottom: 20px;
     }
     .rullakkoKortti {
         width: auto;
-        height: 75px;
+        height: auto;
         padding: 10px;
     }
     .rullakot {
         position: absolute;
         width: 100px;
         right: 10px;
+        top: 225px;
+    }
+    .hyllyt {
+        position: absolute;
+        width: 100px;
+        right: 115px;
         top: 225px;
     }
     .ValmisRow {
@@ -567,11 +621,6 @@
         font-weight: bold !important;
         font-family: Arial, Helvetica, sans-serif !important;
         color: white !important;
-    }
-    .Lisatieto {
-        width: auto;
-        max-width: 200px;
-        font-size: 15px;
     }
     .label {
         display: inline-block !important;
@@ -634,8 +683,10 @@
     }
     .lisatieto {
         position: absolute;
-        width: 250px;
-        right: 10px;
+        max-width: 120px !important;
+        height: 100px !important;
+        word-break: break-all !important;
+        right: 40px;
         display: inline-block;
         text-align: right;
     }
@@ -679,7 +730,7 @@
         top: 10px;
         right: 10px;
         height: 80px !important;
-        width: 250px !important;
+        width: 175px !important;
         text-align: right;
         font-size: 20px;
     }
@@ -728,18 +779,48 @@
 }
 
 @media screen and (max-width: 375px) {
+    .rullakkoNimi {
+        position: relative;
+        vertical-align: middle;
+        margin: 0px 0px 5px 0;
+        bottom: 17px !important;
+        background-color: #fff;
+        border: 1px solid #ddd;
+    }
+    .rullakkoHolder {
+        padding: 10px 20px;
+        background-color: dodgerblue;
+        border: 1px solid #ddd;
+        color: white;
+    }
+    .addRullakko {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        left: 50%;
+        transform: translate(-50%);
+        border-radius: 50% !important;
+        font-size: 30px !important;
+        text-align: center;
+    }
     .bottomRulla {
         padding-bottom: 20px;
     }
     .rullakkoKortti {
         width: auto;
-        height: 75px;
+        height: auto;
         padding: 10px;
     }
     .rullakot {
         position: absolute;
         width: 100px;
         right: 10px;
+        top: 225px;
+    }
+    .hyllyt {
+        position: absolute;
+        width: 100px;
+        right: 115px;
         top: 225px;
     }
     .ValmisRow {
@@ -787,11 +868,6 @@
         font-weight: bold !important;
         font-family: Arial, Helvetica, sans-serif !important;
         color: white !important;
-    }
-    .Lisatieto {
-        width: auto;
-        max-width: 200px;
-        font-size: 15px;
     }
     .label {
         display: inline-block !important;
@@ -853,11 +929,13 @@
         text-align: center;
     }
     .lisatieto {
-        position: absolute !important;
-        width: 250px !important;
-        right: 10px !important;
-        display: inline-block !important;
-        text-align: right !important;
+        position: absolute;
+        max-width: 100px !important;
+        height: 100px !important;
+        word-break: break-all !important;
+        right: 40px;
+        display: inline-block;
+        text-align: right;
     }
     .KukkaTable {
         word-break: normal;
@@ -902,7 +980,7 @@
         top: 10px;
         right: 10px;
         height: 80px !important;
-        width: 200px !important;
+        width: 125px !important;
         text-align: right;
         font-size: 20px;
     }
