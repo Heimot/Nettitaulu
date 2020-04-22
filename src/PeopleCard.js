@@ -3,8 +3,8 @@ import DatePicker from "react-datepicker";
 import { Card, CardText, CardTitle, Button, Input } from 'reactstrap';
 import Dialog from './components/dialog/editDialog';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
-import { Redirect } from 'react-router-dom';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
+import { Redirect } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
 import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData, postRullakko, putRullakkoToOrders, deleteRullakkoFromOrders, updateRullakkoData, postHylly, putHyllyToOrders, deleteHyllyFromOrders, updateHyllyData } from './components/fetch/apiFetch';
@@ -165,7 +165,7 @@ class PeopleCard extends Component {
       let p = 0;
       let id;
 
-      if (products.length === counts2.Kyllä && sessionStorage.getItem('siteName') === "Valmiit") {
+      if (products.length === counts2.Arkisto && sessionStorage.getItem('siteName') === "Valmiit") {
         valmius = "Arkistoitu";
         valmius2 = "Arkistoitu";
         switch (localStorage.getItem("userLocation")) {
@@ -395,7 +395,7 @@ class PeopleCard extends Component {
     };
   }
 
-  deleteData(product, _id) {
+  async deleteData(product, _id) {
     try {
       document.getElementById(`kukka/${product._id}`).value = null;
       document.getElementById(`toimi/${product._id}`).value = null;
@@ -730,7 +730,7 @@ class PeopleCard extends Component {
         <div className="myDiv">
           <div className="NavBlock"></div>
           <div>
-            <Card className="Cards" id={`pdfPrint${_id}`}>
+            <Card className="Cards">
               <CardTitle>{language[localStorage.getItem('language')].ready5} {date}</CardTitle>
               {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardTitle>{language[localStorage.getItem('language')].ready6} {toimituspvm}</CardTitle> : sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardTitle>{language[localStorage.getItem('language')].ready6} {toimituspvm}</CardTitle> : undefined}
               <CardTitle>{kauppa}</CardTitle>
@@ -876,7 +876,7 @@ class PeopleCard extends Component {
                 <CardText className="warningBox">{language[localStorage.getItem('language')].ready6 + toimituspvm}</CardText>
                 <CardText className="warningBox">{language[localStorage.getItem('language')].delete2 + products.length}</CardText>
 
-                <Button name="delete_kylla" className="dialogBtn" color="success" onClick={() => this.props.removePerson(_id, products) + this.setState({ openWarning: false })}>{language[localStorage.getItem('language')].yes}</Button>
+                <Button name="delete_kylla" className="dialogBtn" color="success" onClick={() => this.props.removePerson(_id, products, rullakot, hyllyt) + this.setState({ openWarning: false })}>{language[localStorage.getItem('language')].yes}</Button>
                 <Button name="delete_ei" className="dialogBtn" color="danger" onClick={() => this.setState({ openWarning: false })}>{language[localStorage.getItem('language')].no}</Button>
 
               </Card>
