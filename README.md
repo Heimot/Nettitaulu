@@ -23,20 +23,20 @@ NPM RUN BUILD creates a build version of the application.
 # Lisää arkistointiin tarkistus väri
  # Tila: TEHTY 21/4/2020
 
-# Poista timer automaatti log outista
- # Tila: KORJASIN AUTOMAATTI LOG OUTIN 21/4/2020
-
-# Lisää päivän kokonais määrä kerätty ja ym.
+# Lisää päivän kokonais määrä kerätty prosentteina ja ym.
  # Tila: Ei tehty
 
 # Lisää kalenteri jossa näkyy päivän kerättävät kaupat ja Api endpoint sille.
  # Tila: Ei tehty
 
-# Lisää Rullakoille ja hyllyille historia milloin lisätty ja onko lisätty?
- # Tila: Aloitettu 21/4/2020
+# Lisää Rullakoille ja hyllyille historia milloin lisätty ja paljonko lisätty?
+ # Tila: TEHTY 22/4/2020
 
 # Lisää myös toggler joka suurentaa ja pienentää tiedot
- # Tila: Ei tehty
+ # Tila: TEHTY 22/4/2020
+
+# Kun poistaa tilauksen niin poista rullakot + hyllyt mitkä liittyy siihen
+ # Tila: TEHTY 22/4/2020
 
  
 
@@ -50,6 +50,15 @@ NPM RUN BUILD creates a build version of the application.
 
 # Ei voi painaa automaatti täyttö laatikkoja
  # Tila: KORJATTU 21/4/2020
+
+# Korjaa automaattinen logout
+ # Tila: KORJATTU 21/4/2020
+
+# Korjaa tyyli asetuksia
+ # Tila: KORJATTU 22/4/2020
+
+# Korjaa valmiiden tietojen näkyminen keräys osiossa jos päivittää valmista tilausta
+ # Tila: KORJATTU 22/4/2020
 
 
 
