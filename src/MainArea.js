@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 import Dialogs from './components/dialog/loaderDialog';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
-import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete, getTableId } from './components/fetch/apiFetch';
+import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete, getTableId, deleteRullakkoFromOrders, deleteHyllyFromOrders } from './components/fetch/apiFetch';
 import socketIOClient from "socket.io-client";
 import { SOCKET_URL } from './components/fetch/url';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
@@ -90,11 +90,8 @@ class MainArea extends Component {
   getTable = async (data) => {
     try {
       let { people } = this.state;
-
       let dataTable = [await getTableId(data)];
-
       var updtData = people.map(obj => dataTable.find(o => o._id === obj._id) || obj);
-      console.log(dataTable)
       this.setState({
         people: updtData
       })
@@ -126,19 +123,21 @@ class MainArea extends Component {
     };
   }
 
-  async removePerson(_id, products) {
+  async removePerson(_id, products, rullakot, hyllyt) {
     try {
       this.setState({
         dLoader: true,
       })
-      let ids = await products.map(product => {
-        return product._id
+      await products.map(product => {
+        let id = product._id
+        deleteFlowersData(id);
       });
-      let i = 0;
-      while (i < ids.length) {
-        let id = ids.shift();
-        await deleteFlowersData(id);
-      }
+      await rullakot.map(rullakko => {
+        deleteRullakkoFromOrders(rullakko);
+      });
+      await hyllyt.map(hylly => {
+        deleteHyllyFromOrders(hylly);
+      });
       await removeData(_id);
       this.setState({ dLoader: false })
       socket.emit('chat', {
