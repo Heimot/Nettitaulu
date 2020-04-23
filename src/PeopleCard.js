@@ -22,6 +22,7 @@ import logo from './pictures/Heimosen_Puutarha_logo.png';
 import "./Styles/Table.css";
 import "./Styles/progressBar.css";
 
+let keraysTest = [];
 let change = false;
 var arr = [];
 let delPrint2 = false;
@@ -663,10 +664,58 @@ class PeopleCard extends Component {
     };
   }
 
+  sum() {
+    try {
+    /*  let { products } = this.props.person;
+      console.log(products)
+      console.log(products)
+      let array = [];
+      let result = {};
+      let counts = {};
+      array.push(
+        products.map(doc => {
+          return doc.keratty;
+        })
+      )
+      Object.keys(result).map(key => ({ [key]: result[key] }))
+      for (let i = 0; i < array.length; i++) {
+        result[array[i]] = (result[array[i]] || 0) + 1
+      }
+      Object.keys(result).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
+     
+      keraysTest.push(counts.Odottaakeräystä)
+      console.log(keraysTest)
+      const sum = keraysTest.reduce((a,b) => a + b, 0)
+      console.log(sum)
+
+
+      /* let rMaara = rullakot;
+       let rullakotNames = rullakot;
+       for (x of rMaara) {
+         let nimi = rullakotNames[b];
+         let { rullakotData } = this.state;
+         b++;
+         if (b > rullakotNames.length) {
+           b = 0;
+         }
+         filtered = rullakotData.filter(doc2 => {
+           return doc2.kaupanNimi === doc
+         })
+         filteredForReal = filtered.filter(doc3 => {
+           return doc3.rullakonNimi === nimi
+         })
+         const sum = `${nimi}: ${filteredForReal.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)}`;
+         return sum;
+       }*/
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   componentDidMount() {
     try {
       this._isMounted = true;
-
+      this.sum()
       var result = this.state.startDate2;
       result.setDate(result.getDate() + 1);
       this.setState({
@@ -737,11 +786,11 @@ class PeopleCard extends Component {
               <CardText>{_id}</CardText>
               <CardText className="lisatieto">{alisatieto}</CardText>
               <CardText></CardText>
-              {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardText>{language[localStorage.getItem('language')].tarkastettuR}{ryona === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
-              {sessionStorage.getItem("userValmis") === "Kerätty" ? <CardText>{language[localStorage.getItem('language')].tarkastettuT}{tuusjarvi === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
+              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuR}{ryona === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
+              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuT}{tuusjarvi === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
 
-              {sessionStorage.getItem("userValmis") === "Kerätty" ? <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>Rullakot</Button> : undefined}
-              {sessionStorage.getItem("userValmis") === "Kerätty" ? <Button className="hyllyt" onClick={() => this.setState({ hyllyt: true })}>Hyllyt</Button> : undefined}
+              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>Rullakot</Button> : undefined}
+              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="hyllyt" onClick={() => this.setState({ hyllyt: true })}>Hyllyt</Button> : undefined}
 
               <Dialog className="DelWarn" isOpen2={this.state.rullakot} onClose={(e) => this.setState({ rullakot: false })}>
                 {rullakot.map(rullakko =>
