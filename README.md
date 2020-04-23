@@ -24,10 +24,10 @@ NPM RUN BUILD creates a build version of the application.
  # Tila: TEHTY 21/4/2020
 
 # Lisää päivän kokonais määrä kerätty prosentteina ja ym.
- # Tila: Ei tehty
+ # Tila: ALOITETTU 23/4/2020
 
 # Lisää kalenteri jossa näkyy päivän kerättävät kaupat ja Api endpoint sille.
- # Tila: Ei tehty
+ # Tila: TEHTY 23/4/2020
 
 # Lisää Rullakoille ja hyllyille historia milloin lisätty ja paljonko lisätty?
  # Tila: TEHTY 22/4/2020

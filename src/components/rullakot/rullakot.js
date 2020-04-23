@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Card, CardText, Button, Input } from 'reactstrap';
-import { Redirect } from "react-router-dom";
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
+import { Redirect } from "react-router-dom";
 import { getRullakotData, getHyllytData, getPalautetut } from '../fetch/apiFetch';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 import socketIOClient from "socket.io-client";

@@ -7,6 +7,8 @@ import LoginNav from './LoginNav';
 import frontPage from './components/Etusivu/frontPage';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import Rullakot from './components/rullakot/rullakot';
+import Calendar from './components/calendar/calendar';
+import CalendarNav from './components/calendar/calendarNav';
 
 setInterval(function () {
   if (sessionStorage.getItem('expTime') < Date.now() / 1000 && window.location.pathname !== '/') {
@@ -26,6 +28,8 @@ class App extends Component {
             <Route path="/main/tables" component={TopNav} />
             <Route path="/main/tables" exact component={MainArea} />
             <Route path="/main/tables/rullakot" component={Rullakot} />
+            <Route path='/main/calendar' component={CalendarNav} />
+            <Route path="/main/calendar" component={Calendar} />
           </div>
         </Router>
       </ErrorBoundary >
