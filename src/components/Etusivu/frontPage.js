@@ -35,6 +35,7 @@ class frontPage extends Component {
       settingsOpen: false,
       reRender: false,
       redirectRullakko: false,
+      redirectKalenteri: false,
     }
     this.handleFile = this.handleFile.bind(this);
     this.handleFile2 = this.handleFile2.bind(this);
@@ -243,10 +244,14 @@ class frontPage extends Component {
   }
 
   render() {
-    let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect, redirectRullakko } = this.state;
+    let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect, redirectRullakko, redirectKalenteri } = this.state;
 
     if (sessionStorage.getItem("userData") === null) {
       return <Redirect to="/" />
+    }
+
+    if(redirectKalenteri) {
+      return (<Redirect to={'/main/calendar'} />)
     }
 
     if (redirect) {
@@ -294,9 +299,20 @@ class frontPage extends Component {
                       className="redirect4"
                       onClick={() => this.setState({
                         redirectRullakko: true
-                      })}
-                    >
+                      })}>
                       Rullakot ja hyllyt
+                </Button>
+                    : undefined}
+                </li>
+                <li>
+                  {sessionStorage.getItem("userRole") !== "User" ?
+                    <Button
+                      name="rullakot"
+                      className="redirect4"
+                      onClick={() => this.setState({
+                        redirectKalenteri: true
+                      })}>
+                      Kalenteri
                 </Button>
                     : undefined}
                 </li>

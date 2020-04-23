@@ -1,0 +1,35 @@
+.calendarDiv {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.tableCalendar {
+    position: relative;
+    width: 70%;
+    top: 90px;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.kauppaLists {
+    list-style-type: none;
+    border: solid 1px black;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    text-align: center;
+    padding: 5px 5px 5px 5px;
+    height: auto;
+}
+
+.kerattavatKaupat {
+    position: relative;
+    top: 90px;
+    left: 50%;
+    text-align: center;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    transform: translate(-50%);
+}
