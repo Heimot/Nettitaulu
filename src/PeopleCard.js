@@ -22,7 +22,6 @@ import logo from './pictures/Heimosen_Puutarha_logo.png';
 import "./Styles/Table.css";
 import "./Styles/progressBar.css";
 
-let keraysTest = [];
 let change = false;
 var arr = [];
 let delPrint2 = false;
@@ -61,7 +60,6 @@ class PeopleCard extends Component {
       printData: [],
 
       response: false,
-      endpoint: 'http://localhost:3002',
 
       kauppa: '',
       customerInfo: '',
@@ -167,6 +165,7 @@ class PeopleCard extends Component {
       let id;
 
       if (products.length === counts2.Arkisto && sessionStorage.getItem('siteName') === "Valmiit") {
+        console.log(products.length === counts2.Arkisto)
         valmius = "Arkistoitu";
         valmius2 = "Arkistoitu";
         switch (localStorage.getItem("userLocation")) {
@@ -336,9 +335,9 @@ class PeopleCard extends Component {
     };
   }
 
-  patchData(product, kauppa, _id) {
+  patchData(product, kauppa, _id, date) {
     try {
-      this.printOut(product, kauppa);
+      this.printOut(product, kauppa, date);
       const idvalues = document.getElementById(`keratty/${product._id}`).value;
       var maara = document.getElementById(product._id).value;
       patchKeraysData(product, idvalues, maara);
@@ -455,7 +454,7 @@ class PeopleCard extends Component {
     };
   }
 
-  printOut(product, kauppa) {
+  printOut(product, kauppa, date) {
     if (this.props.delPrint) {
       arr = [];
       delPrint2 = false;
@@ -464,6 +463,7 @@ class PeopleCard extends Component {
     if (product.keratty === "Odottaa keräystä") {
       arr.push({
         kauppa: kauppa,
+        date: date,
         tuote: product.kukka,
         maara: product.toimi,
         lisatieto: product.lisatieto,
@@ -664,58 +664,9 @@ class PeopleCard extends Component {
     };
   }
 
-  sum() {
-    try {
-    /*  let { products } = this.props.person;
-      console.log(products)
-      console.log(products)
-      let array = [];
-      let result = {};
-      let counts = {};
-      array.push(
-        products.map(doc => {
-          return doc.keratty;
-        })
-      )
-      Object.keys(result).map(key => ({ [key]: result[key] }))
-      for (let i = 0; i < array.length; i++) {
-        result[array[i]] = (result[array[i]] || 0) + 1
-      }
-      Object.keys(result).map(str => str.replace(/\s/g, '')).toString().split(",").forEach(function (x) { counts[x] = (counts[x] || 0) + 1; });
-     
-      keraysTest.push(counts.Odottaakeräystä)
-      console.log(keraysTest)
-      const sum = keraysTest.reduce((a,b) => a + b, 0)
-      console.log(sum)
-
-
-      /* let rMaara = rullakot;
-       let rullakotNames = rullakot;
-       for (x of rMaara) {
-         let nimi = rullakotNames[b];
-         let { rullakotData } = this.state;
-         b++;
-         if (b > rullakotNames.length) {
-           b = 0;
-         }
-         filtered = rullakotData.filter(doc2 => {
-           return doc2.kaupanNimi === doc
-         })
-         filteredForReal = filtered.filter(doc3 => {
-           return doc3.rullakonNimi === nimi
-         })
-         const sum = `${nimi}: ${filteredForReal.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)}`;
-         return sum;
-       }*/
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   componentDidMount() {
     try {
       this._isMounted = true;
-      this.sum()
       var result = this.state.startDate2;
       result.setDate(result.getDate() + 1);
       this.setState({
@@ -786,8 +737,8 @@ class PeopleCard extends Component {
               <CardText>{_id}</CardText>
               <CardText className="lisatieto">{alisatieto}</CardText>
               <CardText></CardText>
-              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuR}{ryona === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
-              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuT}{tuusjarvi === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
+              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuR}{ryona === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : ryona === "Arkistoitu" ? "Arkistoitu" : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
+              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuT}{tuusjarvi === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : tuusjarvi === "Arkistoitu" ? "Arkistoitu" : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
 
               {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>Rullakot</Button> : undefined}
               {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="hyllyt" onClick={() => this.setState({ hyllyt: true })}>Hyllyt</Button> : undefined}
@@ -881,7 +832,7 @@ class PeopleCard extends Component {
                             id={`keratty/${product._id}`}
                             value={localStorage.getItem('language') === "1" ? product.keratty === "Odottaa keräystä" ? language[1].statusBar1 : product.keratty === "Keräyksessä" ? language[1].statusBar2 : product.keratty === "Kerätty" ? language[1].statusBar3 : product.keratty === "Ei ole" ? language[1].statusBar4 : product.keratty : product.keratty}
                             placeholder={product.keratty}
-                            onClick={() => this.patchData(product, kauppa, _id)}>
+                            onClick={() => this.patchData(product, kauppa, _id, date)}>
                           </Input>
                         </Td>
                         <Td>

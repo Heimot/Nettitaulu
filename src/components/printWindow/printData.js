@@ -50,6 +50,8 @@ class Printer extends Component {
                 doc.text(`Kauppa: ${data.kauppa.toString()}`, 5, 25)
                 doc.text(`Määrä: ${data.maara.toString()}`, 5, 30)
                 doc.text(`Lisätietoa: ${data.lisatieto.toString()}`, 5, 35)
+                doc.setFontSize(7)
+                doc.text(data.date.toString(), 15, 8)
                 if (size >= 1) {
                     doc.addPage()
                     size--;
@@ -91,6 +93,8 @@ class Printer extends Component {
     render() {
         let { newData } = this.props;
 
+        console.log(newData)
+
         if (sessionStorage.getItem("userData") === null) {
             return <Redirect to="/" />
         }
@@ -130,7 +134,7 @@ class Printer extends Component {
                         </Table>
                     </div>
                     <Button className="printingBtn" color="success" onClick={() => this.printOrder(newData) + this.emptyData()}>{language[localStorage.getItem('language')].tulosta}</Button>
-                    <Button className="printBtn2" onClick={() => this.props.printData(printTF) + console.log(printTF)}></Button>
+                    <Button className="printBtn2" onClick={() => this.props.printData(printTF)}></Button>
                 </div >
             </ErrorBoundary>
         )
