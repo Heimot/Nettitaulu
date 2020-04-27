@@ -29,6 +29,7 @@ const override = css`
 const endpoint = SOCKET_URL;
 const socket = socketIOClient(endpoint);
 
+let progressValue = false;
 let search = "";
 let idSafe = "";
 let userDatas = {
@@ -561,6 +562,23 @@ export default class TopNav extends React.Component {
     };
   }
 
+  showDayProgress() {
+    if(this.props.progressValue) {
+      progressValue = false;
+      this.props.showProgress(progressValue);
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
+    } else {
+      progressValue = true;
+      this.props.showProgress(progressValue);
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
+    }
+
+  }
+
   render() {
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
@@ -607,8 +625,7 @@ export default class TopNav extends React.Component {
                   dateFormat="d/MM/yyyy"
                   withPortal
                 />
-
-
+                <Button className="progressBarsButton" onClick={() => this.showDayProgress()}>Progress bars</Button>
                 <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false, isOpen: false })}>
                   <Card className="AddCard">
 
