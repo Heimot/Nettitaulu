@@ -305,7 +305,7 @@ class frontPage extends Component {
                     : undefined}
                 </li>
                 <li>
-                  {sessionStorage.getItem("userRole") !== "User" ?
+                  {sessionStorage.getItem("userRole") === "Admin" ?
                     <Button
                       name="rullakot"
                       className="redirect4"

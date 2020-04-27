@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Navbar, NavbarBrand } from 'reactstrap';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 import { Redirect } from 'react-router-dom';
