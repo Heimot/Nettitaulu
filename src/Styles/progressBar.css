@@ -5,8 +5,8 @@
     margin: 15px 0 !important;
     height: 25px !important;
     width: 150px !important;
-
 }
+
 .progress-done {
     background: linear-gradient(to right, #007991, #78ffd6);
     box-shadow: 0 3px 3px -5px #78ffd6, 0 2px 5px #78ffd6;
@@ -20,6 +20,7 @@
     transition: 1s ease 0.3s;
     text-overflow: clip;
 }
+
 .loaders {
     margin-top: 10px;
     margin-left: 25px;
@@ -31,6 +32,18 @@
     padding: 5px;
 }
 
+.loaders2 {
+    position: fixed;
+    width: 300px;
+    height: 30%;
+    transform: translate(-5%, -20%);
+    align-items: center;
+    bottom: 5%;
+    left: 5%;
+    border: grey;
+    z-index: 100000;
+}
+
 .dataFont {
     position: absolute;
     left: 50%;
@@ -39,6 +52,13 @@
 
 .loaderMargins {
     flex: 1 1 auto;
+}
+
+.loaderMargins2 {
+    position: relative;
+    align-items: center;
+    left: 75%;
+    transform: translate(-50%);
 }
 
 .progress-ready {
@@ -82,4 +102,3 @@
     transition: 1s ease 0.3s;
     text-overflow: clip;
 }
-

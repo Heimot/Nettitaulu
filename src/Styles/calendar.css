@@ -1,17 +1,9 @@
 .calendarDiv {
     position: relative;
+    margin-top: 90px;
     width: 100%;
     height: 100%;
 }
-
-.tableCalendar {
-    position: relative;
-    width: 70%;
-    top: 90px;
-    left: 50%;
-    transform: translate(-50%);
-}
-
 .kauppaLists {
     list-style-type: none;
     border: solid 1px black;
@@ -23,13 +15,148 @@
     height: auto;
 }
 
+.kauppaArkistoRow {
+    list-style-type: none;
+    border: solid 1px black;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    text-align: center;
+    padding: 5px 5px 5px 5px;
+    height: auto;
+    background-color: #F0AD4E;
+}
+
+.kauppaValmisRow {
+    list-style-type: none;
+    border: solid 1px black;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    text-align: center;
+    padding: 5px 5px 5px 5px;
+    height: auto;
+    background-color: green;
+}
+
 .kerattavatKaupat {
     position: relative;
-    top: 90px;
+    top: auto;
     left: 50%;
     text-align: center;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 30px;
     transform: translate(-50%);
+}
+
+.middleLoader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 50px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+.lastWeek {
+    position: relative !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+.nextWeek {
+    position: relative !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+.tableBtnContainer {
+    display: flex !important;
+    position: relative;
+    width: 90%;
+    top: auto;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+@media screen and (min-width: 650px) {
+    .calendarDiv {
+        position: relative;
+        margin-top: 90px;
+        width: 100%;
+        height: 100%;
+    }
+    .kauppaLists {
+        list-style-type: none;
+        border: solid 1px black;
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        width: 100%;
+        text-align: center;
+        padding: 5px 5px 5px 5px;
+        height: auto;
+    }
+    .kauppaArkistoRow {
+        list-style-type: none;
+        border: solid 1px black;
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        width: 100%;
+        text-align: center;
+        padding: 5px 5px 5px 5px;
+        height: auto;
+        background-color: #F0AD4E;
+    }
+    .kauppaValmisRow {
+        list-style-type: none;
+        border: solid 1px black;
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        width: 100%;
+        text-align: center;
+        padding: 5px 5px 5px 5px;
+        height: auto;
+        background-color: green;
+    }
+    .kerattavatKaupat {
+        position: relative;
+        top: auto;
+        left: 50%;
+        text-align: center;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 30px;
+        transform: translate(-50%);
+    }
+    .middleLoader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 50px;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+    }
+    .lastWeek {
+        position: relative !important;
+        font-size: 20px !important;
+        font-weight: bold !important;
+    }
+    .nextWeek {
+        position: relative !important;
+        font-size: 20px !important;
+        font-weight: bold !important;
+    }
+    .tableBtnContainer {
+        display: flex !important;
+        position: relative;
+        width: 90%;
+        top: auto;
+        left: 50%;
+        transform: translate(-50%);
+    }
 }

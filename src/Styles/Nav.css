@@ -1,4 +1,13 @@
 @media screen and (min-width: 1130px) {
+    .progressBarsButton{
+        position: absolute;
+        right: 165px;
+        bottom: 10px;
+        width: 175px;
+        height: 40px;
+        font-size: 20px !important;
+        font-weight: bold !important;
+    }
     .ml-auto {
         height: 140px !important;
     }
@@ -155,6 +164,15 @@
 }
 
 @media screen and (max-width: 1120px) {
+    .progressBarsButton{
+        position: absolute;
+        right: 165px;
+        bottom: 10px;
+        width: 150px;
+        height: 40px;
+        font-size: 20px !important;
+        font-weight: bold !important;
+    }
     .ml-auto {
         height: 140px !important;
     }
@@ -319,6 +337,15 @@
 }
 
 @media screen and (max-width: 910px) {
+    .progressBarsButton{
+        position: absolute;
+        right: 165px;
+        bottom: 10px;
+        width: 150px;
+        height: 40px;
+        font-size: 20px !important;
+        font-weight: bold !important;
+    }
     .ml-auto {
         height: 140px !important;
     }
@@ -476,6 +503,15 @@
 }
 
 @media screen and (max-width: 375px) {
+    .progressBarsButton{
+        position: absolute;
+        right: 165px;
+        bottom: 10px;
+        width: 150px;
+        height: 40px;
+        font-size: 20px !important;
+        font-weight: bold !important;
+    }
     .ml-auto {
         height: 140px !important;
     }
