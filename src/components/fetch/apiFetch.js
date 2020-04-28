@@ -41,7 +41,8 @@ export const getData = (searchData, chosen) => {
 
 }
 
-export const getTableId = (data) => {
+export const getTableId = (data, searchData) => {
+
   let location = localStorage.getItem('userLocation');
   if (location === 'Molemmat') {
     location = "";
@@ -55,7 +56,7 @@ export const getTableId = (data) => {
     }
   }
 
-  return fetch(`${FETCH_URL}orders/get/id/${data.id}?paikka=${location}&valmis=${sessionStorage.getItem('userValmis')}`, GETwAuth)
+  return fetch(`${FETCH_URL}orders/get/id/${data.id}?paikka=${location}&valmis=${sessionStorage.getItem('userValmis')}&kukka=${searchData}`, GETwAuth)
     .then(res => res.json())
     .catch((error) => {
       console.log(error);
