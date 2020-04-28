@@ -43,7 +43,9 @@ class Printer extends Component {
                 doc.setFontSize(10)
                 doc.text('Kasvipassi / Plant passport', 15, 5)
                 doc.setFontSize(10)
+                doc.setFontType("bold");
                 doc.text(`A. ${data.tuote.toString()}`, 5, 16)
+                doc.setFontType("");
                 doc.setFontSize(8)
                 doc.text(`B. FI-56466    C. ${data.kerays === "Ryönä" ? "RII1" : "TUU2"}    D. FI`, 5, 20)
                 doc.setFontSize(10)
