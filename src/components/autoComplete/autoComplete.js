@@ -22,7 +22,7 @@ class MyAutosuggest extends React.Component {
       const value = e.target.value;
       suggestions = [];
       if (value.length > 0) {
-        const regex = new RegExp(`^${value}`, 'i');
+        const regex = new RegExp(`${value}`, 'i');
         suggestions = items.sort().filter(v => regex.test(v));
       }
       this.setState(() => ({ suggestions }));
