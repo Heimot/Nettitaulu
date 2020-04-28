@@ -41,7 +41,13 @@ NPM RUN BUILD creates a build version of the application.
 # Lisää päivä milloin tarra on tulostettu.
  # Tila: TEHTY 27/4/2020
 
- 
+# Tarran muutos isommalle tietyt tekstit ja osat pienemmälle
+ # Tila: TEHTY 28/4/2020
+
+# Tulostettavassa PDF tiedostossa ei näy plant passporttia.
+ # Tila: TEHTY 28/4/2020
+
+
 
 # BUG FIXES
 
@@ -62,6 +68,9 @@ NPM RUN BUILD creates a build version of the application.
 
 # Korjaa valmiiden tietojen näkyminen keräys osiossa jos päivittää valmista tilausta
  # Tila: KORJATTU 22/4/2020
+
+# Kun etsii tietoja ja painaa keräykseen niin se hakee kaiken datan uudelleen ja sekoittaa sen
+ # Tila: KORJATTU 28/4/2020
 
 
 
