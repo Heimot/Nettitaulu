@@ -112,7 +112,7 @@ class MainArea extends Component {
   getTable = async (data) => {
     try {
       let { people } = this.state;
-      let dataTable = [await getTableId(data)];
+      let dataTable = [await getTableId(data, searchData)];
       var updtData = people.map(obj => dataTable.find(o => o._id === obj._id) || obj);
       this.setState({
         people: updtData

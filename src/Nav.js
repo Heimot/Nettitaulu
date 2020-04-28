@@ -545,9 +545,9 @@ export default class TopNav extends React.Component {
     try {
       if (e.keyCode === 13) {
         this.props.getTables();
+        this.props.handleSearch(search)
         e.target.value = "";
         search = "";
-        this.props.handleSearch(search)
       }
     } catch (error) {
       console.log(error);
