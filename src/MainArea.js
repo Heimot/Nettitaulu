@@ -7,8 +7,7 @@ import Dialogs from './components/dialog/loaderDialog';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
 import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete, getTableId, deleteRullakkoFromOrders, deleteHyllyFromOrders } from './components/fetch/apiFetch';
-import socketIOClient from "socket.io-client";
-import { SOCKET_URL } from './components/fetch/url';
+import socket from './components/socketio/socket-ioConn';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import Printer from './components/printWindow/printData';
 import language from './components/language/language';
@@ -48,9 +47,6 @@ const override = css`
   margin: 0 auto;
   border-color: red;
 `;
-
-const endpoint = SOCKET_URL;
-const socket = socketIOClient(endpoint);
 
 class MainArea extends Component {
   _isMounted = false;
@@ -92,10 +88,12 @@ class MainArea extends Component {
           redirect: true
         }));
       } else {
-        this.getTables();
+        let dataas = true;
+        this.getTables(dataas);
         socket.on('chat', async (data) => {
+          dataas = data.message;
           if (data.message === true) {
-            this.getTables();
+            this.getTables(dataas);
           };
         });
         socket.on('idUpdate', async (data) => {
@@ -123,9 +121,9 @@ class MainArea extends Component {
   }
 
 
-  getTables = async () => {
+  getTables = async (dataas) => {
     try {
-      data = await getData(searchData, chosen);
+      data = await getData(searchData, chosen, dataas);
       Datas = await getFlowersToAutocomplete();
       if (Datas === undefined || Datas.message) {
         DataK = ["Error", "Error2", "DatabaseNoData"];

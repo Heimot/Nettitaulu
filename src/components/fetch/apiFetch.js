@@ -1,44 +1,44 @@
 import format from "date-fns/format";
 import { FETCH_URL } from "./url";
 
-export const getData = (searchData, chosen) => {
-  var GETwAuth = {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+export const getData = (searchData, chosen, dataas) => {
+  if (dataas) {
+    var GETwAuth = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+      }
     }
+    var date = format(new Date(), 'dd/MM/yyyy');
+
+    if (sessionStorage.getItem('userDate')) {
+      date = sessionStorage.getItem('userDate');
+    } else {
+      date = format(new Date(), 'dd/MM/yyyy');
+    };
+
+    let dateQ = `?date=${date}`;
+    let valmisQ = `&valmis=${sessionStorage.getItem("userValmis")}`;
+    let keraysQ = `&kerays=${localStorage.getItem('userLocation')}`;
+    let kukkaQ = `&kukka=`;
+    let kauppaQ = `&kauppa=`
+
+    if (searchData !== "" && chosen === "kauppoja") {
+      kauppaQ = `&kauppa=${searchData}`;
+    } else if (searchData !== "" && chosen === "kukkia") {
+      kukkaQ = `&kukka=${searchData}`;
+    }
+
+    if (localStorage.getItem('userLocation') === "Molemmat") {
+      keraysQ = "&kerays="
+    }
+    return fetch(FETCH_URL + 'orders/tables' + dateQ + valmisQ + keraysQ + kukkaQ + kauppaQ, GETwAuth)
+      .then(res => res.json())
+      .catch((error) => {
+        console.log(error);
+      });
   }
-  var date = format(new Date(), 'dd/MM/yyyy');
-
-  if (sessionStorage.getItem('userDate')) {
-    date = sessionStorage.getItem('userDate');
-  } else {
-    date = format(new Date(), 'dd/MM/yyyy');
-  };
-
-  let dateQ = `?date=${date}`;
-  let valmisQ = `&valmis=${sessionStorage.getItem("userValmis")}`;
-  let keraysQ = `&kerays=${localStorage.getItem('userLocation')}`;
-  let kukkaQ = `&kukka=`;
-  let kauppaQ = `&kauppa=`
-
-  if (searchData !== "" && chosen === "kauppoja") {
-    kauppaQ = `&kauppa=${searchData}`;
-  } else if (searchData !== "" && chosen === "kukkia") {
-    kukkaQ = `&kukka=${searchData}`;
-  }
-
-  if (localStorage.getItem('userLocation') === "Molemmat") {
-    keraysQ = "&kerays="
-  }
-
-  return fetch(FETCH_URL + 'orders/tables' + dateQ + valmisQ + keraysQ + kukkaQ + kauppaQ, GETwAuth)
-    .then(res => res.json())
-    .catch((error) => {
-      console.log(error);
-    });
-
 }
 
 export const getTableId = (data, searchData) => {
@@ -408,7 +408,7 @@ export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kau
     toimitusaika = toimituspvm;
   }
 
-  if(keraysPVM.length < 1) {
+  if (keraysPVM.length < 1) {
     keraysPVM = date;
   }
 

@@ -158,7 +158,6 @@ class Calendar extends Component {
         var thisWeekDates = this.getThisWeekDates();
         let { array, array2 } = this.state;
 
-        console.log(array2)
 
         if (this.state.loading) {
             return (<div className="middleLoader"><CardText>Loading...</CardText>
@@ -175,7 +174,7 @@ class Calendar extends Component {
             <ErrorBoundary>
                 <div className="calendarDiv">
                     <CardText className="kerattavatKaupat">Tuusjärven ja Ryönän toimitettavat kaupat</CardText>
-                    <div className="tableBtnContainer">
+                <div className="tableBtnContainer">
                         <Button className="lastWeek" color="primary" onClick={() => this.lastWeek()}>{"<"}</Button>
                         <Table className="tableCalendar">
                             <Thead>
@@ -281,7 +280,7 @@ class Calendar extends Component {
                             </Tbody>
                         </Table>
                         <Button className="nextWeek" color="primary" onClick={() => this.nextWeek()}>{">"}</Button>
-                    </div>
+                    </div>                          
                 </div>
             </ErrorBoundary >
         )

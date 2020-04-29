@@ -86,7 +86,8 @@ class Printer extends Component {
                 maara: data.maara,
                 lisatieto: data.lisatieto,
                 id: data.id,
-                kerays: data.kerays
+                kerays: data.kerays,
+                date: data.date
             });
         }
         docArr = arr.concat(docArr)

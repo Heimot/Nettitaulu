@@ -5,12 +5,13 @@ import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import { Redirect } from "react-router-dom";
 import { getRullakotData, getHyllytData, getPalautetut } from '../fetch/apiFetch';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
-import socketIOClient from "socket.io-client";
+import socket from '../socketio/socket-ioConn';
 import format from "date-fns/format";
-import { FETCH_URL, SOCKET_URL } from '../fetch/url';
+import { FETCH_URL } from '../fetch/url';
 
 // CSS
 import '../../Styles/rullakot.css';
+import { socketConnRullakko } from '../socketio/socketio';
 
 let year = format(new Date(), "yyyy")
 let b = 0;
@@ -24,9 +25,6 @@ let x;
 let y;
 let e = 1;
 let c = 1;
-
-const endpoint = SOCKET_URL;
-const socket = socketIOClient(endpoint);
 
 class Rullakot extends Component {
     constructor() {
@@ -278,9 +276,8 @@ class Rullakot extends Component {
                         }),
                     })
                         .then(res =>
-                            socket.emit('rullakotUpdt', {
-                                message: true
-                            }))
+                            socketConnRullakko()
+                        )
                         .catch((error) => {
                             console.log(error);
                         });
@@ -300,9 +297,8 @@ class Rullakot extends Component {
                         }),
                     })
                         .then(res =>
-                            socket.emit('rullakotUpdt', {
-                                message: true
-                            }))
+                            socketConnRullakko()
+                        )
                         .catch((error) => {
                             console.log(error);
                         });
@@ -327,9 +323,8 @@ class Rullakot extends Component {
                     }),
                 })
                     .then(res =>
-                        socket.emit('rullakotUpdt', {
-                            message: true
-                        }))
+                        socketConnRullakko()
+                    )
                     .catch((error) => {
                         console.log(error);
                     });
@@ -357,9 +352,8 @@ class Rullakot extends Component {
             }),
         })
             .then(res =>
-                socket.emit('rullakotUpdt', {
-                    message: true
-                }))
+                socketConnRullakko()
+            )
             .catch((error) => {
                 console.log(error);
             });
@@ -383,9 +377,8 @@ class Rullakot extends Component {
             }),
         })
             .then(res =>
-                socket.emit('rullakotUpdt', {
-                    message: true
-                }))
+                socketConnRullakko()
+            )
             .catch((error) => {
                 console.log(error);
             });
@@ -440,9 +433,8 @@ class Rullakot extends Component {
                         }),
                     })
                         .then(res =>
-                            socket.emit('rullakotUpdt', {
-                                message: true
-                            }))
+                            socketConnRullakko()
+                        )
                         .catch((error) => {
                             console.log(error);
                         });
@@ -462,9 +454,8 @@ class Rullakot extends Component {
                         }),
                     })
                         .then(res =>
-                            socket.emit('rullakotUpdt', {
-                                message: true
-                            }))
+                            socketConnRullakko()
+                        )
                         .catch((error) => {
                             console.log(error);
                         });
@@ -489,9 +480,8 @@ class Rullakot extends Component {
                     }),
                 })
                     .then(res =>
-                        socket.emit('rullakotUpdt', {
-                            message: true
-                        }))
+                        socketConnRullakko()
+                    )
                     .catch((error) => {
                         console.log(error);
                     });;
@@ -647,7 +637,7 @@ class Rullakot extends Component {
                                                         {this.sumHylly(doc, hyllyt)}
                                                         <li className="hyllyList">
                                                             <div className="flexerBox">
-                                                            <Input className="inputPalautetut" id={`${doc}HyllyLaina${doc2}${year}`}></Input>
+                                                                <Input className="inputPalautetut" id={`${doc}HyllyLaina${doc2}${year}`}></Input>
                                                                 <Button className="tallennaPalautetut" onClick={() => this.IDGRABR2(doc, doc2)}>Tallenna</Button>
                                                             </div>
                                                             <Table>

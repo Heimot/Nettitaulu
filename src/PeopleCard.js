@@ -8,10 +8,10 @@ import { Redirect } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
 import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData, postRullakko, putRullakkoToOrders, deleteRullakkoFromOrders, updateRullakkoData, postHylly, putHyllyToOrders, deleteHyllyFromOrders, updateHyllyData } from './components/fetch/apiFetch';
+import { socketConnChat, socketConnID, socketConnRullakko } from './components/socketio/socketio';
 import MyAutosuggest from "./components/autoComplete/autoComplete";
-import { FETCH_URL, SOCKET_URL } from "./components/fetch/url";
+import { FETCH_URL } from "./components/fetch/url";
 import XLSX from 'xlsx';
-import socketIOClient from "socket.io-client";
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import language from './components/language/language';
 import jsPDF from 'jspdf';
@@ -44,9 +44,6 @@ function changeNormal() {
     console.log(error);
   };
 }
-
-const endpoint = SOCKET_URL;
-const socket = socketIOClient(endpoint);
 
 class PeopleCard extends Component {
   _isMounted = false;
@@ -251,9 +248,7 @@ class PeopleCard extends Component {
       this.setState({
         valmisWarning: false
       })
-      socket.emit('chat', {
-        message: true
-      });
+      socketConnChat();
     } catch (err) {
       console.log(err);
     };
@@ -327,9 +322,7 @@ class PeopleCard extends Component {
         .catch((error) => {
           console.log(error);
         });
-      socket.emit('chat', {
-        message: true
-      });
+      socketConnChat();
     } catch (error) {
       console.log(error);
     };
@@ -341,11 +334,7 @@ class PeopleCard extends Component {
       const idvalues = document.getElementById(`keratty/${product._id}`).value;
       var maara = document.getElementById(product._id).value;
       patchKeraysData(product, idvalues, maara);
-      socket.emit('idUpdate', {
-        id: _id,
-        product: product._id,
-        message: true
-      });
+      socketConnID(_id);
     } catch (error) {
       console.log(error);
     };
@@ -368,9 +357,7 @@ class PeopleCard extends Component {
         await updateFlowersEdit(products, id, kukka, toimi, kerays, lisatieto);
       }
       this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)
-      socket.emit('chat', {
-        message: true
-      });
+      socketConnChat();
     } catch (error) {
       console.log(error);
     };
@@ -384,9 +371,7 @@ class PeopleCard extends Component {
       var keraysPVM = format(this.state.startDate, "dd/MM/yyyy");
 
       await putFlowersOrderData(asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id, keraysPVM, date);
-      await socket.emit('chat', {
-        message: true
-      });
+      socketConnChat();
       this.setState({
         isOpen2: false
       })
@@ -401,10 +386,7 @@ class PeopleCard extends Component {
       document.getElementById(`toimi/${product._id}`).value = null;
       document.getElementById(`lisatieto/${product._id}`).value = null;
       deleteFlowerData(product);
-      socket.emit('idUpdate', {
-        id: _id,
-        message: true
-      });
+      socketConnID(_id);
     } catch (error) {
       console.log(error);
     };
@@ -498,9 +480,7 @@ class PeopleCard extends Component {
         break;
     }
     patchTarkastettuProductsData(product, valmius);
-    socket.emit('chat', {
-      message: true
-    });
+    socketConnChat();
   }
 
   htmlToPDF(_id, products, kauppa, date, alisatieto, toimituspvm) {
@@ -562,13 +542,8 @@ class PeopleCard extends Component {
       let newID = rullakkoID.createdRullakko.id;
       let rullakkoIDS = getRIDS.concat(newID);
       await putRullakkoToOrders(_id, rullakkoIDS);
-      socket.emit('idUpdate', {
-        id: _id,
-        message: true
-      });
-      socket.emit('rullakotUpdt', {
-        message: true
-      });
+      socketConnID(_id);
+      socketConnRullakko();
     } catch (err) {
       console.log(err);
     };
@@ -585,13 +560,8 @@ class PeopleCard extends Component {
       let newID = hyllyID.createdHylly._id;
       let hyllyIDS = getRIDS.concat(newID);
       await putHyllyToOrders(_id, hyllyIDS);
-      socket.emit('idUpdate', {
-        id: _id,
-        message: true
-      });
-      socket.emit('rullakotUpdt', {
-        message: true
-      });
+      socketConnID(_id);
+      socketConnRullakko();
     } catch (err) {
       console.log(err);
     };
@@ -602,13 +572,8 @@ class PeopleCard extends Component {
       document.getElementById(`rNimi/${rullakko._id}`).value = null;
       document.getElementById(`rMaara/${rullakko._id}`).value = null;
       deleteRullakkoFromOrders(rullakko);
-      socket.emit('idUpdate', {
-        id: _id,
-        message: true
-      });
-      socket.emit('rullakotUpdt', {
-        message: true
-      });
+      socketConnID(_id);
+      socketConnRullakko();
     } catch (err) {
       console.log(err);
     };
@@ -619,13 +584,8 @@ class PeopleCard extends Component {
       document.getElementById(`rHylly/${hylly._id}`).value = null;
       document.getElementById(`rHyllyjenMaara/${hylly._id}`).value = null;
       deleteHyllyFromOrders(hylly);
-      socket.emit('idUpdate', {
-        id: _id,
-        message: true
-      });
-      socket.emit('rullakotUpdt', {
-        message: true
-      });
+      socketConnID(_id);
+      socketConnRullakko();
     } catch (err) {
       console.log(err);
     };
@@ -637,13 +597,8 @@ class PeopleCard extends Component {
       let rMaara = document.getElementById(`rMaara/${rullakko._id}`).value;
       updateRullakkoData(rullakko, kauppa, rNimi, rMaara);
 
-      socket.emit('idUpdate', {
-        id: _id,
-        message: true
-      });
-      socket.emit('rullakotUpdt', {
-        message: true
-      });
+      socketConnID(_id);
+      socketConnRullakko();
     } catch (err) {
       console.log(err);
     };
@@ -655,13 +610,8 @@ class PeopleCard extends Component {
       let rHyllyjenMaara = document.getElementById(`rHyllyjenMaara/${hylly._id}`).value;
       updateHyllyData(hylly, kauppa, rHylly, rHyllyjenMaara);
 
-      socket.emit('idUpdate', {
-        id: _id,
-        message: true
-      });
-      socket.emit('rullakotUpdt', {
-        message: true
-      });
+      socketConnID(_id);
+      socketConnRullakko();
     } catch (err) {
       console.log(err);
     };

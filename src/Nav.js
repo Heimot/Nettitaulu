@@ -11,23 +11,20 @@ import MyAutosuggest from './components/autoComplete/autoComplete';
 import { updateFlowers, putFlowersCreatedOrderData } from './components/fetch/apiFetch';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
-import { FETCH_URL, SOCKET_URL } from "./components/fetch/url";
-import socketIOClient from "socket.io-client";
+import { FETCH_URL } from "./components/fetch/url";
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import language from './components/language/language';
 
 //CSS
 import "./Styles/Nav.css";
 import "react-datepicker/dist/react-datepicker.css";
+import { socketConnChat } from './components/socketio/socketio';
 
 const override = css`
   display: block;
   margin: 0 auto; 
   border-color: red;
 `;
-
-const endpoint = SOCKET_URL;
-const socket = socketIOClient(endpoint);
 
 let progressValue = false;
 let search = "";
@@ -113,9 +110,7 @@ export default class TopNav extends React.Component {
           this.setState({ isOpen: false });
           break;
       }
-      socket.emit('chat', {
-        message: true
-      });
+      socketConnChat();
     } catch (error) {
       console.log(error);
     };
@@ -130,9 +125,7 @@ export default class TopNav extends React.Component {
       var toimitusaika = format(this.state.startDate3, "dd/MM/yyyy");
 
       await putFlowersCreatedOrderData(asiakas, asiakaslisatieto, toimitusaika, keraysPVM, userDatas);
-      await socket.emit('chat', {
-        message: true
-      });
+      await socketConnChat();
     } catch (error) {
       console.log(error);
     };
@@ -154,9 +147,7 @@ export default class TopNav extends React.Component {
 
         await updateFlowers(userDatas, id, kukka, toimi, kerays, lisatieto);
       }
-      socket.emit('chat', {
-        message: true
-      });
+      socketConnChat();
       this.setState({
         isOpen2: false,
         isOpen: false
@@ -303,9 +294,7 @@ export default class TopNav extends React.Component {
         isOpen2: true,
         dLoader: false
       });
-      await socket.emit('chat', {
-        message: true
-      });
+      await socketConnChat();
     } catch (error) {
       console.log(error);
     };
@@ -499,9 +488,7 @@ export default class TopNav extends React.Component {
           console.log(error);
         });
       this.getFetchData();
-      socket.emit('chat', {
-        message: true
-      });
+      socketConnChat();
     } catch (err) {
       console.log(err);
     };
