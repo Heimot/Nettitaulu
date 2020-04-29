@@ -6,11 +6,12 @@ import { FETCH_URL } from './components/fetch/url';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import language from './components/language/language';
 import LanguageBtn from './components/language/languageBtn';
+import { userDataGrabber } from './components/socketio/socket-ioConn';
 
 //CSS
 import './Styles/login.css';
 
-if(localStorage.getItem('language') === null) {
+if (localStorage.getItem('language') === null) {
   localStorage.setItem('language', 0);
 }
 
@@ -42,7 +43,7 @@ class TableArea extends Component {
     })
       .then(response => response.json())
       .then(json => {
-        if(json.message === "Auth failed") {
+        if (json.message === "Auth failed") {
           this.setState({
             loginFailed: true
           })
@@ -50,6 +51,7 @@ class TableArea extends Component {
         let result = json;
         if (result.token) {
           sessionStorage.setItem('userData', result.token);
+          userDataGrabber(result);
           this.parseJwt();
           this.setState({
             redirect: true,
@@ -108,7 +110,7 @@ class TableArea extends Component {
         <Container fluid>
           <Row>
             <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
-            {loginFailed === true ? <CardText className="loginFailed">{language[localStorage.getItem('language')].loginWarning}</CardText> : undefined}
+              {loginFailed === true ? <CardText className="loginFailed">{language[localStorage.getItem('language')].loginWarning}</CardText> : undefined}
               <Card>
                 <Input
                   type="text"
@@ -129,7 +131,7 @@ class TableArea extends Component {
                 <Button name="kirjaudu" type="submit" onClick={(e) => this.login()}>{language[localStorage.getItem('language')].login}</Button>
 
               </Card>
-              <LanguageBtn reRender={this.reRender}/>
+              <LanguageBtn reRender={this.reRender} />
             </Dialog>
           </Row>
         </Container>
