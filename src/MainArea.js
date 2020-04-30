@@ -384,7 +384,7 @@ class MainArea extends Component {
                 {this.state.progressData === false ? <div className="loaders2">
                   <Card className="cardAlignment">
                     <Button className="exitLoaders" onClick={() => this.closeWindow()}>x</Button>
-                    {this.state.progressData === false ? <CardText className="progressText">Kokonaismäärät</CardText> : undefined}
+                    {this.state.progressData === false ? <CardText className="progressText">{language[localStorage.getItem('language')].kokonaisMaara}</CardText> : undefined}
                     <div className="loaderMargins2">
                       <CardText className="hover">{language[localStorage.getItem('language')].statusBar1}</CardText>
                       <this.Progress done={OdottaaMaara} count={Odottaakeraysta.reduce((a, b) => a + b, 0)} counter={allMaara} id={"Odottaa keräystä"} />

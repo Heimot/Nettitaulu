@@ -9,6 +9,7 @@ import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import Rullakot from './components/rullakot/rullakot';
 import Calendar from './components/calendar/calendar';
 import CalendarNav from './components/calendar/calendarNav';
+import RullakotNav from './components/rullakot/rullakotNav';
 
 setInterval(function () {
   if (sessionStorage.getItem('expTime') < Date.now() / 1000 && window.location.pathname !== '/') {
@@ -27,6 +28,7 @@ class App extends Component {
             <Route path="/main" exact component={frontPage} />
             <Route path="/main/tables" component={TopNav} />
             <Route path="/main/tables" exact component={MainArea} />
+            <Route path="/main/tables/rullakot" component={RullakotNav} />
             <Route path="/main/tables/rullakot" component={Rullakot} />
             <Route path='/main/calendar' component={CalendarNav} />
             <Route path="/main/calendar" component={Calendar} />

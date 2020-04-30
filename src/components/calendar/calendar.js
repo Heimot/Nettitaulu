@@ -7,6 +7,7 @@ import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import Loader from 'react-spinners/ScaleLoader';
 import { FETCH_URL } from '../fetch/url';
 import { css } from "@emotion/core";
+import language from '../language/language';
 
 // CSS
 import '../../Styles/calendar.css';
@@ -173,7 +174,7 @@ class Calendar extends Component {
         return (
             <ErrorBoundary>
                 <div className="calendarDiv">
-                    <CardText className="kerattavatKaupat">Tuusjärven ja Ryönän toimitettavat kaupat</CardText>
+                    <CardText className="kerattavatKaupat">{language[localStorage.getItem('language')].calendarToimitettavat}</CardText>
                 <div className="tableBtnContainer">
                         <Button className="lastWeek" color="primary" onClick={() => this.lastWeek()}>{"<"}</Button>
                         <Table className="tableCalendar">
@@ -227,7 +228,7 @@ class Calendar extends Component {
                         </Table>
                         <Button className="nextWeek" color="primary" onClick={() => this.nextWeek()}>{">"}</Button>
                     </div>
-                    <CardText className="kerattavatKaupat">Tuusjärven ja Ryönän kerättävät kaupat</CardText>
+                    <CardText className="kerattavatKaupat">{language[localStorage.getItem('language')].calendarKerattavat}</CardText>
                     <div className="tableBtnContainer">
                         <Button className="lastWeek" color="primary" onClick={() => this.lastWeek()}>{"<"}</Button>
                         <Table className="tableCalendar">

@@ -13,6 +13,20 @@ const language = [
         // Frontpage
         'collect': 'Kerättävät',
         'ready': 'Valmiit',
+        'fpRullakot': 'Rullakot ja hyllyt',
+        'fpKalenteri': 'Kalenteri',
+        'fpAutoKukka': 'Kukat automaatti täydennykseen',
+        'fpAutoAsiakas': 'Asiakkaat automaatti täydennykseen',
+        'fpKukkaWork': 'Kukkien tiedot tallennettu!',
+        'fpKukkaFail': 'Kukkien tiedoissa on jokin virhe tai tietokanta on alhaalla tai ei ole toiminta kunnossa!',
+        'fpKauppaWork': 'Kauppojen tiedot tallennettu!',
+        'fpKauppaFail': 'Kauppojen tiedoissa on jokin virhe tai tietokanta on alhaalla tai ei ole toiminta kunnossa!',
+        'fpUserAdd': 'Käyttäjien lisääminen ja poistaminen.',
+        'fpUser': 'Käyttäjänimi',
+        'fpRole': 'Rooli',
+        'fpPassword': 'Salasana',
+        'fpCreate': 'Luo käyttäjä',
+        'fpDelete': 'Poistetaanko käyttäjä?',
         //To be collected
         'statusBar1': 'Odottaa keräystä',
         'statusBar2': 'Keräyksessä',
@@ -69,6 +83,34 @@ const language = [
         'search': 'Etsi',
         'navFlowers': 'kukkia',
         'navKaupat': 'kauppoja',
+        'navProgressBar': 'Eteneminen',
+        //Calendar nav
+        'navCalendar': 'Kalenteri',
+        // Calendar
+        'calendarToimitettavat': 'Tuusjärven ja Ryönän toimitettavat kaupat',
+        'calendarKerattavat': 'Tuusjärven ja Ryönän kerättävät kaupat',
+        // Trolleys and shelves
+        'trolleyKauppa': 'Kauppa: ',
+        'trolleyLaina': 'Rullakot lainassa',
+        'trolleySave': 'Tallenna',
+        'trolleyAdded': 'Lisätty',
+        'trolleyAmount': 'Rullakoiden määrä',
+        'shelfLaina': 'Hyllyt lainassa',
+        'shelfAmount': 'Hyllyjen määrä',
+        'trolleyPalautettu': 'Rullakot palautettu',
+        'trolleyAddedL': 'Lisätty viimeeksi',
+        'trolleyAddedA': 'Lisätty määrä',
+        'shelfPalautettu': 'Hyllyt palautettu',
+        'trolleys': 'Rullakot',
+        'shelves': 'Hyllyt',
+        'trolleyK': 'Rullakko: ',
+        'trolleyKA': 'Rullakoiden määrä: ',
+        'shelfK': 'Hylly: ',
+        'shelfKA': 'Hyllyjen määrä: ',
+        // Trolleys and shelves
+        'navRullakot': 'Rullakot ja hyllyt',
+        // Extra
+        'kokonaisMaara': 'Kokonais määrät',
     },
     // English language[localStorage.getItem('language')].
     {
@@ -84,6 +126,20 @@ const language = [
         // Frontpage
         'collect': 'To be collected',
         'ready': 'Completed orders',
+        'fpRullakot': 'Trolley\'s\ and shelves',
+        'fpKalenteri': 'Calendar',
+        'fpAutoKukka': 'Flower\'s\ for automatic fill',
+        'fpAutoAsiakas': 'Customer\'s\ for automatic fill',
+        'fpKukkaWork': 'Flower\'s\ data saved!',
+        'fpKukkaFail': 'Flower\'s\ data had some sort of error or database is down or isn\'t\ in working order!',
+        'fpKauppaWork': 'Store\'s\ data saved',
+        'fpKauppaFail': 'Store\'s\ data had some sort of error or database is down or isn\'t\ in working order!',
+        'fpUserAdd': 'Add user\'s\ or delete them.',
+        'fpUser': 'Username',
+        'fpRole': 'Role',
+        'fpPassword': 'Password',
+        'fpCreate': 'Create user',
+        'fpDelete': 'Delete user?',
         // To be collected
         'statusBar1': 'Awaiting collecting',
         'statusBar2': 'Collecting',
@@ -140,6 +196,35 @@ const language = [
         'search': 'Search for',
         'navFlowers': 'flowers',
         'navKaupat': 'stores',
+        'navProgressBar': 'Progress bar',
+        // Calendar nav
+        'navCalendar': 'Calendar',
+        // Calendar
+        'calendarToimitettavat': 'Tuusjärvi\'s\ and Ryönä\'s\ orders to be delivered',
+        'calendarKerattavat': 'Tuusjärvi\'s\ and Ryönä\'s\ orders to be collected',
+        // Trolley's and shelves
+        'trolleyKauppa': 'Store: ',
+        'trolleyLaina': 'Trolley\'s\ borrowed',
+        'trolleySave': 'Save',
+        'trolleyAdded': 'Added',
+        'trolleyAmount': 'Trolley\'s\ amount added',
+        'shelfLaina': 'Shelves borrowed',
+        'shelfAmount': 'Shelves amount added',
+        'trolleyPalautettu': 'Trolley\'s\ returned',
+        'trolleyAddedL': 'Added last time',
+        'trolleyAddedA': 'Added amount',
+        'shelfPalautettu': 'Shelves returned',
+        'trolleys': 'Trolley\'s\ ',
+        'shelves': 'Shelves',
+        'trolleyK': 'Trolley: ',
+        'trolleyKA': 'Amount of trolleys: ',
+        'shelfK': 'Shelf: ',
+        'shelfKA': 'Amount of shelves: ',
+        // Trolley nav
+        'navRullakot': 'Trolley\'s\ and shelves',
+        // Extra
+        'kokonaisMaara': 'Entirety of orders',
     }
+    // language[localStorage.getItem('language')].
 ]
 export default language;

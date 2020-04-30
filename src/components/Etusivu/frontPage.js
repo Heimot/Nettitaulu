@@ -250,7 +250,7 @@ class frontPage extends Component {
       return <Redirect to="/" />
     }
 
-    if(redirectKalenteri) {
+    if (redirectKalenteri) {
       return (<Redirect to={'/main/calendar'} />)
     }
 
@@ -300,8 +300,8 @@ class frontPage extends Component {
                       onClick={() => this.setState({
                         redirectRullakko: true
                       })}>
-                      Rullakot ja hyllyt
-                </Button>
+                      {language[localStorage.getItem('language')].fpRullakot}
+                    </Button>
                     : undefined}
                 </li>
                 <li>
@@ -312,8 +312,8 @@ class frontPage extends Component {
                       onClick={() => this.setState({
                         redirectKalenteri: true
                       })}>
-                      Kalenteri
-                </Button>
+                      {language[localStorage.getItem('language')].fpKalenteri}
+                    </Button>
                     : undefined}
                 </li>
                 <li>
@@ -335,24 +335,24 @@ class frontPage extends Component {
             <Card className="Cards">
               <div className="containDiv">
                 <div className="adminSettings">
-                  <CardText>Kukat auto täydentämiseen.</CardText>
+                  <CardText>{language[localStorage.getItem('language')].fpAutoKukka}</CardText>
                   <Input type="file" name="file" id="exampleFile" accept=".xls,.xlsx,.ods" onChange={(e) => this.handleFile(e)}></Input>
-                  {kukatExcel === true ? <CardText>Kukkien tiedot tallennettu!</CardText> : undefined}
-                  {kukatError === true ? <CardText>Kukkien tiedoissa on jokin virhe tai tietokanta on alhaalla tai ei ole toiminta kunnossa!</CardText> : undefined}
-                  <CardText>Asiakkaat auto täydentämiseen.</CardText>
+                  {kukatExcel === true ? <CardText>{language[localStorage.getItem('language')].fpKukkaWork}</CardText> : undefined}
+                  {kukatError === true ? <CardText>{language[localStorage.getItem('language')].fpKukkaFail}</CardText> : undefined}
+                  <CardText>{language[localStorage.getItem('language')].fpAutoAsiakas}</CardText>
                   <Input type="file" name="file2" id="exampleFile2" accept=".xls,.xlsx,.ods" onChange={(e) => this.handleFile2(e)}></Input>
-                  {kaupatExcel === true ? <CardText>Kauppojen tiedot tallennettu!</CardText> : undefined}
-                  {kaupatError === true ? <CardText>Kauppojen tiedoissa on jokin virhe tai tietokanta on alhaalla tai ei ole toiminta kunnossa!</CardText> : undefined}
+                  {kaupatExcel === true ? <CardText>{language[localStorage.getItem('language')].fpKauppaWork}</CardText> : undefined}
+                  {kaupatError === true ? <CardText>{language[localStorage.getItem('language')].fpKauppaFail}</CardText> : undefined}
                 </div>
                 <div className="accountCreate">
-                  <CardTitle>Käyttäjien lisääminen ja poistaminen.</CardTitle>
+                  <CardTitle>{language[localStorage.getItem('language')].fpUserAdd}</CardTitle>
                   <Table className="Tables">
 
                     <Thead>
                       <Tr>
                         <Th>ID</Th>
-                        <Th>Käyttäjänimi</Th>
-                        <Th>Rooli</Th>
+                        <Th>{language[localStorage.getItem('language')].fpUser}</Th>
+                        <Th>{language[localStorage.getItem('language')].fpRole}</Th>
                       </Tr>
                     </Thead>
 
@@ -366,23 +366,23 @@ class frontPage extends Component {
                       </Tbody>
                     )}
                   </Table>
-                  <CardText>Käyttäjänimi</CardText>
-                  <Input name="userName" type="text" placeholder="Käyttäjänimi" onChange={this.handleChange}></Input>
-                  <CardText>Salasana</CardText>
-                  <Input name="passWord" type="password" placeholder="Salasana" onChange={this.handleChange}></Input>
-                  <CardText>Rooli</CardText>
-                  <Input name="Roles" type="select" placeholder="Rooli" onChange={this.handleChange}><option>User</option><option>Admin</option><option>Kuski</option></Input>
+                  <CardText>{language[localStorage.getItem('language')].fpUser}</CardText>
+                  <Input name="userName" type="text" placeholder={language[localStorage.getItem('language')].fpUser} onChange={this.handleChange}></Input>
+                  <CardText>{language[localStorage.getItem('language')].fpPassword}</CardText>
+                  <Input name="passWord" type="password" placeholder={language[localStorage.getItem('language')].fpPassword} onChange={this.handleChange}></Input>
+                  <CardText>{language[localStorage.getItem('language')].fpRole}</CardText>
+                  <Input name="Roles" type="select" placeholder={language[localStorage.getItem('language')].fpRole} onChange={this.handleChange}><option>{language[localStorage.getItem('language')].fpUser}</option><option>Admin</option><option>Kuski</option></Input>
                   <CardText></CardText>
-                  <Button onClick={() => this.addProfile()}>Luo käyttäjä</Button>
+                  <Button onClick={() => this.addProfile()}>{language[localStorage.getItem('language')].fpCreate}</Button>
                 </div>
               </div>
             </Card>
           </Dialog>
           <Dialog className="adminDialog" isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
             <Card>
-              <CardText className="deleteUser">Poistetaanko käyttäjä?</CardText>
-              <Button name="delKylla" onClick={() => this.delID()}>Kyllä</Button>
-              <Button name="delEi" onClick={() => this.setState({ isOpen2: false }) + sessionStorage.removeItem("delID")}>Ei</Button>
+              <CardText className="deleteUser">{language[localStorage.getItem('language')].fpDelete}</CardText>
+              <Button name="delKylla" onClick={() => this.delID()}>{language[localStorage.getItem('language')].yes}</Button>
+              <Button name="delEi" onClick={() => this.setState({ isOpen2: false }) + sessionStorage.removeItem("delID")}>{language[localStorage.getItem('language')].no}</Button>
             </Card>
           </Dialog>
         </div>

@@ -612,7 +612,7 @@ export default class TopNav extends React.Component {
                   dateFormat="d/MM/yyyy"
                   withPortal
                 />
-                <Button className="progressBarsButton" onClick={() => this.showDayProgress()}>Progress bars</Button>
+                <Button className="progressBarsButton" onClick={() => this.showDayProgress()}>{language[localStorage.getItem('language')].navProgressBar}</Button>
                 <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false, isOpen: false })}>
                   <Card className="AddCard">
 

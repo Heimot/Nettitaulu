@@ -8,6 +8,7 @@ import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 import socket from '../socketio/socket-ioConn';
 import format from "date-fns/format";
 import { FETCH_URL } from '../fetch/url';
+import language from '../language/language';
 
 // CSS
 import '../../Styles/rullakot.css';
@@ -585,10 +586,10 @@ class Rullakot extends Component {
                         return (
                             <div className="rullakkoTop">
                                 {doc !== "" ? <Card className="rullakkoCard">
-                                    <CardText className="kauppaRulla" onClick={() => this.openCard(doc)}>Kauppa: {doc}</CardText>
+                                    <CardText className="kauppaRulla" onClick={() => this.openCard(doc)}>{language[localStorage.getItem('language')].trolleyKauppa + doc}</CardText>
                                     {this.state.nameOpen === doc ? <div className="flexR">
                                         <div className="lainassa">
-                                            <CardText className="rullakotRulla">Rullakot lainassa</CardText>
+                                            <CardText className="rullakotRulla">{language[localStorage.getItem('language')].trolleyLaina}</CardText>
                                             {rullakot.map(doc2 => {
                                                 return (
                                                     <li className="rullaList">
@@ -596,13 +597,13 @@ class Rullakot extends Component {
                                                         <li className="hyllyList">
                                                             <div className="flexerBox">
                                                                 <Input className="inputPalautetut" id={`${doc}RullakkoLaina${doc2}${year}`}></Input>
-                                                                <Button className="tallennaPalautetut" onClick={() => this.IDGRAB2(doc, doc2)}>Tallenna</Button>
+                                                                <Button className="tallennaPalautetut" onClick={() => this.IDGRAB2(doc, doc2)}>{language[localStorage.getItem('language')].trolleySave}</Button>
                                                             </div>
                                                             <Table>
                                                                 <Thead>
                                                                     <Tr>
-                                                                        <Th>Lisätty</Th>
-                                                                        <Th>Rullakoiden määrä</Th>
+                                                                        <Th>{language[localStorage.getItem('language')].trolleyAdded}</Th>
+                                                                        <Th>{language[localStorage.getItem('language')].trolleyAmount}</Th>
                                                                     </Tr>
                                                                 </Thead>
                                                                 {rullakotData.filter(docFiltered => {
@@ -630,7 +631,7 @@ class Rullakot extends Component {
                                                     </li>
                                                 )
                                             })}
-                                            <CardText className="hyllytRulla2">Hyllyt lainassa</CardText>
+                                            <CardText className="hyllytRulla2">{language[localStorage.getItem('language')].shelfLaina}</CardText>
                                             {hyllyt.map(doc2 => {
                                                 return (
                                                     <li className="hyllyRullaList2">
@@ -638,13 +639,13 @@ class Rullakot extends Component {
                                                         <li className="hyllyList">
                                                             <div className="flexerBox">
                                                                 <Input className="inputPalautetut" id={`${doc}HyllyLaina${doc2}${year}`}></Input>
-                                                                <Button className="tallennaPalautetut" onClick={() => this.IDGRABR2(doc, doc2)}>Tallenna</Button>
+                                                                <Button className="tallennaPalautetut" onClick={() => this.IDGRABR2(doc, doc2)}>{language[localStorage.getItem('language')].trolleySave}</Button>
                                                             </div>
                                                             <Table>
                                                                 <Thead>
                                                                     <Tr>
-                                                                        <Th>Lisätty</Th>
-                                                                        <Th>Hyllyjen määrä</Th>
+                                                                        <Th>{language[localStorage.getItem('language')].trolleyAdded}</Th>
+                                                                        <Th>{language[localStorage.getItem('language')].shelfAmount}</Th>
                                                                     </Tr>
                                                                 </Thead>
                                                                 {hyllytData.filter(docFiltered => {
@@ -679,7 +680,7 @@ class Rullakot extends Component {
                                             })}
                                         </div>
                                         <div className="palautettu">
-                                            <CardText className="rullakotRulla">Rullakot palautettu</CardText>
+                                        <CardText className="rullakotRulla">{language[localStorage.getItem('language')].trolleyPalautettu}</CardText>
                                             {rullakot.map(doc2 => {
                                                 return (
                                                     <li className="rullaList">
@@ -687,13 +688,13 @@ class Rullakot extends Component {
                                                         <li className="hyllyList">
                                                             <div className="flexerBox">
                                                                 <Input className="inputPalautetut" id={`${doc}Rullakko${doc2}${year}`}></Input>
-                                                                <Button className="tallennaPalautetut" onClick={() => this.IDGRABR(doc, doc2)}>Tallenna</Button>
+                                                                <Button className="tallennaPalautetut" onClick={() => this.IDGRABR(doc, doc2)}>{language[localStorage.getItem('language')].trolleySave}</Button>
                                                             </div>
                                                             <Table>
                                                                 <Thead>
                                                                     <Tr>
-                                                                        <Th>Lisätty viimeeksi</Th>
-                                                                        <Th>Lisätty määrä</Th>
+                                                                        <Th>{language[localStorage.getItem('language')].trolleyAddedL}</Th>
+                                                                        <Th>{language[localStorage.getItem('language')].trolleyAddedA}</Th>
                                                                     </Tr>
                                                                 </Thead>
                                                                 {palautettuData.filter(docFiltered => {
@@ -726,7 +727,7 @@ class Rullakot extends Component {
                                                     </li>
                                                 )
                                             })}
-                                            <CardText className="hyllytRulla">Hyllyt palautettu</CardText>
+                                            <CardText className="hyllytRulla">{language[localStorage.getItem('language')].shelfPalautettu}</CardText>
                                             {hyllyt.map(doc2 => {
                                                 return (
                                                     <li id={`${doc}HyllyValue${doc2}${year}`} className="hyllyRullaList">
@@ -734,13 +735,13 @@ class Rullakot extends Component {
                                                         <li className="hyllyList">
                                                             <div className="flexerBox">
                                                                 <Input className="inputPalautetut" id={`${doc}Hylly${doc2}${year}`}></Input>
-                                                                <Button className="tallennaPalautetut" onClick={() => this.IDGRAB(doc, doc2)}>Tallenna</Button>
+                                                                <Button className="tallennaPalautetut" onClick={() => this.IDGRAB(doc, doc2)}>{language[localStorage.getItem('language')].trolleySave}</Button>
                                                             </div>
                                                             <Table>
                                                                 <Thead>
                                                                     <Tr>
-                                                                        <Th>Lisätty viimeeksi</Th>
-                                                                        <Th>Lisätty määrä</Th>
+                                                                        <Th>{language[localStorage.getItem('language')].trolleyAddedL}</Th>
+                                                                        <Th>{language[localStorage.getItem('language')].trolleyAddedA}</Th>
                                                                     </Tr>
                                                                 </Thead>
                                                                 {palautettuData.filter(docFiltered => {

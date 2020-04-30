@@ -693,24 +693,24 @@ class PeopleCard extends Component {
               {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuR}{ryona === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : ryona === "Arkistoitu" ? "Arkistoitu" : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
               {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuT}{tuusjarvi === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : tuusjarvi === "Arkistoitu" ? "Arkistoitu" : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
 
-              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>Rullakot</Button> : undefined}
-              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="hyllyt" onClick={() => this.setState({ hyllyt: true })}>Hyllyt</Button> : undefined}
+              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>{language[localStorage.getItem('language')].trolleys}</Button> : undefined}
+              {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="hyllyt" onClick={() => this.setState({ hyllyt: true })}>{language[localStorage.getItem('language')].shelves}</Button> : undefined}
 
               <Dialog className="DelWarn" isOpen2={this.state.rullakot} onClose={(e) => this.setState({ rullakot: false })}>
                 {rullakot.map(rullakko =>
                   <div className="bottomRulla">
                     <Card className="rullakkoKortti">
-                      <CardText className="rullakkoHolder">Rullakko: </CardText>
+                      <CardText className="rullakkoHolder">{language[localStorage.getItem('language')].trolleyK}</CardText>
                       <Input id={`rNimi/${rullakko._id}`} defaultValue={rullakko.rullakonNimi} type="select" className="rullakkoNimi">
                         <option>Oma</option>
                         <option>Piraatti</option>
                         <option>TAK5</option>
                       </Input>
-                      <CardText className="rullakkoHolder">Rullakoiden määrä: </CardText>
+                      <CardText className="rullakkoHolder">{language[localStorage.getItem('language')].trolleyKA}</CardText>
                       <Input id={`rMaara/${rullakko._id}`} className="rullakkoNimi" placeholder={rullakko.rullakoidenMaara}></Input>
 
-                      <Button color="primary" onClick={() => this.updateRullakko(rullakko, _id, kauppa)}>Tallenna</Button>
-                      <Button onClick={() => this.deleteRullakko(rullakko, _id)}>Poista</Button>
+                      <Button color="primary" onClick={() => this.updateRullakko(rullakko, _id, kauppa)}>{language[localStorage.getItem('language')].trolleySave}</Button>
+                      <Button onClick={() => this.deleteRullakko(rullakko, _id)}>{language[localStorage.getItem('language')].poista}</Button>
                     </Card>
                   </div>
                 )}
@@ -721,15 +721,15 @@ class PeopleCard extends Component {
                 {hyllyt.map(hylly =>
                   <div className="bottomRulla">
                     <Card className="rullakkoKortti">
-                      <CardText className="rullakkoHolder">Hylly: </CardText>
+                      <CardText className="rullakkoHolder">{language[localStorage.getItem('language')].shelfK}</CardText>
                       <Input id={`rHylly/${hylly._id}`} defaultValue={hylly.hyllynNimi} type="select" className="rullakkoNimi">
                         <option>Oma</option>
                         <option>Vaihto</option>
                       </Input>
-                      <CardText className="rullakkoHolder">Hyllyjen määrä: </CardText>
+                <CardText className="rullakkoHolder">{language[localStorage.getItem('language')].shelfKA}</CardText>
                       <Input id={`rHyllyjenMaara/${hylly._id}`} className="rullakkoNimi" placeholder={hylly.hyllyjenMaara}></Input>
-                      <Button color="primary" onClick={() => this.updateHylly(hylly, kauppa, _id)}>Tallenna</Button>
-                      <Button onClick={() => this.deleteHylly(hylly, _id)}>Poista</Button>
+                      <Button color="primary" onClick={() => this.updateHylly(hylly, kauppa, _id)}>{language[localStorage.getItem('language')].trolleySave}</Button>
+                      <Button onClick={() => this.deleteHylly(hylly, _id)}>{language[localStorage.getItem('language')].poista}</Button>
                     </Card>
                   </div>
                 )}

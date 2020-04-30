@@ -13,7 +13,6 @@ import language from '../language/language';
 import '../../Styles/print.css'
 
 let printTF = true;
-let arr = [];
 let docArr = [];
 let delPrint2 = false;
 
@@ -70,7 +69,6 @@ class Printer extends Component {
 
     emptyData() {
         docArr = [];
-        arr = [];
         delPrint2 = true;
         this.props.cleanUp(delPrint2);
     }
@@ -78,7 +76,7 @@ class Printer extends Component {
     handleChange = (data) => {
         let stickerAmount = document.getElementById(`kukka/${data.id}`).value;
         let i = 1;
-
+        let arr = [];
         for (i = 1; i < stickerAmount; i++) {
             arr.push({
                 kauppa: data.kauppa,

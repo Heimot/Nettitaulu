@@ -7,7 +7,7 @@ import language from '../language/language';
 // CSS
 import '../../Styles/calendarNav.css';
 
-class CalendarNav extends React.Component {
+class RullakotNav extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -23,7 +23,7 @@ class CalendarNav extends React.Component {
             <ErrorBoundary>
                 <div>
                     <Navbar className="loginNav" light toggleable color="info" fixed="top">
-                        <NavbarBrand className="kalenteriNav" onClick={() => this.setState({ calRed: true })}>{language[localStorage.getItem('language')].navCalendar}</NavbarBrand>
+                        <NavbarBrand className="kalenteriNav" onClick={() => this.setState({ calRed: true })}>{language[localStorage.getItem('language')].navRullakot}</NavbarBrand>
                     </Navbar>
                 </div>
             </ErrorBoundary>
@@ -31,4 +31,4 @@ class CalendarNav extends React.Component {
     }
 }
 
-export default CalendarNav;
+export default RullakotNav;
