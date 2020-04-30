@@ -1,17 +1,27 @@
 import { SOCKET_URL } from '../fetch/url';
 import socketIOClient from "socket.io-client";
 
-let userData = sessionStorage.getItem('userData');
+let params = {};
 
 export const userDataGrabber = (result) => {
-    userData = result.token;
+    params = {
+        query: 'token=' + result.token,
+        forceNew: true,
+        secure: true
+    }
+    window.location.reload();
 };
 
+if (sessionStorage.getItem('userData') !== null) {
+    params = {
+        query: 'token=' + sessionStorage.getItem('userData'),
+        forceNew: true,
+        secure: true
+    }
+}
+
 const endpoint = SOCKET_URL;
-const socket = socketIOClient(endpoint, {
-    query: 'token=' + sessionStorage.getItem('userData'),
-    forceNew: true,
-    secure: true
-});
+const socket = socketIOClient(endpoint, params);
+console.log(params)
 
 export default socket;
