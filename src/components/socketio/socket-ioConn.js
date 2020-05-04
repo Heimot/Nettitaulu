@@ -22,6 +22,5 @@ if (sessionStorage.getItem('userData') !== null) {
 
 const endpoint = SOCKET_URL;
 const socket = socketIOClient(endpoint, params);
-console.log(params)
 
 export default socket;

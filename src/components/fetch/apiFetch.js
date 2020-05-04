@@ -33,6 +33,7 @@ export const getData = (searchData, chosen, dataas) => {
     if (localStorage.getItem('userLocation') === "Molemmat") {
       keraysQ = "&kerays="
     }
+
     return fetch(FETCH_URL + 'orders/tables' + dateQ + valmisQ + keraysQ + kukkaQ + kauppaQ, GETwAuth)
       .then(res => res.json())
       .catch((error) => {
@@ -41,8 +42,7 @@ export const getData = (searchData, chosen, dataas) => {
   }
 }
 
-export const getTableId = (data, searchData) => {
-
+export const getTableId = (data, searchData, sort) => {
   let location = localStorage.getItem('userLocation');
   if (location === 'Molemmat') {
     location = "";

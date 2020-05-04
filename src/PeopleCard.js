@@ -162,7 +162,6 @@ class PeopleCard extends Component {
       let id;
 
       if (products.length === counts2.Arkisto && sessionStorage.getItem('siteName') === "Valmiit") {
-        console.log(products.length === counts2.Arkisto)
         valmius = "Arkistoitu";
         valmius2 = "Arkistoitu";
         switch (localStorage.getItem("userLocation")) {
@@ -815,7 +814,7 @@ class PeopleCard extends Component {
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="muokkaaBtn" className="muokkaaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].muokkaa}</Button> : undefined}
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="poistaBtn" className="poistaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>{language[localStorage.getItem('language')].poista}</Button> : undefined}
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="info" onClick={() => this.jsonToExcel(products, _id)}>{language[localStorage.getItem('language')].vieExceliin}</Button> : undefined}
-              {sessionStorage.getItem('userRole') === "Admin" ? sessionStorage.getItem('siteName') === "Valmiit" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="warning" onClick={() => this.htmlToPDF(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].talPDF}</Button> : undefined : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? sessionStorage.getItem('siteName') !== "Kerättävät" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="warning" onClick={() => this.htmlToPDF(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].talPDF}</Button> : undefined : undefined}
             </Card>
 
             <Dialog className="DelWarn" isOpen2={this.state.openWarning} onClose={(e) => this.setState({ openWarning: false })}>

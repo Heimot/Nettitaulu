@@ -531,7 +531,8 @@ export default class TopNav extends React.Component {
   handleKey = (e) => {
     try {
       if (e.keyCode === 13) {
-        this.props.getTables();
+        let dataas = true;
+        this.props.getTables(dataas);
         this.props.handleSearch(search)
         e.target.value = "";
         search = "";
@@ -543,7 +544,8 @@ export default class TopNav extends React.Component {
 
   updateSearch() {
     try {
-      this.props.getTables();
+      let dataas = true;
+      this.props.getTables(dataas);
     } catch (error) {
       console.log(error);
     };
@@ -612,7 +614,7 @@ export default class TopNav extends React.Component {
                   dateFormat="d/MM/yyyy"
                   withPortal
                 />
-                <Button className="progressBarsButton" onClick={() => this.showDayProgress()}>{language[localStorage.getItem('language')].navProgressBar}</Button>
+                <Button className="progressBarsButton" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} onClick={() => this.showDayProgress()}>{language[localStorage.getItem('language')].navProgressBar}</Button>
                 <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false, isOpen: false })}>
                   <Card className="AddCard">
 

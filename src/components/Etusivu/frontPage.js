@@ -371,7 +371,7 @@ class frontPage extends Component {
                   <CardText>{language[localStorage.getItem('language')].fpPassword}</CardText>
                   <Input name="passWord" type="password" placeholder={language[localStorage.getItem('language')].fpPassword} onChange={this.handleChange}></Input>
                   <CardText>{language[localStorage.getItem('language')].fpRole}</CardText>
-                  <Input name="Roles" type="select" placeholder={language[localStorage.getItem('language')].fpRole} onChange={this.handleChange}><option>{language[localStorage.getItem('language')].fpUser}</option><option>Admin</option><option>Kuski</option></Input>
+                  <Input name="Roles" type="select" placeholder={language[localStorage.getItem('language')].fpRole} onChange={this.handleChange}><option>User</option><option>Admin</option><option>Kuski</option></Input>
                   <CardText></CardText>
                   <Button onClick={() => this.addProfile()}>{language[localStorage.getItem('language')].fpCreate}</Button>
                 </div>

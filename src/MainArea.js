@@ -269,7 +269,7 @@ class MainArea extends Component {
 
   closeWindow() {
     progressValue = false;
-    this.showProgress(progressValue)
+    this.showProgress(progressValue);
   }
 
   render() {
@@ -326,6 +326,7 @@ class MainArea extends Component {
       return (
         <div>
           <Printer newData={this.state.printArr} print={this.state.print} printData={this.printDataNav} emptyData={this.emptyData} delPrint={delPrint} cleanUp={this.cleanUp} />
+          <Nav getTables={this.getTables} handleSearch={this.handleSearch} printData={this.printDataNav} items={DataF} items2={DataK} showProgress={this.showProgress} />
         </div>
       )
     }
