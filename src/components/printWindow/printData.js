@@ -48,7 +48,9 @@ class Printer extends Component {
                 doc.setFontSize(8)
                 doc.text(`B. FI-56466    C. ${data.kerays === "Ryönä" ? "RII1" : "TUU2"}    D. FI`, 5, 20)
                 doc.setFontSize(10)
+                doc.setFontType("bold");
                 doc.text(`Kauppa: ${data.kauppa.toString()}`, 5, 25)
+                doc.setFontType("");
                 doc.text(`Määrä: ${data.maara.toString()}`, 5, 30)
                 doc.text(`Lisätietoa: ${data.lisatieto.toString()}`, 5, 35)
                 doc.setFontSize(7)
