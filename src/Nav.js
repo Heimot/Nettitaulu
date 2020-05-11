@@ -26,6 +26,16 @@ const override = css`
   border-color: red;
 `;
 
+const override2 = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 let progressValue = false;
 let search = "";
 let idSafe = "";
@@ -85,6 +95,7 @@ export default class TopNav extends React.Component {
       testLoader: true,
       search: "kukkia",
       navRed: false,
+      loading: false,
     };
     this.toggle = this.toggle.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -133,6 +144,9 @@ export default class TopNav extends React.Component {
 
   async putData(userDatas) {
     try {
+      this.setState({
+        dLoader: true
+      })
       let ids = await userDatas.products.map(product => {
         return product._id
       })
@@ -150,7 +164,8 @@ export default class TopNav extends React.Component {
       socketConnChat();
       this.setState({
         isOpen2: false,
-        isOpen: false
+        isOpen: false,
+        dLoader: false
       })
     } catch (error) {
       console.log(error);
@@ -292,7 +307,8 @@ export default class TopNav extends React.Component {
     try {
       this.setState({
         isOpen2: true,
-        dLoader: false
+        dLoader: false,
+        loading: false
       });
       await socketConnChat();
     } catch (error) {
@@ -425,6 +441,9 @@ export default class TopNav extends React.Component {
 
   async addNewFlowers(_id, products) {
     try {
+      this.setState({
+        loading: true
+      })
       if (this.state.alreadyLoaded) {
         this.state.idArray.push(
           products.map(product => {
@@ -552,7 +571,7 @@ export default class TopNav extends React.Component {
   }
 
   showDayProgress() {
-    if(this.props.progressValue) {
+    if (this.props.progressValue) {
       progressValue = false;
       this.props.showProgress(progressValue);
       this.setState({
@@ -569,6 +588,7 @@ export default class TopNav extends React.Component {
   }
 
   render() {
+    let { loading } = this.state;
     if (this.state.redirect) {
       return (<Redirect to={'/'} />)
     }
@@ -615,9 +635,20 @@ export default class TopNav extends React.Component {
                   withPortal
                 />
                 <Button className="progressBarsButton" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} onClick={() => this.showDayProgress()}>{language[localStorage.getItem('language')].navProgressBar}</Button>
-                <Dialog isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false, isOpen: false })}>
+                <Dialog isOpen2={this.state.isOpen2} onLoad={loading} onClose={(e) => this.setState({ isOpen2: false, isOpen: false })}>
                   <Card className="AddCard">
-
+                    {
+                      loading ?
+                        <div className="tableLoaders">
+                          <Loader
+                            css={override2}
+                            height={140}
+                            width={16}
+                            color={"#123abc"}
+                            loading={loading} />
+                        </div>
+                        : undefined
+                    }
                     <div className="DataCard">
                       <div>
                         <CardTitle className="KeraysPVM">{language[localStorage.getItem('language')].navKeraysPVM}</CardTitle>
