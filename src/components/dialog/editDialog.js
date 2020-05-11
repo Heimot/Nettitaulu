@@ -60,7 +60,7 @@ class Dialog extends Component {
                     <div style={dialogDisabler}>
                     </div>
                     <div style={dialogStyles}>
-                        <Button style={dialogCloseButtonStyles} onClick={this.props.onClose}>x</Button>
+                        {!this.props.onLoad ? <Button style={dialogCloseButtonStyles} onClick={this.props.onClose}>x</Button> : undefined}
                         <div>{this.props.children}</div>
                     </div>
                 </div>
