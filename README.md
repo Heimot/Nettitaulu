@@ -47,6 +47,15 @@ NPM RUN BUILD creates a build version of the application.
 # Tulostettavassa PDF tiedostossa ei näy plant passporttia.
  # Tila: TEHTY 28/4/2020
 
+# Kalenteriin tilauksille millä rekalla lähtee
+ # Tila: TEHTY 11/05/2020
+
+# Kalenteriin kuinka monta rullakkoa menee
+ # Tila: TEHTY 11/05/2020
+
+# Buttoneille värit eri tasoihin
+ # Tila: TEHTY 11/05/2020
+
 
 
 # BUG FIXES
