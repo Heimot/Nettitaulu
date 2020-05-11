@@ -125,6 +125,7 @@ class MainArea extends Component {
     try {
       data = await getData(searchData, chosen, dataas);
       Datas = await getFlowersToAutocomplete();
+      console.log(data)
       if (Datas === undefined || Datas.message) {
         DataK = ["Error", "Error2", "DatabaseNoData"];
         DataF = ["Error", "Error2", "DatabaseNoData"];
@@ -366,7 +367,18 @@ class MainArea extends Component {
 
 
     let peopleCards = this.state.people.map(person => {
-      if ((person.products.length > 0 && person.tuusjarvi === "Ei") || (person.products.length > 0 && person.ryona === "Ei") || (localStorage.getItem("userLocation") === "Molemmat" && sessionStorage.getItem("userValmis") !== "Kerätty" && person.tuusjarvi !== "Kyllä" && person.ryona !== "Kyllä") || (sessionStorage.getItem("userValmis") === "Kerätty" && person.ryona === "Kyllä" && sessionStorage.getItem("userValmis") === "Kerätty" && person.tuusjarvi === "Kyllä")) {
+      /*
+      old filtering code before v1 when my api endpoint didnt filter data automatically! ;)
+      (person.products.length > 0 && person.tuusjarvi === "Ei") || 
+
+      (person.products.length > 0 && person.ryona === "Ei") || 
+
+      (localStorage.getItem("userLocation") === "Molemmat" && sessionStorage.getItem("userValmis") !== "Kerätty" && person.tuusjarvi !== "Kyllä" && person.ryona !== "Kyllä") || 
+
+      (sessionStorage.getItem("userValmis") === "Kerätty" && person.ryona === "Kyllä" && sessionStorage.getItem("userValmis") === "Kerätty" && person.tuusjarvi === "Kyllä")
+*/
+
+      if (person.products.length > 0) {
         return (
           <ErrorBoundary>
             <Container fluid key={person._id}>
