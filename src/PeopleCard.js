@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DatePicker from "react-datepicker";
 import { Card, CardText, CardTitle, Button, Input } from 'reactstrap';
 import Dialog from './components/dialog/editDialog';
+import Dialogs from './components/dialog/loaderDialog';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import { Redirect } from 'react-router-dom';
@@ -9,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
 import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData, postRullakko, putRullakkoToOrders, deleteRullakkoFromOrders, updateRullakkoData, postHylly, putHyllyToOrders, deleteHyllyFromOrders, updateHyllyData } from './components/fetch/apiFetch';
 import { socketConnChat, socketConnID, socketConnRullakko } from './components/socketio/socketio';
+import { css } from "@emotion/core";
 import MyAutosuggest from "./components/autoComplete/autoComplete";
 import { FETCH_URL } from "./components/fetch/url";
 import XLSX from 'xlsx';
@@ -16,6 +18,9 @@ import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import language from './components/language/language';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import Loader from "react-spinners/ScaleLoader";
+
+// Pictures
 import logo from './pictures/Heimosen_Puutarha_logo.png';
 
 //CSS files
@@ -25,6 +30,22 @@ import "./Styles/progressBar.css";
 let change = false;
 var arr = [];
 let delPrint2 = false;
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: red;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+const override2 = css`
+  display: block;
+  margin: 0 auto; 
+  border-color: red;
+`;
 
 var img = new Image();
 img.src = logo;
@@ -79,6 +100,10 @@ class PeopleCard extends Component {
       alreadyLoaded: false,
       rullakot: false,
       hyllyt: false,
+      loading: false,
+      loadingUpdt: false,
+      loadingBtn: false,
+      loadingRH: false,
     }
   }
 
@@ -144,7 +169,7 @@ class PeopleCard extends Component {
   valmis() {
     try {
       this.setState({
-        valmisWarning: true,
+        valmisWarning: true
       })
     } catch (error) {
       console.log(error);
@@ -153,6 +178,9 @@ class PeopleCard extends Component {
 
   async valmisData(_id, products, counts2) {
     try {
+      this.setState({
+        loadingBtn: true
+      });
       let ids = [];
       let valmius;
       let valmius2;
@@ -255,6 +283,9 @@ class PeopleCard extends Component {
 
   async addFlowers(_id, products) {
     try {
+      this.setState({
+        loadingUpdt: true
+      });
       if (!this.state.alreadyLoaded) {
         this.state.idArray.push(
           products.map(product => {
@@ -265,6 +296,10 @@ class PeopleCard extends Component {
 
       let i = 0;
       while (i < this.state.addFlowersValue) {
+        let keraysData = localStorage.getItem("userLocation");
+        if (localStorage.getItem("userLocation") === "Molemmat") {
+          keraysData = "Ryönä";
+        }
 
         await fetch(FETCH_URL + 'products/post', {
           method: 'POST',
@@ -273,7 +308,7 @@ class PeopleCard extends Component {
             'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
           },
           body: JSON.stringify({
-            kerays: localStorage.getItem("userLocation")
+            kerays: keraysData
           }),
         })
           .then(response => response.json())
@@ -301,7 +336,7 @@ class PeopleCard extends Component {
     };
   }
 
-  addToIDS(_id) {
+  async addToIDS(_id) {
     try {
       var filteredProducts = this.state.idArray.filter(Boolean);
       fetch(FETCH_URL + 'orders/put/id/' + _id, {
@@ -322,18 +357,27 @@ class PeopleCard extends Component {
           console.log(error);
         });
       socketConnChat();
+      this.setState({
+        loadingUpdt: false
+      });
     } catch (error) {
       console.log(error);
     };
   }
 
-  patchData(product, kauppa, _id, date) {
+  async patchData(product, kauppa, _id, date) {
     try {
+      this.setState({
+        loading: true
+      });
       this.printOut(product, kauppa, date);
       const idvalues = document.getElementById(`keratty/${product._id}`).value;
       var maara = document.getElementById(product._id).value;
-      patchKeraysData(product, idvalues, maara);
+      await patchKeraysData(product, idvalues, maara);
       socketConnID(_id);
+      this.setState({
+        loading: false
+      });
     } catch (error) {
       console.log(error);
     };
@@ -341,6 +385,9 @@ class PeopleCard extends Component {
 
   async putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date) {
     try {
+      this.setState({
+        loadingUpdt: false
+      });
       let ids = await products.map(product => {
         return product._id
       })
@@ -372,7 +419,8 @@ class PeopleCard extends Component {
       await putFlowersOrderData(asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id, keraysPVM, date);
       socketConnChat();
       this.setState({
-        isOpen2: false
+        isOpen2: false,
+        loading: false
       })
     } catch (error) {
       console.log(error);
@@ -381,11 +429,17 @@ class PeopleCard extends Component {
 
   async deleteData(product, _id) {
     try {
+      this.setState({
+        loadingUpdt: true
+      });
       document.getElementById(`kukka/${product._id}`).value = null;
       document.getElementById(`toimi/${product._id}`).value = null;
       document.getElementById(`lisatieto/${product._id}`).value = null;
-      deleteFlowerData(product);
+      await deleteFlowerData(product);
       socketConnID(_id);
+      this.setState({
+        loadingUpdt: false
+      });
     } catch (error) {
       console.log(error);
     };
@@ -532,6 +586,9 @@ class PeopleCard extends Component {
 
   async addRullakko(kauppa, _id, rullakot) {
     try {
+      this.setState({
+        loadingRH: true
+      })
       let getRIDS = [];
       let rVuosi = format(new Date(), "yyyy");
       getRIDS = rullakot.map(rullakko => {
@@ -543,6 +600,9 @@ class PeopleCard extends Component {
       await putRullakkoToOrders(_id, rullakkoIDS);
       socketConnID(_id);
       socketConnRullakko();
+      this.setState({
+        loadingRH: false
+      })
     } catch (err) {
       console.log(err);
     };
@@ -550,6 +610,9 @@ class PeopleCard extends Component {
 
   async addHylly(kauppa, _id, hyllyt) {
     try {
+      this.setState({
+        loadingRH: true
+      })
       let getRIDS = [];
       let rVuosi = format(new Date(), "yyyy");
       getRIDS = hyllyt.map(hylly => {
@@ -561,56 +624,83 @@ class PeopleCard extends Component {
       await putHyllyToOrders(_id, hyllyIDS);
       socketConnID(_id);
       socketConnRullakko();
+      this.setState({
+        loadingRH: false
+      })
     } catch (err) {
       console.log(err);
     };
   }
 
-  deleteRullakko(rullakko, _id) {
+  async deleteRullakko(rullakko, _id) {
     try {
+      this.setState({
+        loadingRH: true
+      })
       document.getElementById(`rNimi/${rullakko._id}`).value = null;
       document.getElementById(`rMaara/${rullakko._id}`).value = null;
-      deleteRullakkoFromOrders(rullakko);
+      await deleteRullakkoFromOrders(rullakko);
       socketConnID(_id);
       socketConnRullakko();
+      this.setState({
+        loadingRH: false
+      })
     } catch (err) {
       console.log(err);
     };
   }
 
-  deleteHylly(hylly, _id) {
+  async deleteHylly(hylly, _id) {
     try {
+      this.setState({
+        loadingRH: true
+      })
       document.getElementById(`rHylly/${hylly._id}`).value = null;
       document.getElementById(`rHyllyjenMaara/${hylly._id}`).value = null;
-      deleteHyllyFromOrders(hylly);
+      await deleteHyllyFromOrders(hylly);
       socketConnID(_id);
       socketConnRullakko();
+      this.setState({
+        loadingRH: false
+      })
     } catch (err) {
       console.log(err);
     };
   }
 
-  updateRullakko(rullakko, _id, kauppa) {
+  async updateRullakko(rullakko, _id, kauppa) {
     try {
+      this.setState({
+        loadingRH: true
+      })
       let rNimi = document.getElementById(`rNimi/${rullakko._id}`).value;
       let rMaara = document.getElementById(`rMaara/${rullakko._id}`).value;
-      updateRullakkoData(rullakko, kauppa, rNimi, rMaara);
+      await updateRullakkoData(rullakko, kauppa, rNimi, rMaara);
 
       socketConnID(_id);
       socketConnRullakko();
+      this.setState({
+        loadingRH: false
+      })
     } catch (err) {
       console.log(err);
     };
   }
 
-  updateHylly(hylly, kauppa, _id) {
+  async updateHylly(hylly, kauppa, _id) {
     try {
+      this.setState({
+        loadingRH: true
+      })
       let rHylly = document.getElementById(`rHylly/${hylly._id}`).value;
       let rHyllyjenMaara = document.getElementById(`rHyllyjenMaara/${hylly._id}`).value;
-      updateHyllyData(hylly, kauppa, rHylly, rHyllyjenMaara);
+      await updateHyllyData(hylly, kauppa, rHylly, rHyllyjenMaara);
 
       socketConnID(_id);
       socketConnRullakko();
+      this.setState({
+        loadingRH: false
+      })
     } catch (err) {
       console.log(err);
     };
@@ -642,6 +732,7 @@ class PeopleCard extends Component {
 
   render() {
     let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm, rullakot, hyllyt } = this.props.person;
+    let { loading, loadingUpdt, loadingBtn, loadingRH } = this.state;
 
     if (sessionStorage.getItem("userData") === null) {
       return <Redirect to="/" />
@@ -695,9 +786,21 @@ class PeopleCard extends Component {
               {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="rullakot" onClick={() => this.setState({ rullakot: true })}>{language[localStorage.getItem('language')].trolleys}</Button> : undefined}
               {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <Button className="hyllyt" onClick={() => this.setState({ hyllyt: true })}>{language[localStorage.getItem('language')].shelves}</Button> : undefined}
 
-              <Dialog className="DelWarn" isOpen2={this.state.rullakot} onClose={(e) => this.setState({ rullakot: false })}>
+              <Dialog className="DelWarn" isOpen2={this.state.rullakot} onLoad={loadingRH} onClose={(e) => this.setState({ rullakot: false })}>
                 {rullakot.map(rullakko =>
                   <div className="bottomRulla">
+                    {
+                      loadingRH ?
+                        <div className="tableLoaders">
+                          <Loader
+                            css={override}
+                            height={140}
+                            width={16}
+                            color={"#123abc"}
+                            loading={loadingRH} />
+                        </div>
+                        : undefined
+                    }
                     <Card className="rullakkoKortti">
                       <CardText className="rullakkoHolder">{language[localStorage.getItem('language')].trolleyK}</CardText>
                       <Input id={`rNimi/${rullakko._id}`} defaultValue={rullakko.rullakonNimi} type="select" className="rullakkoNimi">
@@ -716,16 +819,40 @@ class PeopleCard extends Component {
                 <Button className="addRullakko" onClick={() => this.addRullakko(kauppa, _id, rullakot)}>+</Button>
               </Dialog>
 
-              <Dialog className="DelWarn" isOpen2={this.state.hyllyt} onClose={(e) => this.setState({ hyllyt: false })}>
+              <Dialogs isOpen={loadingBtn}>
+                <div className="Spinner">
+                  <Loader
+                    css={override2}
+                    height={140}
+                    width={16}
+                    color={"#123abc"}
+                    loading={loadingBtn}
+                  />
+                </div>
+              </Dialogs>
+
+              <Dialog className="DelWarn" isOpen2={this.state.hyllyt} onLoad={loadingRH} onClose={(e) => this.setState({ hyllyt: false })}>
                 {hyllyt.map(hylly =>
                   <div className="bottomRulla">
+                    {
+                      loadingRH ?
+                        <div className="tableLoaders">
+                          <Loader
+                            css={override}
+                            height={140}
+                            width={16}
+                            color={"#123abc"}
+                            loading={loadingRH} />
+                        </div>
+                        : undefined
+                    }
                     <Card className="rullakkoKortti">
                       <CardText className="rullakkoHolder">{language[localStorage.getItem('language')].shelfK}</CardText>
                       <Input id={`rHylly/${hylly._id}`} defaultValue={hylly.hyllynNimi} type="select" className="rullakkoNimi">
                         <option>Oma</option>
                         <option>Vaihto</option>
                       </Input>
-                <CardText className="rullakkoHolder">{language[localStorage.getItem('language')].shelfKA}</CardText>
+                      <CardText className="rullakkoHolder">{language[localStorage.getItem('language')].shelfKA}</CardText>
                       <Input id={`rHyllyjenMaara/${hylly._id}`} className="rullakkoNimi" placeholder={hylly.hyllyjenMaara}></Input>
                       <Button color="primary" onClick={() => this.updateHylly(hylly, kauppa, _id)}>{language[localStorage.getItem('language')].trolleySave}</Button>
                       <Button onClick={() => this.deleteHylly(hylly, _id)}>{language[localStorage.getItem('language')].poista}</Button>
@@ -770,6 +897,19 @@ class PeopleCard extends Component {
                   </Tr>
                 </Thead>
 
+                {
+                  loading ?
+                    <div className="tableLoaders">
+                      <Loader
+                        css={override}
+                        height={140}
+                        width={16}
+                        color={"#123abc"}
+                        loading={loading} />
+                    </div>
+                    : undefined
+                }
+
                 {products.map(product => {
                   return (
                     <Tbody key={product._id}>
@@ -779,7 +919,7 @@ class PeopleCard extends Component {
                         <Td>{product.kerays}</Td>
                         <Td className="lisatietoTable">{product.lisatieto}</Td>
                         <Td>
-                          <Input className="keraamassaBtn"
+                          <Input className={product.keratty === "Odottaa keräystä" ? "keraamassaBtn" : product.keratty === "Keräyksessä" ? "kerayksessaBtn" : product.keratty === "Kerätty" ? "kerattyBtn" : product.keratty === "Ei ole" ? "eioleBtn" : "keraamassaBtn"}
                             type="button"
                             id={`keratty/${product._id}`}
                             value={localStorage.getItem('language') === "1" ? product.keratty === "Odottaa keräystä" ? language[1].statusBar1 : product.keratty === "Keräyksessä" ? language[1].statusBar2 : product.keratty === "Kerätty" ? language[1].statusBar3 : product.keratty === "Ei ole" ? language[1].statusBar4 : product.keratty : product.keratty}
@@ -828,7 +968,7 @@ class PeopleCard extends Component {
                 <CardText className="warningBox">{language[localStorage.getItem('language')].ready6 + toimituspvm}</CardText>
                 <CardText className="warningBox">{language[localStorage.getItem('language')].delete2 + products.length}</CardText>
 
-                <Button name="delete_kylla" className="dialogBtn" color="success" onClick={() => this.props.removePerson(_id, products, rullakot, hyllyt) + this.setState({ openWarning: false })}>{language[localStorage.getItem('language')].yes}</Button>
+                <Button name="delete_kylla" className="dialogBtn" color="success" onClick={() => this.props.removePerson(_id, products, rullakot, hyllyt) + this.setState({ openWarning: false, loadingBtn: true })}>{language[localStorage.getItem('language')].yes}</Button>
                 <Button name="delete_ei" className="dialogBtn" color="danger" onClick={() => this.setState({ openWarning: false })}>{language[localStorage.getItem('language')].no}</Button>
 
               </Card>
@@ -856,7 +996,7 @@ class PeopleCard extends Component {
               </Card>
             </Dialog>
 
-            <Dialog className="Muokkaus" isOpen2={this.state.isOpen2} onClose={(e) => this.setState({ isOpen2: false })}>
+            <Dialog className="Muokkaus" isOpen2={this.state.isOpen2} onLoad={loadingUpdt} onClose={(e) => this.setState({ isOpen2: false })}>
               <Card className="UpdateCards">
                 <div>
                   <CardTitle className="KeraysPVM">{language[localStorage.getItem('language')].kerayspvm}</CardTitle>
@@ -898,6 +1038,19 @@ class PeopleCard extends Component {
                       <Th>{language[localStorage.getItem('language')].lisatietoa}</Th>
                     </Tr>
                   </Thead>
+
+                  {
+                    loadingUpdt ?
+                      <div className="tableLoaders">
+                        <Loader
+                          css={override}
+                          height={140}
+                          width={16}
+                          color={"#123abc"}
+                          loading={loadingUpdt} />
+                      </div>
+                      : undefined
+                  }
 
                   {products.map(product =>
                     <Tbody key={"dialog" + _id}>
