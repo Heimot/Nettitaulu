@@ -4,6 +4,37 @@
     width: 100%;
     height: 100%;
 }
+
+.headerRekat {
+    background-color: black;
+    list-style-type: none;
+    border: solid 1px black;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    width: 100%;
+    text-align: left;
+    padding: 5px 5px 5px 5px;
+    height: auto;
+    margin-top: 10px;
+}
+
+.rullakotCalendar {
+    background-color: dodgerblue;
+    list-style-type: none;
+    border: solid 1px black;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+    width: 100%;
+    text-align: left;
+    padding: 5px 5px 5px 5px;
+    height: auto;
+    margin-top: 10px;
+}
+
 .kauppaLists {
     list-style-type: none;
     border: solid 1px black;
@@ -82,6 +113,21 @@
     transform: translate(-50%);
 }
 
+.alignBoxes {
+    padding: 10px 10px 10px 10px;
+}
+
+.textSizeKalenteriTitle {
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+.textSizeKalenteri {
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 @media screen and (min-width: 650px) {
     .calendarDiv {
         position: relative;
@@ -158,5 +204,17 @@
         top: auto;
         left: 50%;
         transform: translate(-50%);
+    }
+    .alignBoxes {
+        padding: 10px 10px 10px 10px;
+    }
+    .textSizeKalenteriTitle {
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+    .textSizeKalenteri {
+        font-size: 20px;
+        font-family: Arial, Helvetica, sans-serif;
     }
 }

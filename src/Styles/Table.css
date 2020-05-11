@@ -114,12 +114,89 @@
         word-break: break-word;
         hyphens: auto;
     }
+    .tableLoaders {
+        background-color: gray;
+        opacity: 0.5;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        align-items: center;
+        font-size: 50px;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        z-index: 1000000;
+    }
+    .tableLoaders {
+        background-color: gray;
+        opacity: 0.5;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        align-items: center;
+        font-size: 50px;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        z-index: 1000000;
+    }
     .keraamassaBtn {
         display: inline-block !important;
         width: 147px !important;
         text-align: center;
     }
-    .keraamassaBtn:hover {
+    .kerayksessaBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #d4ca15 !important;
+        color: black !important;
+    }
+    .kerattyBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #1fa30d !important;
+        color: black !important;
+    }
+    .eioleBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #db2121 !important;
+        color: yellow !important;
+    }
+    .keraamassaBtn:hover, .kerayksessaBtn:hover, .kerattyBtn:hover, .eioleBtn:hover {
+        border-color: blue;
+    }
+    .kerayksessaBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #d4ca15 !important;
+        color: black !important;
+    }
+    .kerattyBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #1fa30d !important;
+        color: black !important;
+    }
+    .eioleBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #db2121 !important;
+        color: yellow !important;
+    }
+    .keraamassaBtn:hover, .kerayksessaBtn:hover, .kerattyBtn:hover, .eioleBtn:hover {
         border-color: blue;
     }
     .kerattyMaara {
@@ -380,12 +457,49 @@
         width: 147px !important;
         text-align: center;
     }
+    .tableLoaders {
+        background-color: gray;
+        opacity: 0.5;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        align-items: center;
+        font-size: 50px;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        z-index: 1000000;
+    }
     .keraamassaBtn {
         display: inline-block !important;
         width: 147px !important;
         text-align: center;
     }
-    .keraamassaBtn:hover {
+    .kerayksessaBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #d4ca15 !important;
+        color: black !important;
+    }
+    .kerattyBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #1fa30d !important;
+        color: black !important;
+    }
+    .eioleBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #db2121 !important;
+        color: yellow !important;
+    }
+    .keraamassaBtn:hover, .kerayksessaBtn:hover, .kerattyBtn:hover, .eioleBtn:hover {
         border-color: blue;
     }
     .kerattyMaara {
@@ -627,12 +741,49 @@
         width: 147px !important;
         text-align: center;
     }
+    .tableLoaders {
+        background-color: gray;
+        opacity: 0.5;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        align-items: center;
+        font-size: 50px;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        z-index: 1000000;
+    }
     .keraamassaBtn {
         display: inline-block !important;
         width: 147px !important;
         text-align: center;
     }
-    .keraamassaBtn:hover {
+    .kerayksessaBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #d4ca15 !important;
+        color: black !important;
+    }
+    .kerattyBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #1fa30d !important;
+        color: black !important;
+    }
+    .eioleBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #db2121 !important;
+        color: yellow !important;
+    }
+    .keraamassaBtn:hover, .kerayksessaBtn:hover, .kerattyBtn:hover, .eioleBtn:hover {
         border-color: blue;
     }
     .kerattyMaara {
@@ -874,12 +1025,49 @@
         width: 147px !important;
         text-align: center;
     }
+    .tableLoaders {
+        background-color: gray;
+        opacity: 0.5;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        align-items: center;
+        font-size: 50px;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        z-index: 1000000;
+    }
     .keraamassaBtn {
         display: inline-block !important;
         width: 147px !important;
         text-align: center;
     }
-    .keraamassaBtn:hover {
+    .kerayksessaBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #d4ca15 !important;
+        color: black !important;
+    }
+    .kerattyBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #1fa30d !important;
+        color: black !important;
+    }
+    .eioleBtn {
+        display: inline-block !important;
+        width: 147px !important;
+        text-align: center;
+        background-color: #db2121 !important;
+        color: yellow !important;
+    }
+    .keraamassaBtn:hover, .kerayksessaBtn:hover, .kerattyBtn:hover, .eioleBtn:hover {
         border-color: blue;
     }
     .kerattyMaara {
