@@ -749,3 +749,23 @@ export const getPalautetut = (year) => {
       console.log(error);
     });
 }
+
+export const putRekka = (id, rekkaID) => {
+  fetch(FETCH_URL + 'orders/put/id/' + id, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      rekka: rekkaID
+    }),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
