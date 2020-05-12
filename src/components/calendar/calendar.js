@@ -180,6 +180,17 @@ class Calendar extends Component {
         })
     }
 
+    pakkausRekkaanBtn = (e) => {
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+        let id = e.target.value;
+        let rekkaID = e.target.id
+        putRekka(id, rekkaID);
+        this.setState({
+            isOpen: false
+        })
+        console.log(e.target.id)
+    }
+
     sumRullakot(doc) {
         try {
             return (<li className="rullakotCalendar">Rullakot: {doc.rullakot.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)}</li>)
@@ -213,7 +224,31 @@ class Calendar extends Component {
                             <CardText className="textSizeKalenteri">{kauppa}</CardText>
                             <CardText className="textSizeKalenteri">{id}</CardText>
                             <CardText className="textSizeKalenteri">{`Rekan numero: ${rekka}`}</CardText>
-                            <Input id={id}></Input>
+                            <ol className="btnListCalendar">
+                                <li>
+                                    <Button id="MEY-934" value={id} className="btnListCalendarButton" onClick={this.pakkausRekkaanBtn}>MEY-934</Button>
+                                </li>
+                                <li>
+                                    <Button id="LJG-927" value={id} className="btnListCalendarButton" onClick={this.pakkausRekkaanBtn}>LJG-927</Button>
+                                </li>
+                                <li>
+                                    <Button id="UBY-608" value={id} className="btnListCalendarButton" onClick={this.pakkausRekkaanBtn}>UBY-608</Button>
+                                </li>
+                                <li>
+                                    <Button id="LYB-270" value={id} className="btnListCalendarButton" onClick={this.pakkausRekkaanBtn}>LYB-270</Button>
+                                </li>
+                                <li>
+                                    <Button id="KIX-767" value={id} className="btnListCalendarButton" onClick={this.pakkausRekkaanBtn}>KIX-767</Button>
+                                </li>
+                                <li>
+                                    <Button id="DAF" value={id} className="btnListCalendarButton" onClick={this.pakkausRekkaanBtn}>DAF</Button>
+                                </li>
+                                <li>
+                                    <Button id="Schenker nouto" value={id} className="btnListCalendarButton" onClick={this.pakkausRekkaanBtn}>Schenker nouto</Button>
+                                </li>
+                            </ol>
+                            <CardText className="textSizeKalenteri">Custom input mikäli rekkaa ei löydy</CardText>
+                            <Input placeholder="Rekisteri" id={id}></Input>
                             <Button onClick={() => this.pakkausRekkaan(id)}>{language[localStorage.getItem('language')].trolleySave}</Button>
                         </Card>
                     </Dialog>
@@ -232,37 +267,37 @@ class Calendar extends Component {
                                 <Tr>
                                     <Td>
                                         {array2[0].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => { //<div>{doc.rekka !== lastVal ? <li className="headerRekat">{doc.rekka}</li> : undefined}<li className="kauppaLists"><CardText>{doc.rekka}</CardText><CardText>{doc.kauppa}</CardText><CardText style={{ position: "absolute", visibility: "hidden"}}>{lastVal = doc.rekka}</CardText></li></div>
-                                            return (<div>{doc.rekka !== lastVals.val1 ? <li onClick={() => this.setState(prevState =>({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val1 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val1 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val1 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[1].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val2 ? <li onClick={() => this.setState(prevState =>({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val2 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val2 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val2 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[2].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val3 ? <li onClick={() => this.setState(prevState =>({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val3 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val3 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val3 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[3].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val4 ? <li onClick={() => this.setState(prevState =>({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val4 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val4 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val4 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[4].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val5 ? <li onClick={() => this.setState(prevState =>({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val5 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val5 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val5 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[5].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val6 ? <li onClick={() => this.setState(prevState =>({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val6 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val6 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val6 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[6].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val7 ? <li onClick={() => this.setState(prevState =>({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val7 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val7 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val7 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                 </Tr>
