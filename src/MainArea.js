@@ -110,7 +110,7 @@ class MainArea extends Component {
   getTable = async (data) => {
     try {
       let { people } = this.state;
-      let dataTable = [await getTableId(data, searchData)];
+      let dataTable = [await getTableId(data, searchData, chosen)];
       var updtData = people.map(obj => dataTable.find(o => o._id === obj._id) || obj);
       this.setState({
         people: updtData
@@ -125,7 +125,6 @@ class MainArea extends Component {
     try {
       data = await getData(searchData, chosen, dataas);
       Datas = await getFlowersToAutocomplete();
-      console.log(data)
       if (Datas === undefined || Datas.message) {
         DataK = ["Error", "Error2", "DatabaseNoData"];
         DataF = ["Error", "Error2", "DatabaseNoData"];

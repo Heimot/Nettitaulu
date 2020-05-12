@@ -551,14 +551,23 @@ export default class TopNav extends React.Component {
     try {
       if (e.keyCode === 13) {
         let dataas = true;
+        let searchChosen = this.state.search;
         this.props.getTables(dataas);
-        this.props.handleSearch(search)
+        this.props.handleSearch(search, searchChosen)
         e.target.value = "";
         search = "";
       }
     } catch (error) {
       console.log(error);
     };
+  }
+
+  stopSearch() {
+    let dataas = true;
+    let search = "";
+    let searchChosen = "";
+    this.props.handleSearch(search, searchChosen);
+    this.props.getTables(dataas);
   }
 
   updateSearch() {
@@ -615,6 +624,7 @@ export default class TopNav extends React.Component {
               <div className="searchDiv">
                 <Button name="SearchBtn" className="SearchBTN" color="success" onDoubleClick={() => this.updateSearch()} onClick={() => this.changeSearch()}>^</Button>
                 <Input className="SearchInput" placeholder={`${language[localStorage.getItem('language')].search} ${this.state.search === "kukkia" ? language[localStorage.getItem('language')].navFlowers : language[localStorage.getItem('language')].navKaupat}`} type="string" onChange={this.searchInput} onKeyDown={this.handleKey} />
+                <Button name="SearchBtn" className="ReSearchData" color="primary" onClick={() => this.stopSearch()}></Button>
               </div>
               : undefined}
 
