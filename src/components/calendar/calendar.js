@@ -9,6 +9,8 @@ import Loader from 'react-spinners/ScaleLoader';
 import { FETCH_URL } from '../fetch/url';
 import { css } from "@emotion/core";
 import language from '../language/language';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { putRekka } from '../fetch/apiFetch';
 
 // CSS
@@ -199,6 +201,86 @@ class Calendar extends Component {
         }
     }
 
+    pushPDF0 = (doc) => {
+        let rekat = array2[0].filter(docs => { return( docs.rekka === doc.rekka )})
+        let rullakot = doc.rullakot.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)
+        this.pushToPDF(rekat);
+    }
+
+    pushPDF1 = (doc) => {
+        let rekat = array2[1].filter(docs => { return( docs.rekka === doc.rekka )})
+        let rullakot = doc.rullakot.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)
+        this.pushToPDF(rekat, rullakot);
+    }
+
+    pushPDF2 = (doc) => {
+        let rekat = array2[2].filter(docs => { return( docs.rekka === doc.rekka )})
+        let rullakot = doc.rullakot.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)
+        this.pushToPDF(rekat, rullakot);
+    }
+
+    pushPDF3 = (doc) => {
+        let rekat = array2[3].filter(docs => { return( docs.rekka === doc.rekka )})
+        let rullakot = doc.rullakot.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)
+        this.pushToPDF(rekat, rullakot);
+    }
+
+    pushPDF4 = (doc) => {
+        let rekat = array2[4].filter(docs => { return( docs.rekka === doc.rekka )})
+        let rullakot = doc.rullakot.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)
+        this.pushToPDF(rekat, rullakot);
+    }
+
+    pushPDF5 = (doc) => {
+        let rekat = array2[5].filter(docs => { return( docs.rekka === doc.rekka )})
+        let rullakot = doc.rullakot.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)
+        this.pushToPDF(rekat, rullakot);
+    }
+
+    pushPDF6 = (doc) => {
+        let rekat = array2[6].filter(docs => { return( docs.rekka === doc.rekka )})
+        let rullakot = doc.rullakot.map(item => item.rullakoidenMaara).reduce((prev, curr) => prev + curr, 0)
+        this.pushToPDF(rekat, rullakot);
+    }
+
+    pushToPDF = (rekat, rullakot) => {
+        try {
+            var doc = new jsPDF();
+            let i = 0;
+            let b = 1;
+            let rekatLenght = rekat.length;
+            let result = [];
+
+            if(rullakot === undefined) {
+                rullakot = 0;
+            }
+      
+            for (i = 0; i < rekatLenght; i++) {
+              result.push([rekat[i].kauppa.toString(), rekat[i].rekka.toString()])
+            }
+
+            var header = function () {
+                doc.setFontSize(10)
+                doc.text(`Rullakoiden määrä: ${rullakot.toString()}`, 85, 10)
+              };
+      
+            doc.autoTable({
+              head: [['Kauppa', 'Rekka']],
+              body: result,
+              margin: { horizontal: 0, top: 20 },
+              bodyStyles: { valign: 'top' },
+              styles: { overflow: 'linebreak', cellWidth: 'wrap' },
+              columnStyles: { text: { cellWidth: 'auto' } },
+              didDrawPage: header
+            });
+              
+      
+            doc.save('rekat.pdf');
+          } catch (err) {
+            console.log(err);
+          };
+    }
+
     render() {
         var thisWeekDates = this.getThisWeekDates();
         let { array, array2, id, kauppa, rekka, showRullakot, loading } = this.state;
@@ -267,37 +349,37 @@ class Calendar extends Component {
                                 <Tr>
                                     <Td>
                                         {array2[0].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => { //<div>{doc.rekka !== lastVal ? <li className="headerRekat">{doc.rekka}</li> : undefined}<li className="kauppaLists"><CardText>{doc.rekka}</CardText><CardText>{doc.kauppa}</CardText><CardText style={{ position: "absolute", visibility: "hidden"}}>{lastVal = doc.rekka}</CardText></li></div>
-                                            return (<div>{doc.rekka !== lastVals.val1 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val1 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val1 ? <li /*onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))}*/ className="headerRekat">Rekka: {doc.rekka} <Button onClick={() => this.pushPDF0(doc)}>+</Button> {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val1 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[1].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val2 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val2 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val2 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} <Button onClick={() => this.pushPDF1(doc)}>+</Button> {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val2 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[2].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val3 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val3 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val3 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} <Button onClick={() => this.pushPDF2(doc)}>+</Button> {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val3 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[3].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val4 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val4 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val4 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} <Button onClick={() => this.pushPDF3(doc)}>+</Button> {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val4 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[4].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val5 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val5 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val5 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} <Button onClick={() => this.pushPDF4(doc)}>+</Button> {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val5 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[5].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val6 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val6 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val6 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} <Button onClick={() => this.pushPDF5(doc)}>+</Button> {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val6 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[6].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val7 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val7 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val7 ? <li onClick={() => this.setState(prevState => ({ showRullakot: !prevState.showRullakot }))} className="headerRekat">Rekka: {doc.rekka} <Button onClick={() => this.pushPDF6(doc)}>+</Button> {doc.rullakot !== undefined ? showRullakot === true ? <CardText>{this.sumRullakot(doc)}</CardText> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val7 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                 </Tr>
