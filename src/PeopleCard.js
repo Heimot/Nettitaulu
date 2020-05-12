@@ -513,7 +513,7 @@ class PeopleCard extends Component {
     }
   }
 
-  patchTarkastettu(product) {
+  patchTarkastettu(product, _id) {
     let valmius;
     switch (product.tarkastettu) {
       case "Ei":
@@ -533,7 +533,7 @@ class PeopleCard extends Component {
         break;
     }
     patchTarkastettuProductsData(product, valmius);
-    socketConnChat();
+    socketConnID(_id);
   }
 
   htmlToPDF(_id, products, kauppa, date, alisatieto, toimituspvm) {
@@ -913,7 +913,7 @@ class PeopleCard extends Component {
                 {products.map(product => {
                   return (
                     <Tbody key={product._id}>
-                      <Tr className={product.tarkastettu === "Ei" ? undefined : product.tarkastettu === "Arkisto" ? "ArkistoRow" : "ValmisRow"} onDoubleClick={sessionStorage.getItem('btnName') === "Valmiit" ? () => this.patchTarkastettu(product) : undefined}>
+                      <Tr className={product.tarkastettu === "Ei" ? undefined : product.tarkastettu === "Arkisto" ? "ArkistoRow" : "ValmisRow"} onDoubleClick={sessionStorage.getItem('btnName') === "Valmiit" ? () => this.patchTarkastettu(product, _id) : undefined}>
                         <Td className="KukkaTable">{product.kukka}</Td>
                         <Td>{product.toimi}</Td>
                         <Td>{product.kerays}</Td>
