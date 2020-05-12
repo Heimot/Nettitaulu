@@ -5,6 +5,16 @@
     height: 100%;
 }
 
+.btnListCalendar {
+    list-style-type: none;
+}
+
+.btnListCalendarButton {
+    width: 250px;
+    font-size: 18px !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
 .headerRekat {
     background-color: black;
     list-style-type: none;
@@ -129,6 +139,9 @@
 }
 
 @media screen and (min-width: 650px) {
+    .btnListCalendar {
+        list-style-type: none;
+    }
     .calendarDiv {
         position: relative;
         margin-top: 90px;

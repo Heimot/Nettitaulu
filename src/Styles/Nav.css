@@ -75,6 +75,16 @@
         height: 35px !important;
         border: white 1px solid !important;
     }
+    .ReSearchData {
+        font-size: 20px !important;
+        width: 35 !important;
+        height: 35px !important;
+        border: white 1px solid !important;
+        background-image: url(../pictures/icon.png);
+        background-position: center;
+        background-size: 30px 30px;
+        background-repeat: no-repeat;
+    }
     .searchDiv {
         position: absolute;
         font-size: 20px;
@@ -240,6 +250,16 @@
         width: 25px !important;
         height: 25px !important;
         border: white 1px solid !important;
+    }
+    .ReSearchData {
+        font-size: 20px !important;
+        width: 25 !important;
+        height: 25px !important;
+        border: white 1px solid !important;
+        background-image: url(../pictures/icon.png);
+        background-position: center;
+        background-size: 20px 20px;
+        background-repeat: no-repeat;
     }
     .DataCard {
         width: 100%;
@@ -414,6 +434,16 @@
         height: 35px !important;
         border: white 1px solid !important;
     }
+    .ReSearchData {
+        font-size: 20px !important;
+        width: 35 !important;
+        height: 35px !important;
+        border: white 1px solid !important;
+        background-image: url(../pictures/icon.png);
+        background-position: center;
+        background-size: 30px 30px;
+        background-repeat: no-repeat;
+    }
     .searchDiv {
         position: absolute;
         font-size: 20px;
@@ -578,8 +608,18 @@
     .SearchBTN {
         font-size: 20px !important;
         width: 35 !important;
-        height: 40px !important;
+        height: 35px !important;
         border: white 1px solid !important;
+    }
+    .ReSearchData {
+        font-size: 20px !important;
+        width: 35 !important;
+        height: 35px !important;
+        border: white 1px solid !important;
+        background-image: url(../pictures/icon.png);
+        background-position: center;
+        background-size: 30px 30px;
+        background-repeat: no-repeat;
     }
     .searchDiv {
         position: absolute;
