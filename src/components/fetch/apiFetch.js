@@ -777,3 +777,80 @@ export const putRekka = (id, rekkaID) => {
       console.log(error);
     });
 }
+
+export const putInfoCalendar = (createdId, infoData) => {
+  fetch(FETCH_URL + 'calendar/put/id/' + createdId, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      info: infoData
+    }),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const createInfoCalendar = (createdId, infoData) => {
+  fetch(FETCH_URL + 'calendar/post', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      _id: createdId,
+      info: infoData
+    }),
+  })
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const getCalendarInfo = (createdId) => {
+  var GETwAuth = {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    }
+  }
+
+  return fetch(FETCH_URL + 'calendar/get/id/' + createdId, GETwAuth)
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const putOrdersOrder = (id, position) => {
+  fetch(FETCH_URL + 'orders/patch/id/' + id, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify([
+      {
+        propName: "position",
+        value: position,
+      }
+    ]),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
