@@ -478,12 +478,12 @@ class PeopleCard extends Component {
 
   jsonToExcel(products, _id) {
     try {
-      var fileName = "EXCEL"
+      
+      var fileName = "EXCEL";
       var workSheet = XLSX.utils.json_to_sheet(products);
       var wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, workSheet, fileName);
-
-      XLSX.writeFile(wb, _id + ".xlsx")
+      XLSX.writeFile(wb, _id + ".xlsx");
     } catch (error) {
       console.log(error);
     };
