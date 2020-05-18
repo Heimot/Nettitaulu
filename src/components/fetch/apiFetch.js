@@ -832,6 +832,22 @@ export const getCalendarInfo = (createdId) => {
     });
 }
 
+export const getAllIdsToRemove = (_id) => {
+  var GETwAuth = {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    }
+  }
+
+  return fetch(FETCH_URL + 'orders/get/all/ids/' + _id, GETwAuth)
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 export const putOrdersOrder = (id, position) => {
   fetch(FETCH_URL + 'orders/patch/id/' + id, {
     method: 'PATCH',
