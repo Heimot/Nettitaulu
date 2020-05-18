@@ -104,6 +104,7 @@ class PeopleCard extends Component {
       loadingUpdt: false,
       loadingBtn: false,
       loadingRH: false,
+      orderInfo: '',
     }
   }
 
@@ -383,7 +384,7 @@ class PeopleCard extends Component {
     };
   }
 
-  async putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date) {
+  async putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date, orderLisatieto) {
     try {
       this.setState({
         loadingUpdt: false
@@ -402,21 +403,22 @@ class PeopleCard extends Component {
 
         await updateFlowersEdit(products, id, kukka, toimi, kerays, lisatieto);
       }
-      this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date)
+      this.putOrderData(_id, kauppa, alisatieto, toimituspvm, date, orderLisatieto)
       socketConnChat();
     } catch (error) {
       console.log(error);
     };
   }
 
-  async putOrderData(_id, kauppa, alisatieto, toimituspvm, date) {
+  async putOrderData(_id, kauppa, alisatieto, toimituspvm, date, orderLisatieto) {
     try {
       var asiakas = document.getElementById(`kauppa/${_id}`).value;
       var asiakaslisatieto = this.state.customerInfo;
       var toimitusaika = this.state.ToimitusPVM;
       var keraysPVM = format(this.state.startDate, "dd/MM/yyyy");
+      var orderLisatieto2 = this.state.orderInfo;
 
-      await putFlowersOrderData(asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id, keraysPVM, date);
+      await putFlowersOrderData(asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id, keraysPVM, date, orderLisatieto2, orderLisatieto);
       socketConnChat();
       this.setState({
         isOpen2: false,
@@ -478,7 +480,7 @@ class PeopleCard extends Component {
 
   jsonToExcel(products, _id) {
     try {
-      
+
       var fileName = "EXCEL";
       var workSheet = XLSX.utils.json_to_sheet(products);
       var wb = XLSX.utils.book_new();
@@ -731,7 +733,7 @@ class PeopleCard extends Component {
   }
 
   render() {
-    let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm, rullakot, hyllyt } = this.props.person;
+    let { tuusjarvi, ryona, _id, products, kauppa, date, alisatieto, toimituspvm, rullakot, hyllyt, orderLisatieto } = this.props.person;
     let { loading, loadingUpdt, loadingBtn, loadingRH } = this.state;
 
     if (sessionStorage.getItem("userData") === null) {
@@ -779,6 +781,7 @@ class PeopleCard extends Component {
               <CardTitle>{kauppa}</CardTitle>
               <CardText>{_id}</CardText>
               <CardText className="lisatieto">{alisatieto}</CardText>
+              <CardText className="orderLisatietoTable">{orderLisatieto}</CardText>
               <CardText></CardText>
               {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuR}{ryona === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : ryona === "Arkistoitu" ? "Arkistoitu" : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
               {sessionStorage.getItem("userValmis") === "Kerätty" || sessionStorage.getItem("userValmis") === "Arkistoitu" ? <CardText>{language[localStorage.getItem('language')].tarkastettuT}{tuusjarvi === "Kyllä" ? language[localStorage.getItem('language')].tarkastettuAnswerYes : tuusjarvi === "Arkistoitu" ? "Arkistoitu" : language[localStorage.getItem('language')].tarkastettuAnswerNo}</CardText> : undefined}
@@ -1022,6 +1025,13 @@ class PeopleCard extends Component {
                     placeholder={alisatieto}
                     onChange={this.handleChange}>
                   </Input>
+
+                  <Input
+                    className="CustomerOrderInfo"
+                    name="orderInfo"
+                    placeholder={orderLisatieto}
+                    onChange={this.handleChange}>
+                  </Input>
                 </div>
 
                 <CardTitle>
@@ -1110,7 +1120,7 @@ class PeopleCard extends Component {
                   </Input>
                 </div>
                 <div className="taulukkoDivider"></div>
-                <Button name="paivita_taulukon_tiedot" color="success" onClick={() => this.putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date)}>{language[localStorage.getItem('language')].paivita}</Button>
+                <Button name="paivita_taulukon_tiedot" color="success" onClick={() => this.putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date, orderLisatieto)}>{language[localStorage.getItem('language')].paivita}</Button>
               </Card>
             </Dialog>
           </div>

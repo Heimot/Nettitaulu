@@ -96,6 +96,7 @@ export default class TopNav extends React.Component {
       search: "kukkia",
       navRed: false,
       loading: false,
+      orderInfo: '',
     };
     this.toggle = this.toggle.bind(this);
     this.logOut = this.logOut.bind(this);
@@ -134,8 +135,9 @@ export default class TopNav extends React.Component {
       var asiakaslisatieto = this.state.customerInfo;
       var keraysPVM = format(this.state.startDate2, "dd/MM/yyyy");
       var toimitusaika = format(this.state.startDate3, "dd/MM/yyyy");
+      var orderLisatieto = this.state.orderInfo;
 
-      await putFlowersCreatedOrderData(asiakas, asiakaslisatieto, toimitusaika, keraysPVM, userDatas);
+      await putFlowersCreatedOrderData(asiakas, asiakaslisatieto, toimitusaika, keraysPVM, userDatas, orderLisatieto);
       await socketConnChat();
     } catch (error) {
       console.log(error);
@@ -684,6 +686,13 @@ export default class TopNav extends React.Component {
                           type="textarea"
                           name="customerInfo"
                           placeholder={userDatas.alisatieto}
+                          onChange={this.handleChange}>
+                        </Input>
+
+                        <Input
+                          className="CustomerInfo2"
+                          name="orderInfo"
+                          placeholder={"Ostotilaus"}
                           onChange={this.handleChange}>
                         </Input>
 
