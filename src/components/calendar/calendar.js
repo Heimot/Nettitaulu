@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CardText, Button, Card, Input } from 'reactstrap';
+import { CardText, Button, Card, Input, CardTitle } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
@@ -12,7 +12,7 @@ import { css } from "@emotion/core";
 import language from '../language/language';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { putRekka, putInfoCalendar, createInfoCalendar, getCalendarInfo, putOrdersOrder } from '../fetch/apiFetch';
+import { putRekka, putInfoCalendar, createInfoCalendar, getCalendarInfo, putOrdersOrder, putOrdersKeraysPos, putKeraysInfoCalendar, createKeraysInfoCalendar } from '../fetch/apiFetch';
 
 // CSS
 import '../../Styles/calendar.css';
@@ -22,7 +22,9 @@ let array2 = [[{ "kauppa": "Loading...." }], [{ "kauppa": "Loading...." }], [{ "
 let i = 0;
 let y = 0;
 let nextWeek = 0;
-let lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null }
+let lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+let lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+
 
 const override = css`
   display: block;
@@ -54,6 +56,8 @@ class Calendar extends Component {
             counterI: null,
             orderList: [],
             redirect: false,
+            orderListsNotReady: false,
+            infoBoxNotReady: false,
         }
     }
 
@@ -64,7 +68,8 @@ class Calendar extends Component {
                     redirect: true
                 }));
             }
-            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
             this.testData();
             this.testData2();
         } catch (err) {
@@ -74,7 +79,8 @@ class Calendar extends Component {
 
     async testData() {
         try {
-            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
             var now = moment();
             i = 0;
             array = [];
@@ -98,7 +104,8 @@ class Calendar extends Component {
 
     async testData2() {
         try {
-            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
             var now = moment();
             y = 0;
             array2 = [];
@@ -120,7 +127,8 @@ class Calendar extends Component {
     }
 
     getThisWeekDates() {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
         var weekDates = [];
 
         for (var i = 1; i <= 7; i++) {
@@ -133,7 +141,8 @@ class Calendar extends Component {
 
     testGet(days) {
         try {
-            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
             var GETwAuth = {
                 method: 'GET',
                 headers: {
@@ -153,7 +162,8 @@ class Calendar extends Component {
 
     testGet2(days) {
         try {
-            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
             var GETwAuth = {
                 method: 'GET',
                 headers: {
@@ -173,7 +183,8 @@ class Calendar extends Component {
     }
 
     nextWeek() {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
         this.setState({ loading: true });
         nextWeek = nextWeek + 7;
         this.testData();
@@ -181,7 +192,8 @@ class Calendar extends Component {
     }
 
     lastWeek() {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
         this.setState({ loading: true });
         nextWeek = nextWeek - 7;
         this.testData();
@@ -189,7 +201,8 @@ class Calendar extends Component {
     }
 
     pakkausRekkaan(id) {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
         let rekkaID = document.getElementById(id).value;
         putRekka(id, rekkaID);
         this.setState({
@@ -198,7 +211,8 @@ class Calendar extends Component {
     }
 
     pakkausRekkaanBtn = (e) => {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
         let id = e.target.value;
         let rekkaID = e.target.id
         putRekka(id, rekkaID);
@@ -219,7 +233,8 @@ class Calendar extends Component {
     pushPDF = async (doc, i, thisWeekDates) => {
         try {
             let dataInfo = "";
-            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
             let rekat = array2[i].filter(docs => { return (docs.rekka === doc.rekka) })
             let rullakoidenMaara = array2[i].filter(docs => docs.rekka === doc.rekka).map(docs => (docs.rullakot.map(item => item.rullakoidenMaara)).reduce((a, b) => a + b, 0))
             let rullakot = rullakoidenMaara.reduce((a, b) => a + b, 0);
@@ -239,7 +254,8 @@ class Calendar extends Component {
 
     pushToPDF = (rekat, rullakot, dataInfo) => {
         try {
-            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
             var doc = new jsPDF();
             let i = 0;
             let b = 1;
@@ -281,7 +297,8 @@ class Calendar extends Component {
     }
 
     async calendarInfo() {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
         let { infoData, date, rekkaUsed, createNew } = this.state;
         let idCreated = date.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '') + rekkaUsed.replace(/\s/g, '').replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '');
         if (createNew) {
@@ -290,12 +307,26 @@ class Calendar extends Component {
             putInfoCalendar(idCreated, infoData);
         }
         this.setState({ infoBox: false })
+    }
+
+    async calendarInfo2() {
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        let { infoData, date, rekkaUsed, createNew } = this.state;
+        let idCreated = date.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '') + rekkaUsed;
+        if (createNew) {
+            createKeraysInfoCalendar(idCreated, infoData);
+        } else {
+            putKeraysInfoCalendar(idCreated, infoData);
+        }
+        this.setState({ infoBox: false })
 
     }
 
     async stateChangesGet(doc, thisWeekDates, i) {
         try {
-            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
             this.setState({
                 infoBox: true,
                 rekkaUsed: doc.rekka,
@@ -319,8 +350,36 @@ class Calendar extends Component {
         }
     }
 
+    async stateChangesGet2(doc, thisWeekDates, i) {
+        try {
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            this.setState({
+                infoBoxNotReady: true,
+                rekkaUsed: doc.keraysPosition,
+                date: thisWeekDates[i].format('DD/MM/YYYY'),
+                infoData: "",
+                createNew: false
+            });
+            let idCreated = thisWeekDates[i].format('DD/MM/YYYY').replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '') + doc.keraysPosition;
+            let data = await getCalendarInfo(idCreated);
+            if (data.message !== "NoDataFound") {
+                this.setState({
+                    infoData: data.calendar.keraysInfo
+                });
+            } else {
+                this.setState({
+                    createNew: true
+                });
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     startOrdering(doc, i) {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
         this.setState({
             orderLists: true,
             counterI: i,
@@ -328,14 +387,31 @@ class Calendar extends Component {
         })
     }
 
+    startOrdering2(doc, i) {
+        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+        this.setState({
+            orderListsNotReady: true,
+            counterI: i,
+            orderList: array[i].filter(docs => { return docs.keraysPosition === doc.keraysPosition }).sort((a, b) => { return a.keraysPosition - b.keraysPosition })
+        })
+    }
+
     openOptions(doc, thisWeekDates, i) {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null }
-        let { showRullakot } = this.state;
-        let data = doc.rekka + thisWeekDates[i].format('DD/MM/YYYY');
-        if (showRullakot !== data) {
-            this.setState({ showRullakot: data })
-        } else {
-            this.setState({ showRullakot: "" })
+        try {
+            if (sessionStorage.getItem('userRole') === 'Admin') {
+                lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+                lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+                let { showRullakot } = this.state;
+                let data = doc.rekka + thisWeekDates[i].format('DD/MM/YYYY');
+                if (showRullakot !== data) {
+                    this.setState({ showRullakot: data })
+                } else {
+                    this.setState({ showRullakot: "" })
+                }
+            }
+        } catch (err) {
+            console.log(err)
         }
     }
 
@@ -350,6 +426,27 @@ class Calendar extends Component {
         })
     }
 
+    savePositionChanges2(orderList) {
+        orderList.map(doc => {
+            let id = doc._id;
+            let position = document.getElementById(`${doc.rekka}/${doc._id}`).value;
+            if (position.length <= 0 && !isNaN(position)) {
+                position = doc.keraysPosition;
+            }
+            putOrdersKeraysPos(id, position);
+        })
+    }
+
+    openNewRegisterBox(doc) {
+        try {
+            if (sessionStorage.getItem('userRole') === "Admin") {
+                this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     handleChange = (e) => {
         this.setState({
             infoData: e.target.value
@@ -358,7 +455,7 @@ class Calendar extends Component {
 
     render() {
         var thisWeekDates = this.getThisWeekDates();
-        let { array, array2, id, kauppa, rekka, showRullakot, loading, infoBox, rekkaUsed, date, infoData, orderLists, orderList, counterI } = this.state;
+        let { array, array2, id, kauppa, rekka, showRullakot, loading, infoBox, rekkaUsed, date, infoData, orderLists, orderList, orderListsNotReady, counterI, infoBoxNotReady } = this.state;
 
         if (loading) {
             return (<div className="middleLoader"><CardText>Loading...</CardText>
@@ -423,6 +520,15 @@ class Calendar extends Component {
                             <Button onClick={() => this.calendarInfo()}>Tallenna</Button>
                         </Card>
                     </Dialog>
+                    <Dialog className="DelWarn" isOpen2={infoBoxNotReady} onClose={(e) => this.setState({ infoBoxNotReady: false })}>
+                        <Card className="alignBoxes">
+                            <CardText className="textSizeKalenteriTitle">Lisätietoa</CardText>
+                            <CardText className="textSizeKalenteri">{date}</CardText>
+                            <CardText className="textSizeKalenteri">Järjestys nro: {rekkaUsed}</CardText>
+                            <Input value={infoData} placeholder="Lisätiedot" onChange={this.handleChange} type="textarea"></Input>
+                            <Button onClick={() => this.calendarInfo2()}>Tallenna</Button>
+                        </Card>
+                    </Dialog>
                     <Dialog className="DelWarn" isOpen2={orderLists} onClose={(e) => this.setState({ orderLists: false })}>
                         <Card>
                             <Td>
@@ -431,6 +537,17 @@ class Calendar extends Component {
                                 })}
                             </Td>
                             <Button onClick={() => this.savePositionChanges(orderList)}>Tallenna järjestys</Button>
+                        </Card>
+                    </Dialog>
+                    <Dialog className="DelWarn" isOpen2={orderListsNotReady} onClose={(e) => this.setState({ orderListsNotReady: false })}>
+                        <Card>
+                            <CardTitle>Keräys järjestys</CardTitle>
+                            <Td>
+                                {orderList.map(doc => {
+                                    return (<div>{doc.keraysPosition !== lastVals2.val8 ? <div className="headerRekat2"><CardText className="headerOrderRekka">Rekka: {doc.keraysPosition}</CardText> <CardText className="headerOrder">Järjestys numero: </CardText></div> : undefined}<li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}><div className="flexWidth"><CardText className="kauppaLI">{doc.kauppa}</CardText><Input id={`${doc.rekka}/${doc._id}`} placeholder={doc.keraysPosition} className="positionLI"></Input></div><CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val8 = doc.keraysPosition}</CardText></li></div>)
+                                })}
+                            </Td>
+                            <Button onClick={() => this.savePositionChanges2(orderList)}>Tallenna järjestys</Button>
                         </Card>
                     </Dialog>
                     <div className="tableBtnContainer">
@@ -448,37 +565,37 @@ class Calendar extends Component {
                                 <Tr>
                                     <Td>
                                         {array2[0].sort((a, b) => { return a.position - b.position }).sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val1 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 0)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[0].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 0, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 0)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 0)}></Button></div><CardText>{this.sumRullakot(i = 0, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val1 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val1 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 0)} >Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[0].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 0, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 0)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 0)}></Button></div><CardText>{this.sumRullakot(i = 0, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.openNewRegisterBox(doc)} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val1 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[1].sort((a, b) => { return a.position - b.position }).sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val2 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 1)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[1].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 1, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 1)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 1)}></Button></div><CardText>{this.sumRullakot(i = 1, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val2 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val2 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 1)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[1].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 1, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 1)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 1)}></Button></div><CardText>{this.sumRullakot(i = 1, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.openNewRegisterBox(doc)} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val2 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[2].sort((a, b) => { return a.position - b.position }).sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val3 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 2)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[2].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 2, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 2)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 2)}></Button></div><CardText>{this.sumRullakot(i = 2, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val3 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val3 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 2)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[2].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 2, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 2)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 2)}></Button></div><CardText>{this.sumRullakot(i = 2, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.openNewRegisterBox(doc)} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val3 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[3].sort((a, b) => { return a.position - b.position }).sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val4 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 3)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[3].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 3, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 3)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 3)}></Button></div><CardText>{this.sumRullakot(i = 3, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val4 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val4 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 3)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[3].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 3, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 3)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 3)}></Button></div><CardText>{this.sumRullakot(i = 3, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.openNewRegisterBox(doc)} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val4 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[4].sort((a, b) => { return a.position - b.position }).sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val5 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 4)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[4].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 4, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 4)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 4)}></Button></div><CardText>{this.sumRullakot(i = 4, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val5 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val5 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 4)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[4].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 4, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 4)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 4)}></Button></div><CardText>{this.sumRullakot(i = 4, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.openNewRegisterBox(doc)} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val5 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[5].sort((a, b) => { return a.position - b.position }).sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val6 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 5)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[5].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 5, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 5)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 5)}></Button></div><CardText>{this.sumRullakot(i = 5, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val6 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val6 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 5)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[5].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 5, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 5)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 5)}></Button></div><CardText>{this.sumRullakot(i = 5, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.openNewRegisterBox(doc)} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val6 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
                                         {array2[6].sort((a, b) => { return a.position - b.position }).sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<div>{doc.rekka !== lastVals.val7 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 6)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[6].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 6, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 6)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 6)}></Button></div><CardText>{this.sumRullakot(i = 6, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val7 = doc.rekka}</CardText></li></div>)
+                                            return (<div>{doc.rekka !== lastVals.val7 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 6)}>Rekka: {doc.rekka}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[6].format('DD/MM/YYYY') ? <div><div className="btnDownFall"><Button className="pdfBtnDoc" onClick={() => this.pushPDF(doc, i = 6, thisWeekDates)}></Button> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet(doc, thisWeekDates, i = 6)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering(doc, i = 6)}></Button></div><CardText>{this.sumRullakot(i = 6, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li onClick={() => this.openNewRegisterBox(doc)} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals.val7 = doc.rekka}</CardText></li></div>)
                                         })}
                                     </Td>
                                 </Tr>
@@ -501,38 +618,38 @@ class Calendar extends Component {
                             <Tbody>
                                 <Tr>
                                     <Td>
-                                        {array[0].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}</li>)
+                                        {array[0].sort((a, b) => { return a.keraysPosition - b.keraysPosition }).map(doc => {
+                                            return (<div>{doc.keraysPosition !== lastVals2.val1 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 0)}>{doc.keraysPosition}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[0].format('DD/MM/YYYY') ? <div><div className="btnDownFall"> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet2(doc, thisWeekDates, i = 0)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering2(doc, i = 0)}></Button></div><CardText>{this.sumRullakot(i = 0, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val1 = doc.keraysPosition}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
-                                        {array[1].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}</li>)
+                                        {array[1].sort((a, b) => { return a.keraysPosition - b.keraysPosition }).map(doc => {
+                                            return (<div>{doc.keraysPosition !== lastVals2.val2 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 1)}>{doc.keraysPosition}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[1].format('DD/MM/YYYY') ? <div><div className="btnDownFall"> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet2(doc, thisWeekDates, i = 1)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering2(doc, i = 1)}></Button></div><CardText>{this.sumRullakot(i = 1, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val2 = doc.keraysPosition}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
-                                        {array[2].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}</li>)
+                                        {array[2].sort((a, b) => { return a.keraysPosition - b.keraysPosition }).map(doc => {
+                                            return (<div>{doc.keraysPosition !== lastVals2.val3 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 2)}>{doc.keraysPosition}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[2].format('DD/MM/YYYY') ? <div><div className="btnDownFall"> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet2(doc, thisWeekDates, i = 2)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering2(doc, i = 2)}></Button></div><CardText>{this.sumRullakot(i = 2, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val3 = doc.keraysPosition}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
-                                        {array[3].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}</li>)
+                                        {array[3].sort((a, b) => { return a.keraysPosition - b.keraysPosition }).map(doc => {
+                                            return (<div>{doc.keraysPosition !== lastVals2.val4 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 3)}>{doc.keraysPosition}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[3].format('DD/MM/YYYY') ? <div><div className="btnDownFall"> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet2(doc, thisWeekDates, i = 3)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering2(doc, i = 3)}></Button></div><CardText>{this.sumRullakot(i = 3, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val4 = doc.keraysPosition}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
-                                        {array[4].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}</li>)
+                                        {array[4].sort((a, b) => { return a.keraysPosition - b.keraysPosition }).map(doc => {
+                                            return (<div>{doc.keraysPosition !== lastVals2.val5 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 4)}>{doc.keraysPosition}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[4].format('DD/MM/YYYY') ? <div><div className="btnDownFall"> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet2(doc, thisWeekDates, i = 4)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering2(doc, i = 4)}></Button></div><CardText>{this.sumRullakot(i = 4, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val5 = doc.keraysPosition}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
-                                        {array[5].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}</li>)
+                                        {array[5].sort((a, b) => { return a.keraysPosition - b.keraysPosition }).map(doc => {
+                                            return (<div>{doc.keraysPosition !== lastVals2.val6 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 5)}>{doc.keraysPosition}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[5].format('DD/MM/YYYY') ? <div><div className="btnDownFall"> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet2(doc, thisWeekDates, i = 5)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering2(doc, i = 5)}></Button></div><CardText>{this.sumRullakot(i = 5, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val6 = doc.keraysPosition}</CardText></li></div>)
                                         })}
                                     </Td>
                                     <Td>
-                                        {array[6].sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).map(doc => {
-                                            return (<li onClick={() => this.setState({ isOpen: true, id: doc._id, kauppa: doc.kauppa, rekka: doc.rekka })} className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}</li>)
+                                        {array[6].sort((a, b) => { return a.keraysPosition - b.keraysPosition }).map(doc => {
+                                            return (<div>{doc.keraysPosition !== lastVals2.val7 ? <li className="headerRekat"><CardText onClick={() => this.openOptions(doc, thisWeekDates, i = 6)}>{doc.keraysPosition}</CardText> {doc.rullakot !== undefined ? showRullakot === doc.rekka + thisWeekDates[6].format('DD/MM/YYYY') ? <div><div className="btnDownFall"> <Button className="qaInfoBtn" onClick={() => this.stateChangesGet2(doc, thisWeekDates, i = 6)}></Button> <Button className="orderBtnOrders" onClick={() => this.startOrdering2(doc, i = 6)}></Button></div><CardText>{this.sumRullakot(i = 6, doc)}</CardText></div> : undefined : undefined}</li> : undefined}<li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}>{doc.kauppa}<CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val7 = doc.keraysPosition}</CardText></li></div>)
                                         })}
                                     </Td>
                                 </Tr>
