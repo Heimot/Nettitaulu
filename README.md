@@ -88,6 +88,9 @@ Rullakkojen seuranta loppuun
  Kalenterin rekoille infot
   Tila: TEHTY 13/05/2020
 
+ Vain mahdollisuus katsoa molempia valmiista ja arkistoiduista.
+  Tila: TEHTY 18/05/2020 
+
 
 
  # BUG FIXES
@@ -116,6 +119,9 @@ Rullakkojen seuranta loppuun
  Lisää etsimis korjauksia
   Tila: KORJATTU 11/04/2020
 
+ Korjaa taulujen poistaminen
+ Tila: KORJATTU 18/05/2020
+
 
 
  # QUALITY OF LIFE FIXES
@@ -125,4 +131,7 @@ Rullakkojen seuranta loppuun
 
  Kun lisää kukkia se ei tyhjentäisi ylempiä
   Tila: TEHTY 20/04/2020
+
+ Varoitus jos aiot poistaa että se poistaa molempien taulujen tiedot!
+  Tila: TEHTY 18/05/2020
 
