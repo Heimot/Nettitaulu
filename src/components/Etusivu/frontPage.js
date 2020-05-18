@@ -305,7 +305,6 @@ class frontPage extends Component {
                     : undefined}
                 </li>
                 <li>
-                  {sessionStorage.getItem("userRole") === "Admin" ?
                     <Button
                       name="rullakot"
                       className="redirect4"
@@ -314,7 +313,6 @@ class frontPage extends Component {
                       })}>
                       {language[localStorage.getItem('language')].fpKalenteri}
                     </Button>
-                    : undefined}
                 </li>
                 <li>
                   {sessionStorage.getItem("userRole") === "Admin" ? <Button name="adminpanel" className="redirect3" onClick={() => this.adminRoles()}>Admin</Button> : undefined}
