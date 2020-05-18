@@ -402,7 +402,7 @@ export const patchKeraysData = (product, idvalues, maara) => {
   }
 }
 
-export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id, keraysPVM, date) => {
+export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kauppa, alisatieto, toimituspvm, _id, keraysPVM, date, orderLisatieto2, orderLisatieto) => {
 
   if (asiakas.length < 1) {
     asiakas = kauppa;
@@ -418,6 +418,10 @@ export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kau
 
   if (keraysPVM.length < 1) {
     keraysPVM = date;
+  }
+
+  if(orderLisatieto2.length < 1) {
+    orderLisatieto2 = orderLisatieto;
   }
 
   fetch(FETCH_URL + 'orders/put/id/' + _id, {
