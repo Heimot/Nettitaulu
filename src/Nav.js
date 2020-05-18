@@ -332,6 +332,10 @@ export default class TopNav extends React.Component {
       this._isMounted = true;
       var newDate = new Date();
 
+      if (sessionStorage.getItem('siteName') !== "Kerättävät") {
+        localStorage.setItem('userLocation', 'Molemmat');
+      }
+
       if (sessionStorage.getItem("btnName") === null) {
         sessionStorage.setItem("btnName", "Kerättävät")
       }
@@ -761,7 +765,7 @@ export default class TopNav extends React.Component {
 
                 <Button name="lisaa_taulukko" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} className='addBtn' color='primary' type='button' onClick={() => this.runAdders()}></Button>
                 <Button name="kirjaudu_ulos" className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>{language[localStorage.getItem('language')].logout}</Button>
-                <Button name="location" className='locationBtn' onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
+                <Button name="location" className='locationBtn' disabled={sessionStorage.getItem('siteName') === "Kerättävät" ? false : true} onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
 
               </Nav>
             </Collapse>
