@@ -435,6 +435,7 @@ export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kau
       alisatieto: asiakaslisatieto,
       date: keraysPVM,
       toimituspvm: toimitusaika,
+      orderLisatieto: orderLisatieto2,
     }),
   })
     .then(response => response.json())
