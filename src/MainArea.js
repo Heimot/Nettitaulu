@@ -6,7 +6,7 @@ import { Redirect } from 'react-router-dom';
 import Dialogs from './components/dialog/loaderDialog';
 import { css } from "@emotion/core";
 import Loader from "react-spinners/ScaleLoader";
-import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete, getTableId, deleteRullakkoFromOrders, deleteHyllyFromOrders } from './components/fetch/apiFetch';
+import { getData, removeData, deleteFlowersData, getFlowersToAutocomplete, getTableId, deleteRullakkoFromOrders, deleteHyllyFromOrders, getAllIdsToRemove } from './components/fetch/apiFetch';
 import socket from './components/socketio/socket-ioConn';
 import ErrorBoundary from './components/errorCatcher/ErrorBoundary';
 import Printer from './components/printWindow/printData';
@@ -148,8 +148,10 @@ class MainArea extends Component {
       this.setState({
         dLoader: true,
       })
-      await products.map(product => {
-        let id = product._id
+      let productIDStoRemove = await getAllIdsToRemove(_id);
+
+      await productIDStoRemove.products.map(product => {
+        let id = product;
         deleteFlowersData(id);
       });
       await rullakot.map(rullakko => {
