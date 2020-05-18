@@ -962,6 +962,7 @@ class PeopleCard extends Component {
               <Card className="Cards">
 
                 <CardTitle className="warningBox">{language[localStorage.getItem('language')].delete1}</CardTitle>
+                <CardText className="warningBox">HUOM. Tämä poistaa myös toisen toimipaikan keräyslistan mikäli ne ovat tehty samaan tauluun!</CardText>
                 <CardText className="warningBox">{language[localStorage.getItem('language')].ready3 + _id}</CardText>
                 <CardText className="warningBox">{language[localStorage.getItem('language')].ready4 + kauppa}</CardText>
                 <CardText className="warningBox">{language[localStorage.getItem('language')].ready5 + date}</CardText>
