@@ -443,7 +443,7 @@ export const putFlowersOrderData = (asiakas, asiakaslisatieto, toimitusaika, kau
   sessionStorage.removeItem('userDate2');
 }
 
-export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusaika, keraysPVM, userDatas) => {
+export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusaika, keraysPVM, userDatas, orderLisatieto) => {
 
   if (asiakas.length < 1) {
     asiakas = userDatas.products.kauppa;
@@ -461,6 +461,10 @@ export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusai
     toimitusaika = userDatas.products.toimituspvm;
   }
 
+  if(orderLisatieto.length < 1) {
+    orderLisatieto = userDatas.products.orderLisatieto;
+  }
+
   fetch(FETCH_URL + 'orders/put/id/' + userDatas._id, {
     method: 'PUT',
     headers: {
@@ -472,6 +476,7 @@ export const putFlowersCreatedOrderData = (asiakas, asiakaslisatieto, toimitusai
       alisatieto: asiakaslisatieto,
       date: keraysPVM,
       toimituspvm: toimitusaika,
+      orderLisatieto: orderLisatieto
     }),
   })
     .then(response => response.json())
@@ -816,6 +821,44 @@ export const createInfoCalendar = (createdId, infoData) => {
     });
 }
 
+export const putKeraysInfoCalendar = (createdId, infoData) => {
+  fetch(FETCH_URL + 'calendar/put/id/' + createdId, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      keraysInfo: infoData
+    }),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const createKeraysInfoCalendar = (createdId, infoData) => {
+  fetch(FETCH_URL + 'calendar/post', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify({
+      _id: createdId,
+      keraysInfo: infoData
+    }),
+  })
+    .then(res => res.json())
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 export const getCalendarInfo = (createdId) => {
   var GETwAuth = {
     method: 'GET',
@@ -858,6 +901,29 @@ export const putOrdersOrder = (id, position) => {
     body: JSON.stringify([
       {
         propName: "position",
+        value: position,
+      }
+    ]),
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+export const putOrdersKeraysPos = (id, position) => {
+  fetch(FETCH_URL + 'orders/patch/id/' + id, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sessionStorage.getItem('userData')
+    },
+    body: JSON.stringify([
+      {
+        propName: "keraysPosition",
         value: position,
       }
     ]),
