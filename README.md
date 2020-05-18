@@ -89,7 +89,13 @@ Rullakkojen seuranta loppuun
   Tila: TEHTY 13/05/2020
 
  Vain mahdollisuus katsoa molempia valmiista ja arkistoiduista.
-  Tila: TEHTY 18/05/2020 
+  Tila: TEHTY 18/05/2020
+
+ Kalenteriin kerayksiin kerays tärkeys.
+  Tila: TEHTY 18/05/2020
+
+ Lisää tilaukseen ostotilaus nro.
+  Tila: TEHTY 18/05/2020
 
 
 
