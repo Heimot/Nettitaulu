@@ -125,8 +125,14 @@ Rullakkojen seuranta loppuun
  Lisää etsimis korjauksia
   Tila: KORJATTU 11/04/2020
 
- Korjaa taulujen poistaminen
+Korjaa taulujen poistaminen
  Tila: KORJATTU 18/05/2020
+
+Poista taulujen lisääminen keräämis vaiheen jälkeen.
+ Tila: KORJATTU 19/05/2020
+
+Kurkkaa valmis mekanismiin onko sillä mahdollisuus vahingossa poistaa toista paikkaa
+ Tila: Ei korjattu
 
 
 
