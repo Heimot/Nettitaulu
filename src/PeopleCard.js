@@ -1108,6 +1108,7 @@ class PeopleCard extends Component {
                     </Tbody>
                   )}
                 </Table>
+                {sessionStorage.getItem('siteName') === "Kerättävät" ? 
                 <div>
                   <Button name="lisaa_kukka" className="addFlower" onClick={() => this.addFlowers(_id, products)}>{language[localStorage.getItem('language')].addflower}</Button>
                   <Input type="number"
@@ -1118,7 +1119,7 @@ class PeopleCard extends Component {
                     value={this.state.addFlowersValue}
                     onChange={this.handleChange}>
                   </Input>
-                </div>
+                </div> : undefined}
                 <div className="taulukkoDivider"></div>
                 <Button name="paivita_taulukon_tiedot" color="success" onClick={() => this.putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date, orderLisatieto)}>{language[localStorage.getItem('language')].paivita}</Button>
               </Card>

@@ -393,7 +393,7 @@ class Calendar extends Component {
         this.setState({
             orderListsNotReady: true,
             counterI: i,
-            orderList: array[i].filter(docs => { return docs.keraysPosition === doc.keraysPosition }).sort((a, b) => { return a.keraysPosition - b.keraysPosition })
+            orderList: array[i].sort((a, b) => { return a.keraysPosition - b.keraysPosition })
         })
     }
 
@@ -544,7 +544,7 @@ class Calendar extends Component {
                             <CardTitle>Keräys järjestys</CardTitle>
                             <Td>
                                 {orderList.map(doc => {
-                                    return (<div>{doc.keraysPosition !== lastVals2.val8 ? <div className="headerRekat2"><CardText className="headerOrderRekka">Rekka: {doc.keraysPosition}</CardText> <CardText className="headerOrder">Järjestys numero: </CardText></div> : undefined}<li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}><div className="flexWidth"><CardText className="kauppaLI">{doc.kauppa}</CardText><Input id={`${doc.rekka}/${doc._id}`} placeholder={doc.keraysPosition} className="positionLI"></Input></div><CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val8 = doc.keraysPosition}</CardText></li></div>)
+                                    return (<div><li className={doc.ryona === "Kyllä" ? "kauppaValmisRow" : doc.ryona === "Arkistoitu" ? "kauppaArkistoRow" : doc.tuusjarvi === "Kyllä" ? "kauppaValmisRow" : doc.tuusjarvi === "Arkistoitu" ? "kauppaArkistoRow" : "kauppaLists"}><div className="flexWidth"><CardText className="kauppaLI">{doc.kauppa}</CardText><Input id={`${doc.rekka}/${doc._id}`} placeholder={doc.keraysPosition} className="positionLI"></Input></div><CardText style={{ position: "absolute", visibility: "hidden" }}>{lastVals2.val8 = doc.keraysPosition}</CardText></li></div>)
                                 })}
                             </Td>
                             <Button onClick={() => this.savePositionChanges2(orderList)}>Tallenna järjestys</Button>
