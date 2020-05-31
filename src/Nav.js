@@ -191,6 +191,24 @@ export default class TopNav extends React.Component {
       this.setState({
         dLoader: true
       })
+      userDatas =  {
+        valmis: 0,
+        products: [
+          {
+            kukka: "anti crash technology 100000000 ;(",
+            toimi: 58,
+            kerays: "no crash",
+            lisatieto: "Im bad at making these not crash",
+            _id: "no id",
+      
+          }
+        ],
+        _id: "no id",
+        kauppa: "anti crash technology v10000 by joonas",
+        alisatieto: "anti crash",
+        date: "f",
+        toimituspvm: "f",
+      };
       this.addFlowers()
     } catch (error) {
       console.log(error);
