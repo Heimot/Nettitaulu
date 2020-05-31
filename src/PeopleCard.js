@@ -8,7 +8,7 @@ import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import { Redirect } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
 import format from "date-fns/format";
-import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData, postRullakko, putRullakkoToOrders, deleteRullakkoFromOrders, updateRullakkoData, postHylly, putHyllyToOrders, deleteHyllyFromOrders, updateHyllyData } from './components/fetch/apiFetch';
+import { deleteFlowerData, patchKeraysData, putFlowersOrderData, patchValmiusProductsData, patchValmiusData, updateFlowersEdit, patchTarkastettuProductsData, postRullakko, putRullakkoToOrders, deleteRullakkoFromOrders, updateRullakkoData, postHylly, putHyllyToOrders, deleteHyllyFromOrders, updateHyllyData, getAllIdsToRemove } from './components/fetch/apiFetch';
 import { socketConnChat, socketConnID, socketConnRullakko } from './components/socketio/socketio';
 import { css } from "@emotion/core";
 import MyAutosuggest from "./components/autoComplete/autoComplete";
@@ -282,17 +282,16 @@ class PeopleCard extends Component {
     };
   }
 
-  async addFlowers(_id, products) {
+  async addFlowers(_id) {
     try {
       this.setState({
         loadingUpdt: true
       });
       if (!this.state.alreadyLoaded) {
-        this.state.idArray.push(
-          products.map(product => {
-            return product._id
-          })
-        )
+        let val = await getAllIdsToRemove(_id);
+        this.setState({
+          idArray: val.products
+        })
       }
 
       let i = 0;
