@@ -127,15 +127,19 @@ class Calendar extends Component {
     }
 
     getThisWeekDates() {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        var weekDates = [];
+        try {
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            var weekDates = [];
 
-        for (var i = 1; i <= 7; i++) {
-            weekDates.push(moment().day(i + nextWeek));
+            for (var i = 1; i <= 7; i++) {
+                weekDates.push(moment().day(i + nextWeek));
+            }
+
+            return weekDates;
+        } catch (err) {
+            console.log(err)
         }
-
-        return weekDates;
     }
 
 
@@ -183,42 +187,58 @@ class Calendar extends Component {
     }
 
     nextWeek() {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        this.setState({ loading: true });
-        nextWeek = nextWeek + 7;
-        this.testData();
-        this.testData2();
+        try {
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            this.setState({ loading: true });
+            nextWeek = nextWeek + 7;
+            this.testData();
+            this.testData2();
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     lastWeek() {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        this.setState({ loading: true });
-        nextWeek = nextWeek - 7;
-        this.testData();
-        this.testData2();
+        try {
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            this.setState({ loading: true });
+            nextWeek = nextWeek - 7;
+            this.testData();
+            this.testData2();
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     pakkausRekkaan(id) {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        let rekkaID = document.getElementById(id).value;
-        putRekka(id, rekkaID);
-        this.setState({
-            isOpen: false
-        })
+        try {
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            let rekkaID = document.getElementById(id).value;
+            putRekka(id, rekkaID);
+            this.setState({
+                isOpen: false
+            })
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     pakkausRekkaanBtn = (e) => {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        let id = e.target.value;
-        let rekkaID = e.target.id
-        putRekka(id, rekkaID);
-        this.setState({
-            isOpen: false
-        })
+        try {
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            let id = e.target.value;
+            let rekkaID = e.target.id
+            putRekka(id, rekkaID);
+            this.setState({
+                isOpen: false
+            })
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     sumRullakot(i, doc) {
@@ -297,30 +317,37 @@ class Calendar extends Component {
     }
 
     async calendarInfo() {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        let { infoData, date, rekkaUsed, createNew } = this.state;
-        let idCreated = date.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '') + rekkaUsed.replace(/\s/g, '').replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '');
-        if (createNew) {
-            createInfoCalendar(idCreated, infoData);
-        } else {
-            putInfoCalendar(idCreated, infoData);
+        try {
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            let { infoData, date, rekkaUsed, createNew } = this.state;
+            let idCreated = date.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '') + rekkaUsed.replace(/\s/g, '').replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '');
+            if (createNew) {
+                createInfoCalendar(idCreated, infoData);
+            } else {
+                putInfoCalendar(idCreated, infoData);
+            }
+            this.setState({ infoBox: false })
+        } catch (err) {
+            console.log(err)
         }
-        this.setState({ infoBox: false })
     }
 
     async calendarInfo2() {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        let { infoData, date, rekkaUsed, createNew } = this.state;
-        let idCreated = date.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '') + rekkaUsed;
-        if (createNew) {
-            createKeraysInfoCalendar(idCreated, infoData);
-        } else {
-            putKeraysInfoCalendar(idCreated, infoData);
+        try {
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            let { infoData, date, rekkaUsed, createNew } = this.state;
+            let idCreated = date.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '') + rekkaUsed;
+            if (createNew) {
+                createKeraysInfoCalendar(idCreated, infoData);
+            } else {
+                putKeraysInfoCalendar(idCreated, infoData);
+            }
+            this.setState({ infoBox: false })
+        } catch (err) {
+            console.log(err)
         }
-        this.setState({ infoBox: false })
-
     }
 
     async stateChangesGet(doc, thisWeekDates, i) {
@@ -378,13 +405,17 @@ class Calendar extends Component {
     }
 
     startOrdering(doc, i) {
-        lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
-        this.setState({
-            orderLists: true,
-            counterI: i,
-            orderList: array2[i].filter(docs => { return docs.rekka === doc.rekka }).sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).sort((a, b) => { return a.position - b.position })
-        })
+        try {
+            lastVals = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            lastVals2 = { val1: null, val2: null, val3: null, val4: null, val5: null, val6: null, val7: null, val8: null };
+            this.setState({
+                orderLists: true,
+                counterI: i,
+                orderList: array2[i].filter(docs => { return docs.rekka === doc.rekka }).sort((a, b) => { return a.rekka.localeCompare(b.rekka) }).sort((a, b) => { return a.position - b.position })
+            })
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     startOrdering2(doc, i) {
@@ -416,25 +447,33 @@ class Calendar extends Component {
     }
 
     savePositionChanges(orderList) {
-        orderList.map(doc => {
-            let id = doc._id;
-            let position = document.getElementById(`${doc.rekka}/${doc._id}`).value;
-            if (position.length <= 0 && !isNaN(position)) {
-                position = doc.position;
-            }
-            putOrdersOrder(id, position);
-        })
+        try {
+            orderList.map(doc => {
+                let id = doc._id;
+                let position = document.getElementById(`${doc.rekka}/${doc._id}`).value;
+                if (position.length <= 0 && !isNaN(position)) {
+                    position = doc.position;
+                }
+                putOrdersOrder(id, position);
+            })
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     savePositionChanges2(orderList) {
-        orderList.map(doc => {
-            let id = doc._id;
-            let position = document.getElementById(`${doc.rekka}/${doc._id}`).value;
-            if (position.length <= 0 && !isNaN(position)) {
-                position = doc.keraysPosition;
-            }
-            putOrdersKeraysPos(id, position);
-        })
+        try {
+            orderList.map(doc => {
+                let id = doc._id;
+                let position = document.getElementById(`${doc.rekka}/${doc._id}`).value;
+                if (position.length <= 0 && !isNaN(position)) {
+                    position = doc.keraysPosition;
+                }
+                putOrdersKeraysPos(id, position);
+            })
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     openNewRegisterBox(doc) {
@@ -448,9 +487,13 @@ class Calendar extends Component {
     }
 
     handleChange = (e) => {
-        this.setState({
-            infoData: e.target.value
-        })
+        try {
+            this.setState({
+                infoData: e.target.value
+            })
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     render() {
