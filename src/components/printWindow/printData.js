@@ -62,7 +62,8 @@ class Printer extends Component {
 
                 }
             })
-            doc.save('tarrat.pdf')
+            doc.autoPrint();
+            doc.output('dataurlnewwindow');
             this.props.emptyData();
         } catch (err) {
             console.log(err);
@@ -95,8 +96,6 @@ class Printer extends Component {
 
     render() {
         let { newData } = this.props;
-
-        console.log(newData)
 
         if (sessionStorage.getItem("userData") === null) {
             return <Redirect to="/" />
