@@ -132,7 +132,7 @@ Poista taulujen lisääminen keräämis vaiheen jälkeen.
  Tila: KORJATTU 19/05/2020
 
 Kurkkaa valmis mekanismiin onko sillä mahdollisuus vahingossa poistaa toista paikkaa
- Tila: Ei korjattu
+ Tila: KORJATTU
 
 
 
