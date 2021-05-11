@@ -545,18 +545,30 @@ class PeopleCard extends Component {
       let productsLenght = products.length;
       let result = [];
 
-      for (i = 0; i < productsLenght; i++) {
-        result.push([products[i].kukka.toString(), products[i].kerattymaara.toString()])
-      };
+      if (sessionStorage.getItem('siteName') !== "Kerättävät") {
+        for (i = 0; i < productsLenght; i++) {
+          result.push([products[i].kukka.toString(), products[i].kerattymaara.toString()])
+        };
+      } else {
+        for (i = 0; i < productsLenght; i++) {
+          result.push([products[i].kukka.toString(), products[i].toimi.toString()])
+        };
+      }
 
       let text = alisatieto.toString();
-
       var textLine = doc.splitTextToSize(text, 75);
+      let toimituspaiva = toimituspvm.toString();
+      let arvTPVM = doc.splitTextToSize(`Toimituspäivämäärä: ${toimituspaiva}`, 300);
+      let headHeader = ['Tuote', 'Kerättymäärä'];
+      if (sessionStorage.getItem('siteName') === "Kerättävät") {
+        headHeader = ['Tuote', 'Tilattumäärä']
+        arvTPVM = doc.splitTextToSize(`Arvioitu toimituspäivämäärä: ${toimituspaiva}`, 300);
+      }
 
       var header = function () {
         doc.setFontSize(15)
         doc.text(`Keräyspäivämäärä: ${date.toString()}`, 15, 32)
-        doc.text(`Toimituspäivämäärä: ${toimituspvm.toString()}`, 15, 39)
+        doc.text(arvTPVM, 15, 39)
         doc.text(`${kauppa.toString()}`, 15, 50)
         doc.addImage(img, "png", 15, 2, 50, 22)
         doc.setFontSize(10)
@@ -570,7 +582,7 @@ class PeopleCard extends Component {
       };
 
       doc.autoTable({
-        head: [['Tuote', 'Kerättymäärä']],
+        head: [headHeader],
         body: result,
         margin: { horizontal: 0, top: 60 },
         bodyStyles: { valign: 'top' },
@@ -956,7 +968,7 @@ class PeopleCard extends Component {
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="muokkaaBtn" className="muokkaaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="primary" onClick={() => this.muokkaa(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].muokkaa}</Button> : undefined}
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="poistaBtn" className="poistaBtn" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="danger" onClick={() => this.warning()}>{language[localStorage.getItem('language')].poista}</Button> : undefined}
               {sessionStorage.getItem('userRole') === "Admin" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="info" onClick={() => this.jsonToExcel(products, _id)}>{language[localStorage.getItem('language')].vieExceliin}</Button> : undefined}
-              {sessionStorage.getItem('userRole') === "Admin" ? sessionStorage.getItem('siteName') !== "Kerättävät" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="warning" onClick={() => this.htmlToPDF(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].talPDF}</Button> : undefined : undefined}
+              {sessionStorage.getItem('userRole') === "Admin" ? <Button name="vieExcel" className="vieExcel" disabled={sessionStorage.getItem('userRole') === "Admin" ? false : true} color="warning" onClick={() => this.htmlToPDF(_id, products, kauppa, date, alisatieto, toimituspvm)}>{language[localStorage.getItem('language')].talPDF}</Button> : undefined}
             </Card>
 
             <Dialog className="DelWarn" isOpen2={this.state.openWarning} onClose={(e) => this.setState({ openWarning: false })}>
@@ -1107,18 +1119,18 @@ class PeopleCard extends Component {
                     </Tbody>
                   )}
                 </Table>
-                {sessionStorage.getItem('siteName') === "Kerättävät" ? 
-                <div>
-                  <Button name="lisaa_kukka" className="addFlower" onClick={() => this.addFlowers(_id, products)}>{language[localStorage.getItem('language')].addflower}</Button>
-                  <Input type="number"
-                    name="addFlowersValue"
-                    className="addFlowerInput"
-                    max={10}
-                    min={1}
-                    value={this.state.addFlowersValue}
-                    onChange={this.handleChange}>
-                  </Input>
-                </div> : undefined}
+                {sessionStorage.getItem('siteName') === "Kerättävät" ?
+                  <div>
+                    <Button name="lisaa_kukka" className="addFlower" onClick={() => this.addFlowers(_id, products)}>{language[localStorage.getItem('language')].addflower}</Button>
+                    <Input type="number"
+                      name="addFlowersValue"
+                      className="addFlowerInput"
+                      max={10}
+                      min={1}
+                      value={this.state.addFlowersValue}
+                      onChange={this.handleChange}>
+                    </Input>
+                  </div> : undefined}
                 <div className="taulukkoDivider"></div>
                 <Button name="paivita_taulukon_tiedot" color="success" onClick={() => this.putFlowersIData(products, _id, kauppa, alisatieto, toimituspvm, date, orderLisatieto)}>{language[localStorage.getItem('language')].paivita}</Button>
               </Card>
