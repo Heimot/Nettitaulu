@@ -102,27 +102,27 @@ export default class TopNav extends React.Component {
     this.logOut = this.logOut.bind(this);
   }
 
-  changeLocation() {
+  changeLocation(e) {
     try {
-      switch (localStorage.getItem('userLocation')) {
+      switch (e.target.value) {
         case "Ryönä":
-          localStorage.setItem('userLocation', "Tuusjärvi");
+          localStorage.setItem('userLocation', e.target.value);
           this.setState({ isOpen: false });
           break;
         case "Tuusjärvi":
-          localStorage.setItem('userLocation', "Molemmat");
+          localStorage.setItem('userLocation', e.target.value);
           this.setState({ isOpen: false });
           break;
         case "Molemmat":
-          localStorage.setItem('userLocation', "Ryönä");
+          localStorage.setItem('userLocation', e.target.value);
           this.setState({ isOpen: false });
           break;
         default:
-          localStorage.setItem('userLocation', "Ryönä");
+          localStorage.setItem('userLocation', e.target.value);
           this.setState({ isOpen: false });
           break;
       }
-      socketConnChat();
+      window.location.reload();
     } catch (error) {
       console.log(error);
     };
@@ -191,7 +191,7 @@ export default class TopNav extends React.Component {
       this.setState({
         dLoader: true
       })
-      userDatas =  {
+      userDatas = {
         valmis: 0,
         products: [
           {
@@ -200,7 +200,7 @@ export default class TopNav extends React.Component {
             kerays: "no crash",
             lisatieto: "Im bad at making these not crash",
             _id: "no id",
-      
+
           }
         ],
         _id: "no id",
@@ -430,25 +430,19 @@ export default class TopNav extends React.Component {
     };
   };
 
-  async Tarkastus() {
+  async Tarkastus(e) {
     try {
-      switch (sessionStorage.getItem("userValmis")) {
-        case "Ei":
-          sessionStorage.setItem("userValmis", "Kerätty");
-          sessionStorage.setItem("siteName", "Valmiit");
-          sessionStorage.setItem("btnName", "Valmiit");
+      switch (e.target.value) {
+        case "Kerättävät":
+          sessionStorage.setItem("userValmis", "Ei");
           break;
 
-        case "Kerätty":
-          sessionStorage.setItem("userValmis", "Arkistoitu");
-          sessionStorage.setItem("siteName", "Arkistoitu");
-          sessionStorage.setItem("btnName", "Arkistoitu");
+        case "Valmiit":
+          sessionStorage.setItem("userValmis", "Kerätty");
           break;
 
         case "Arkistoitu":
-          sessionStorage.setItem("userValmis", "Ei");
-          sessionStorage.setItem("siteName", "Kerättävät");
-          sessionStorage.setItem("btnName", "Kerättävät");
+          sessionStorage.setItem("userValmis", "Arkistoitu");
           break;
 
         default:
@@ -457,6 +451,10 @@ export default class TopNav extends React.Component {
           sessionStorage.setItem("btnName", "Kerättävät");
           break;
       }
+
+
+      sessionStorage.setItem("siteName", e.target.value);
+      sessionStorage.setItem("btnName", e.target.value);
       window.location.reload()
     } catch (err) {
       console.log(err);
@@ -656,11 +654,17 @@ export default class TopNav extends React.Component {
             <NavbarBrand className="navName" onClick={() => this.setState({ navRed: true })}>{sessionStorage.getItem("btnName") === "Kerättävät" ? language[localStorage.getItem('language')].navCollect : sessionStorage.getItem("btnName") === "Valmiit" ? language[localStorage.getItem('language')].navReady : language[localStorage.getItem('language')].navArchived}</NavbarBrand>
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
-
-                <Button name="tarkastusBtn" className="TarkastusBTN" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} onClick={() => this.Tarkastus()}>
-                  {sessionStorage.getItem("btnName") === "Kerättävät" ? language[localStorage.getItem('language')].navCollect : sessionStorage.getItem("btnName") === "Valmiit" ? language[localStorage.getItem('language')].navReady : language[localStorage.getItem('language')].navArchived}
-                </Button>
-
+                <Input value={sessionStorage.getItem('siteName')} type="select" name="tarkastusBtn" className="TarkastusBTN" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} onChange={(e) => this.Tarkastus(e)}>
+                  <option>
+                    Kerättävät
+                  </option>
+                  <option>
+                    Valmiit
+                    </option>
+                  <option>
+                    Arkistoitu
+                    </option>
+                </Input>
                 <DatePicker className="Datepick"
                   selected={this.state.startDate}
                   onChange={this.handleChange2}
@@ -792,8 +796,22 @@ export default class TopNav extends React.Component {
 
                 <Button name="lisaa_taulukko" disabled={sessionStorage.getItem("userRole") === "Admin" ? false : true} className='addBtn' color='primary' type='button' onClick={() => this.runAdders()}></Button>
                 <Button name="kirjaudu_ulos" className='logoutBtn' type='button' color='danger' onClick={() => this.logOut()}>{language[localStorage.getItem('language')].logout}</Button>
-                <Button name="location" className='locationBtn' disabled={sessionStorage.getItem('siteName') === "Kerättävät" ? false : true} onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
 
+                <Input type="select" value={localStorage.getItem('userLocation')} name="location" className='locationBtn' disabled={sessionStorage.getItem('siteName') === "Kerättävät" ? false : true} onChange={(e) => this.changeLocation(e)}>
+                  <option>
+                    Ryönä
+                  </option>
+                  <option>
+                    Tuusjärvi
+                    </option>
+                  <option>
+                    Molemmat
+                    </option>
+                </Input>
+
+ {/*
+                <Button name="location" className='locationBtn' disabled={sessionStorage.getItem('siteName') === "Kerättävät" ? false : true} onClick={() => this.changeLocation()}>{localStorage.getItem('userLocation')}</Button>
+ */}
               </Nav>
             </Collapse>
           </Navbar>
