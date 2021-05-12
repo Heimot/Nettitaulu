@@ -547,11 +547,11 @@ class PeopleCard extends Component {
 
       if (sessionStorage.getItem('siteName') !== "Kerättävät") {
         for (i = 0; i < productsLenght; i++) {
-          result.push([products[i].kukka.toString(), products[i].kerattymaara.toString()])
+          result.push([products[i].kukka.toString(), products[i].kerattymaara.toString()]);
         };
       } else {
         for (i = 0; i < productsLenght; i++) {
-          result.push([products[i].kukka.toString(), products[i].toimi.toString()])
+          result.push([products[i].kukka.toString(), products[i].kerays.toString(), products[i].toimi.toString()]);
         };
       }
 
@@ -561,7 +561,7 @@ class PeopleCard extends Component {
       let arvTPVM = doc.splitTextToSize(`Toimituspäivämäärä: ${toimituspaiva}`, 300);
       let headHeader = ['Tuote', 'Kerättymäärä'];
       if (sessionStorage.getItem('siteName') === "Kerättävät") {
-        headHeader = ['Tuote', 'Tilattumäärä']
+        headHeader = ['Tuote', 'Keräyspaikka', 'Tilattumäärä'];
         arvTPVM = doc.splitTextToSize(`Arvioitu toimituspäivämäärä: ${toimituspaiva}`, 300);
       }
 
