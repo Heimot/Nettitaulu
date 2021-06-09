@@ -9,6 +9,7 @@ import { Table, Thead, Tbody, Tr, Td, Th } from 'react-super-responsive-table';
 import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 import language from '../language/language';
 import LanguageBtn from '../language/languageBtn';
+import mainPicture from '../../pictures/main_picture.jpg';
 
 //CSS
 import "../../Styles/frontPage.css";
@@ -322,8 +323,8 @@ class frontPage extends Component {
             <div className="pictureDot"></div>
           </div>
           <h1 className="frontText">Ohjelma</h1>
-          <div className="frontPagePictureDiv">
-          </div>
+          <img src={mainPicture} className="frontPagePictureDiv">
+          </img>
 
           <Dialog className="adminDialog" isOpen2={this.state.settingsOpen} onClose={(e) => this.setState({ settingsOpen: false })}>
             <LanguageBtn reRender={this.reRender} />
