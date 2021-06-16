@@ -37,6 +37,7 @@ class frontPage extends Component {
       reRender: false,
       redirectRullakko: false,
       redirectKalenteri: false,
+      redirectBarcode: false
     }
     this.handleFile = this.handleFile.bind(this);
     this.handleFile2 = this.handleFile2.bind(this);
@@ -245,7 +246,7 @@ class frontPage extends Component {
   }
 
   render() {
-    let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect, redirectRullakko, redirectKalenteri } = this.state;
+    let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect, redirectRullakko, redirectKalenteri, redirectBarcode } = this.state;
 
     if (sessionStorage.getItem("userData") === null) {
       return <Redirect to="/" />
@@ -261,6 +262,10 @@ class frontPage extends Component {
 
     if (redirectRullakko) {
       return (<Redirect to={'/main/tables/rullakot'} />)
+    }
+
+    if(redirectBarcode) {
+      return (<Redirect to={'/main/barcode'} />)
     }
 
     return (
@@ -317,6 +322,18 @@ class frontPage extends Component {
                 </li>
                 <li>
                   {sessionStorage.getItem("userRole") === "Admin" ? <Button name="adminpanel" className="redirect3" onClick={() => this.adminRoles()}>Admin</Button> : undefined}
+                </li>
+                <li>
+                  {sessionStorage.getItem("userRole") === "Admin" ?
+                    <Button name="valmiit" className="redirect2"
+                      onClick={() =>
+                        this.setState({ redirectBarcode: true }) +
+                        sessionStorage.setItem("userValmis", "Kerätty") +
+                        sessionStorage.setItem("siteName", "Valmiit") +
+                        sessionStorage.setItem("btnName", "Valmiit")}>
+                      Barcode scan
+                    </Button>
+                    : undefined}
                 </li>
               </ol>
             </div>

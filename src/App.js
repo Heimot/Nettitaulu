@@ -10,6 +10,7 @@ import Rullakot from './components/rullakot/rullakot';
 import Calendar from './components/calendar/calendar';
 import CalendarNav from './components/calendar/calendarNav';
 import RullakotNav from './components/rullakot/rullakotNav';
+import Barcode from './components/Barcode';
 
 setInterval(function () {
   if (sessionStorage.getItem('expTime') < Date.now() / 1000 && window.location.pathname !== '/') {
@@ -22,7 +23,7 @@ class App extends Component {
     return (
       <ErrorBoundary>
         <Router>
-          <div className="App">
+          <div className="App"> 
             <Route path="/" exact component={LoginNav} />
             <Route path="/" exact component={LogIn} />
             <Route path="/main" exact component={frontPage} />
@@ -32,6 +33,7 @@ class App extends Component {
             <Route path="/main/tables/rullakot" component={Rullakot} />
             <Route path='/main/calendar' component={CalendarNav} />
             <Route path="/main/calendar" component={Calendar} />
+            <Route path="/main/barcode" component={Barcode} />
           </div>
         </Router>
       </ErrorBoundary >
