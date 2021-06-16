@@ -8,6 +8,7 @@ import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 import EU from '../../pictures/Eu-lippuMV.JPG';
 import logo from '../../pictures/Heimosen_Puutarha_logo.png';
 import language from '../language/language';
+import JsBarcode from 'jsbarcode';
 
 //CSS
 import '../../Styles/print.css'
@@ -26,19 +27,24 @@ img2.src = logo;
 
 // 613 404
 
+
 class Printer extends Component {
     printOrder = async (newData) => {
         try {
             var doc = new jsPDF('l', 'mm', [107.716, 197.755]);
+
+            //var bar = await new Image();
 
             if (docArr.length <= 0) {
                 docArr = newData;
             }
             let size = docArr.length;
 
-            await docArr.map(data => {
-                doc.addImage(img, "JPEG", 4, 2, 10, 7)
-                doc.addImage(img2, "png", 45, 2, 24, 10)
+            await docArr.map(async (data) => {
+                //JsBarcode(bar, data.id.toString())
+                  doc.addImage(img, "JPEG", 4, 2, 10, 7)
+                doc.addImage(img2, "png", 45, 2, 24, 10)  //{FOR SOME REASON HAVING THIS LOGO BREAKS THE PDF AND IT WONT OPEN WHILE HAVING BARCODE AS WELL??}
+                //doc.addImage(bar, "png", 4, 27, 40, 10)
                 doc.setFontSize(10)
                 doc.text('Kasvipassi / Plant passport', 15, 5)
                 doc.setFontSize(10)
@@ -58,8 +64,6 @@ class Printer extends Component {
                 if (size >= 1) {
                     doc.addPage()
                     size--;
-                } else {
-
                 }
             })
             doc.autoPrint();
