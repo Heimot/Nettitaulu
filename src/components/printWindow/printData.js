@@ -8,7 +8,7 @@ import ErrorBoundary from '../errorCatcher/ErrorBoundary';
 import EU from '../../pictures/Eu-lippuMV.JPG';
 import logo from '../../pictures/Heimosen_Puutarha_logo.png';
 import language from '../language/language';
-import JsBarcode from 'jsbarcode';
+//import JsBarcode from 'jsbarcode';
 
 //CSS
 import '../../Styles/print.css'
