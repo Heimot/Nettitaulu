@@ -339,6 +339,7 @@ class frontPage extends Component {
                     : undefined}
                 </li>*/}
                 <li>
+                {sessionStorage.getItem("userRole") !== "User" ?
                     <Button
                       name="vadelma"
                       className="redirect4"
@@ -347,6 +348,7 @@ class frontPage extends Component {
                       })}>
                       Vadelma tarrat
                     </Button>
+                    : null} 
                 </li>
               </ol>
             </div>
