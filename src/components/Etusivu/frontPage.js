@@ -37,7 +37,8 @@ class frontPage extends Component {
       reRender: false,
       redirectRullakko: false,
       redirectKalenteri: false,
-      redirectBarcode: false
+      redirectBarcode: false,
+      redirectVadelma: false
     }
     this.handleFile = this.handleFile.bind(this);
     this.handleFile2 = this.handleFile2.bind(this);
@@ -246,7 +247,7 @@ class frontPage extends Component {
   }
 
   render() {
-    let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect, redirectRullakko, redirectKalenteri, redirectBarcode } = this.state;
+    let { kukatExcel, kaupatExcel, kukatError, kaupatError, redirect, redirectRullakko, redirectKalenteri, redirectBarcode, redirectVadelma } = this.state;
 
     if (sessionStorage.getItem("userData") === null) {
       return <Redirect to="/" />
@@ -266,6 +267,10 @@ class frontPage extends Component {
 
     if(redirectBarcode) {
       return (<Redirect to={'/main/barcode'} />)
+    }
+
+    if(redirectVadelma) {
+      return (<Redirect to={'/main/vadelma'} />)
     }
 
     return (
@@ -323,17 +328,25 @@ class frontPage extends Component {
                 <li>
                   {sessionStorage.getItem("userRole") === "Admin" ? <Button name="adminpanel" className="redirect3" onClick={() => this.adminRoles()}>Admin</Button> : undefined}
                 </li>
-                <li>
+                {/*<li>
                   {sessionStorage.getItem("userRole") === "Admin" ?
-                    <Button name="valmiit" className="redirect2"
+                    <Button name="barc" className="redirect2"
                       onClick={() =>
-                        this.setState({ redirectBarcode: true }) +
-                        sessionStorage.setItem("userValmis", "Kerätty") +
-                        sessionStorage.setItem("siteName", "Valmiit") +
-                        sessionStorage.setItem("btnName", "Valmiit")}>
+                        this.setState({ redirectBarcode: true })
+                        }>
                       Barcode scan
                     </Button>
                     : undefined}
+                </li>*/}
+                <li>
+                    <Button
+                      name="vadelma"
+                      className="redirect4"
+                      onClick={() => this.setState({
+                        redirectVadelma: true
+                      })}>
+                      Vadelma tarrat
+                    </Button>
                 </li>
               </ol>
             </div>
