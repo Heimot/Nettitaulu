@@ -11,6 +11,7 @@ import Calendar from './components/calendar/calendar';
 import CalendarNav from './components/calendar/calendarNav';
 import RullakotNav from './components/rullakot/rullakotNav';
 import Barcode from './components/Barcode';
+import Delivery from './components/deliveryPrinter';
 
 setInterval(function () {
   if (sessionStorage.getItem('expTime') < Date.now() / 1000 && window.location.pathname !== '/') {
@@ -34,6 +35,7 @@ class App extends Component {
             <Route path='/main/calendar' component={CalendarNav} />
             <Route path="/main/calendar" component={Calendar} />
             <Route path="/main/barcode" component={Barcode} />
+            <Route path="/main/vadelma" component={Delivery} />
           </div>
         </Router>
       </ErrorBoundary >
