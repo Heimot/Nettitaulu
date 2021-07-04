@@ -23,7 +23,8 @@
         position: absolute;
         top: 0;
         left: 500px;
-        max-height: 100% !important;
+        min-height: 100% !important;
+        max-width: 100% !important;
     }
     .frontPageSettings {
         position: absolute;
@@ -199,10 +200,7 @@
         background: #D3D3D3;
     }
     .frontPagePictureDiv {
-        position: absolute;
-        top: 0;
-        left: 500px;
-        max-height: 100% !important;
+        visibility: hidden;
     }
     .frontPageSettings {
         position: absolute;
