@@ -1,0 +1,319 @@
+import React, { Component } from "react";
+import { Table, Thead, Tbody, Tr, Td, Th } from "react-super-responsive-table";
+import { Button, Input } from "reactstrap";
+import { Redirect } from "react-router-dom";
+import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
+import * as jsPDF from "jspdf";
+import ErrorBoundary from "./errorCatcher/ErrorBoundary";
+import language from "./language/language";
+import JsBarcode from "jsbarcode";
+import { FETCH_URL } from "./fetch/url";
+import moment from "moment";
+import DeliveryRow from "./deliveryRow";
+
+//CSS
+import "../Styles/print.css";
+
+// 68 38
+
+// 613 404
+
+let oldVal = "";
+
+class Delivery extends Component {
+  constructor() {
+    super();
+    this.state = {
+      kauppa: "",
+      kauppaId: "",
+      maara: 1,
+      newID: "",
+      Back: false,
+      makeRow: [],
+      newArr: [],
+    };
+  }
+
+  async componentDidMount() {
+    let day = moment().format("DD/MM/YYYY");
+    let val = await fetch(FETCH_URL + "orders/get/calendar?date=" + day, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + sessionStorage.getItem("userData"),
+      },
+    })
+      .then((res) => res.json())
+      .catch((error) => {
+        console.log(error);
+      });
+    let arr = val.product;
+    arr.push({ _id: "Custom", kauppa: "Custom" });
+    this.setState({
+      makeRow: arr.reverse(),
+    });
+  }
+
+  printOrder = async () => {
+    try {
+      let data = await fetch(FETCH_URL + "delivery/get/delivery", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("userData"),
+        },
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          return json;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      await this.updateCodeToUsed(data);
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  printTheData = () => {
+    let arr = [];
+    this.state.newArr.map(async (t) => {
+      let i;
+      for (i = 0; i < t.maara; i++) {
+        arr.push({
+          _id: t._id,
+          kauppa: t.kauppa,
+          maara: t.maara,
+        });
+      }
+    });
+    var doc = new jsPDF("l", "mm", [107.716, 197.755]);
+    var bar = new Image();
+    let size = arr.length;
+
+    arr.map(async (item) => {
+      //console.log(item)
+
+      let val = await this.printOrder();
+      if (val) {
+        if (val._id !== oldVal) {
+          oldVal = val._id;
+          JsBarcode(bar, val.deliveryId, {
+            format: "CODE128",
+          });
+          doc.setFontSize(10);
+          doc.setFontType("bold");
+          doc.text(`Kauppa: ${item.kauppa}`, 5, 10);
+          doc.addImage(bar, "png", 5, 18, 60, 20);
+        } else {
+          await this.updateCodeToUsed(val);
+          oldVal = val._id;
+          val = await this.printOrder();
+          JsBarcode(bar, val.deliveryId, {
+            format: "CODE128",
+          });
+          doc.setFontSize(10);
+          doc.setFontType("bold");
+          doc.text(`Kauppa: ${item.kauppa}`, 5, 10);
+          doc.addImage(bar, "png", 5, 18, 60, 20);
+        }
+      }
+      if (size >= 1) {
+        doc.addPage();
+        size--;
+      }
+      if (size === 0) {
+        doc.autoPrint();
+        doc.output("dataurlnewwindow");
+        //doc.save("backup.pdf");
+      }
+    });
+  };
+
+  updateCodeToUsed = (json) => {
+    if (json) {
+      fetch(FETCH_URL + "delivery/patch/id/" + json._id, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("userData"),
+        },
+        body: JSON.stringify([
+          {
+            propName: "isUsed",
+            value: true,
+          },
+          {
+            propName: "dateUsed",
+            value: Date(),
+          },
+        ]),
+      })
+        .then((response) => response.json())
+        .then((json) => {})
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  addIDS = () => {
+    let { newID } = this.state;
+    // 12312312312312312 17 pitkä test string
+    if (newID.length === 17) {
+      let i;
+      let sum = 0;
+      for (i = 0; i < 17; i++) {
+        console.log(newID.charAt(i));
+        if (i % 2 == 0) {
+          sum = sum + parseInt(newID.charAt(i)) * 3;
+        } else {
+          sum = sum + parseInt(newID.charAt(i));
+        }
+      }
+      let lastNumber = Math.ceil(sum / 10) * 10 - sum;
+      console.log(this.state.newID + lastNumber);
+      fetch(FETCH_URL + "delivery/post/delivery", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("userData"),
+        },
+        body: JSON.stringify({
+          deliveryId: this.state.newID + lastNumber,
+        }),
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          if (json.message) {
+            alert(json.message);
+          } else {
+            alert(
+              "Failed to add. Might be a duplicate. Please try again if its not a duplicate."
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("HEI ID ON LYHYEMPI TAI PIDEMPI KUIN 17 KIRJAINTA!!");
+    }
+  };
+
+  async createValueArray(arr) {
+    let obj = this.state.newArr.find((o) => o._id === arr._id);
+    if (obj) {
+      await this.setState({
+        newArr: this.state.newArr.filter((item) => {
+          return item._id !== arr._id;
+        }),
+      });
+    }
+
+    await this.setState((prevState) => {
+      return {
+        newArr: [...prevState.newArr, arr],
+      };
+    });
+  }
+
+  render() {
+    if (this.state.Back) {
+      return <Redirect to="/main" />;
+    }
+
+    return (
+      <ErrorBoundary>
+        <div>
+          <div className="blockerMobile"></div>
+          <Button onClick={() => this.setState({ Back: true })}>
+            Takaisin
+          </Button>
+          <h1>Vadelma tarrojen tulostaminen</h1>
+          <div id="printDiv">
+            <Table id="printTables" className="printTable">
+              <Thead>
+                <Tr>
+                  <Th>Kauppa</Th>
+                  <Th>Tarrojen määrä</Th>
+                </Tr>
+              </Thead>
+              {this.state.makeRow.map((item) => {
+                return (
+                  <DeliveryRow
+                    storeName={item}
+                    getValues={(arr) => this.createValueArray(arr)}
+                  />
+                );
+              })}
+            </Table>
+            <div></div>
+          </div>
+          <Button
+            style={{
+              marginTop: "10px",
+              marginBottom: "10px",
+              width: "150px",
+              height: "50px",
+            }}
+            color="success"
+            onClick={() => this.printTheData()}
+          >
+            {language[localStorage.getItem("language")].tulosta}
+          </Button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              width: "300px",
+              border: "solid 1px black",
+              borderRadius: "5px",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <h3>Lisää kuljetus IDeitä</h3>
+            <label>Kuljetus ID</label>
+            <Input
+              name="newID"
+              onChange={this.handleChange}
+              placeholder="ID"
+              value={this.state.newID}
+              style={{
+                width: "250px",
+                marginBottom: "10px",
+                marginTop: "10px",
+              }}
+            ></Input>
+            <Button
+              onClick={() => this.addIDS()}
+              color="success"
+              style={{ width: "200px", marginBottom: "10px" }}
+            >
+              Lisää
+            </Button>
+          </div>
+        </div>
+      </ErrorBoundary>
+    );
+  }
+}
+
+export default Delivery;
