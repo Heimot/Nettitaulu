@@ -24,7 +24,7 @@ class Delivery extends Component {
       kauppaId: "",
       maara: 1,
       newID: "",
-      Back: false
+      Back: false,
     };
   }
 
@@ -116,42 +116,61 @@ class Delivery extends Component {
   };
 
   addIDS = () => {
-    fetch(FETCH_URL + "delivery/post/delivery", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + sessionStorage.getItem("userData"),
-      },
-      body: JSON.stringify({
-        deliveryId: this.state.newID,
-      }),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-          if(json.message) {
-            alert(json.message)
-          } else {
-              alert("Failed to add. Might be a duplicate. Please try again if its not a duplicate.")
-          }
-     
+    let { newID } = this.state;
+    // 12312312312312312 17 pitkä test string
+    if (newID.length === 17) {
+      let i;
+      let sum = 0;
+      for (i = 0; i < 17; i++) {
+        console.log(newID.charAt(i));
+        if (i % 2 == 0) {
+          sum = sum + parseInt(newID.charAt(i)) * 3;
+        } else {
+          sum = sum + parseInt(newID.charAt(i));
+        }
+      }
+      let lastNumber = Math.ceil(sum / 10) * 10 - sum;
+      console.log(this.state.newID + lastNumber);
+      fetch(FETCH_URL + "delivery/post/delivery", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("userData"),
+        },
+        body: JSON.stringify({
+          deliveryId: this.state.newID + lastNumber,
+        }),
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((response) => response.json())
+        .then((json) => {
+          if (json.message) {
+            alert(json.message);
+          } else {
+            alert(
+              "Failed to add. Might be a duplicate. Please try again if its not a duplicate."
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      alert("HEI ID ON LYHYEMPI TAI PIDEMPI KUIN 17 KIRJAINTA!!");
+    }
   };
 
   render() {
-    if(this.state.Back) {
-        return (
-            <Redirect to="/main" />
-        )
+    if (this.state.Back) {
+      return <Redirect to="/main" />;
     }
 
     return (
       <ErrorBoundary>
         <div>
           <div className="blockerMobile"></div>
-          <Button onClick={() => this.setState({ Back: true })}>Takaisin</Button>
+          <Button onClick={() => this.setState({ Back: true })}>
+            Takaisin
+          </Button>
           <h1>Vadelma tarrojen tulostaminen</h1>
           <div id="printDiv">
             <Table id="printTables" className="printTable">
