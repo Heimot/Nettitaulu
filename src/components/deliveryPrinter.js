@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { Table, Thead, Tbody, Tr, Td, Th } from "react-super-responsive-table";
 import { Button, Input } from "reactstrap";
 import { Redirect } from "react-router-dom";
+import XLSX from "xlsx";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import * as jsPDF from "jspdf";
 import ErrorBoundary from "./errorCatcher/ErrorBoundary";
 import language from "./language/language";
 import JsBarcode from "jsbarcode";
+import Dialog from "./dialog/editDialog";
 import { FETCH_URL } from "./fetch/url";
 
 //CSS
@@ -25,6 +27,9 @@ class Delivery extends Component {
       maara: 1,
       newID: "",
       Back: false,
+      isLoading: false,
+      loadingAmount: 0,
+      loadedAmount: 0,
     };
   }
 
@@ -66,9 +71,9 @@ class Delivery extends Component {
         });
         doc.setFontSize(10);
         doc.setFontType("bold");
-        doc.text(`Kauppa: ${this.state.kauppa}`, 5, 10);
-        doc.text(`KauppaID: ${this.state.kauppaId}`, 5, 16);
-        doc.addImage(bar, "png", 5, 18, 60, 20);
+        doc.text(`Kauppa: ${this.state.kauppa}`, 5, 7);
+        doc.text(`KauppaID: ${this.state.kauppaId}`, 5, 12);
+        doc.addImage(bar, "png", 5, 13, 60, 20);
         if (size >= 1) {
           doc.addPage();
           size--;
@@ -115,14 +120,17 @@ class Delivery extends Component {
     });
   };
 
-  addIDS = () => {
-    let { newID } = this.state;
-    // 12312312312312312 17 pitkä test string
+  addIDS = (data) => {
+    let newID;
+    if (data) {
+      newID = data;
+    } else {
+      newID = this.state.newID;
+    }
     if (newID.length === 17) {
       let i;
       let sum = 0;
       for (i = 0; i < 17; i++) {
-        console.log(newID.charAt(i));
         if (i % 2 == 0) {
           sum = sum + parseInt(newID.charAt(i)) * 3;
         } else {
@@ -130,7 +138,6 @@ class Delivery extends Component {
         }
       }
       let lastNumber = Math.ceil(sum / 10) * 10 - sum;
-      console.log(this.state.newID + lastNumber);
       fetch(FETCH_URL + "delivery/post/delivery", {
         method: "POST",
         headers: {
@@ -138,26 +145,99 @@ class Delivery extends Component {
           Authorization: "Bearer " + sessionStorage.getItem("userData"),
         },
         body: JSON.stringify({
-          deliveryId: this.state.newID + lastNumber,
+          deliveryId: newID + lastNumber,
         }),
       })
         .then((response) => response.json())
         .then((json) => {
+          this.setState((prevState) => ({
+            loadedAmount: prevState.loadedAmount + 1,
+          }));
           if (json.message) {
-            alert(json.message);
+            if (data) {
+              console.log(json.message);
+            } else {
+              alert(json.message);
+            }
           } else {
-            alert(
-              "Failed to add. Might be a duplicate. Please try again if its not a duplicate."
-            );
+            if (data) {
+              console.log(
+                "Failed to add. Might be a duplicate. Please try again if its not a duplicate."
+              );
+            } else {
+              alert(
+                "Failed to add. Might be a duplicate. Please try again if its not a duplicate."
+              );
+            }
           }
         })
         .catch((error) => {
+          this.setState((prevState) => ({
+            loadedAmount: prevState.loadedAmount + 1,
+          }));
           console.log(error);
         });
     } else {
-      alert("HEI ID ON LYHYEMPI TAI PIDEMPI KUIN 17 KIRJAINTA!!");
+      this.setState((prevState) => ({
+        loadedAmount: prevState.loadedAmount + 1,
+      }));
+      if (data) {
+        console.log("HEI ID ON LYHYEMPI TAI PIDEMPI KUIN 17 KIRJAINTA!!");
+      } else {
+        alert("HEI ID ON LYHYEMPI TAI PIDEMPI KUIN 17 KIRJAINTA!!");
+      }
     }
   };
+
+  handleFile = (e) => {
+    try {
+      var file = e.target.files[0];
+      // input canceled, return
+      if (!file) return;
+
+      var FR = new FileReader();
+      FR.onload = (e) => {
+        var data = new Uint8Array(e.target.result);
+        var workbook = XLSX.read(data, { type: "array" });
+        var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        var result = XLSX.utils.sheet_to_json(firstSheet, {
+          header: 1,
+          blankrows: false,
+        });
+        let i;
+        for (i = 0; i < result.length; i++) {
+          this.setState({
+            loadingAmount: result.length,
+            isLoading: true,
+          });
+          let id = result[i][0];
+          if (!isNaN(id) && id.length === 17) {
+            this.addIDS(id);
+          }
+        }
+      };
+      FR.readAsArrayBuffer(file);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  componentDidUpdate() {
+    let { loadedAmount, loadingAmount } = this.state;
+    if (
+      loadedAmount !== 0 &&
+      loadingAmount !== 0 &&
+      loadedAmount === loadingAmount
+    ) {
+      setTimeout(() => {
+        this.setState({
+          isLoading: false,
+          loadingAmount: 0,
+          loadedAmount: 0,
+        });
+      }, 1000);
+    }
+  }
 
   render() {
     if (this.state.Back) {
@@ -265,7 +345,14 @@ class Delivery extends Component {
             >
               Lisää
             </Button>
+            <h5>Tai</h5>
+            Lisää excel tiedostoja
+            <input type="file" onChange={this.handleFile} />
           </div>
+          <Dialog isOpen2={this.state.isLoading}>
+            <h1>Loading...</h1>
+            <h3>{`${this.state.loadedAmount}/${this.state.loadingAmount}`}</h3>
+          </Dialog>
         </div>
       </ErrorBoundary>
     );
